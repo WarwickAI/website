@@ -1,3 +1,4 @@
+import "./globals.css";
 import ParticleBackground from "./particles/background";
 
 export default function Home() {
@@ -15,37 +16,46 @@ export default function Home() {
     //
     // On small screens:
     //   Single column. Logo first, then calendar.
-    <div className="grid h-screen grid-cols-1 place-content-center gap-4 bg-white p-4 md:grid-cols-2">
-      <div id="logo-with-links" className="justify-self-center">
-        <div
-          id="logo"
-          className="mb-16 place-content-center justify-self-center drop-shadow-xl"
-        >
-          {logoSvg()}
+    <div id="background" className="z-0 bg-white">
+      <div
+        id="content"
+        className="z-10 grid h-screen grid-cols-1 place-content-center gap-4 bg-white p-4 md:grid-cols-2"
+      >
+        <div id="logo-with-links" className="justify-self-center">
+          <div
+            id="logo"
+            className="mb-16 place-content-center justify-self-center drop-shadow-xl"
+          >
+            {logoSvg()}
+          </div>
+
+          <div id="links" className="grid grid-cols-6 gap-2">
+            {roundedIcon(discordSvg(), "https://discord.gg/43FnkSMEPX")}
+            {roundedIcon(githubSvg(), "https://www.github.com/WarwickAI")}
+            {roundedIcon(
+              instagramSvg(),
+              "https://www.instagram.com/warwick_ai/",
+            )}
+            {roundedIcon(
+              linkedinSvg(),
+              "https://www.linkedin.com/company/warwick-ai/",
+            )}
+            {roundedIcon(
+              mediumSvg(),
+              "https://medium.com/warwick-artificial-intelligence",
+            )}
+            {roundedIcon(
+              studentUnionSvg(),
+              "https://www.warwicksu.com/societies-sports/societies/warwickai/",
+            )}
+          </div>
         </div>
 
-        <div id="links" className="grid grid-cols-6 gap-2">
-          {roundedIcon(discordSvg(), "https://discord.gg/43FnkSMEPX")}
-          {roundedIcon(githubSvg(), "https://www.github.com/WarwickAI")}
-          {roundedIcon(instagramSvg(), "https://www.instagram.com/warwick_ai/")}
-          {roundedIcon(
-            linkedinSvg(),
-            "https://www.linkedin.com/company/warwick-ai/",
-          )}
-          {roundedIcon(
-            mediumSvg(),
-            "https://medium.com/warwick-artificial-intelligence",
-          )}
-          {roundedIcon(
-            studentUnionSvg(),
-            "https://www.warwicksu.com/societies-sports/societies/warwickai/",
-          )}
+        <div className="grid grid-cols-1 place-content-center justify-self-center text-black">
+          {calendar()}
         </div>
       </div>
 
-      <div className="grid grid-cols-1 place-content-center justify-self-center text-black">
-        {calendar()}
-      </div>
       <ParticleBackground />
     </div>
   );
@@ -76,7 +86,7 @@ const calendar = () => (
 
 function roundedIcon(icon: React.ReactNode, link?: string) {
   return (
-    <a href={link} className="group z-10">
+    <a href={link} className="group">
       <div className="grid h-12 w-12 grid-cols-1 place-content-center rounded-lg border-4 border-wai-gray p-2 group-hover:border-purple">
         {icon}
       </div>
