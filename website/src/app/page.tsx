@@ -1,3 +1,4 @@
+import Events from "./calendar/events";
 import "./globals.css";
 import ParticleBackground from "./particles/background";
 
@@ -52,7 +53,7 @@ export default function Home() {
         </div>
 
         <div className="grid grid-cols-1 place-content-center justify-self-center text-black">
-          {calendar()}
+          <Events />
         </div>
       </div>
 
@@ -77,12 +78,6 @@ function logoSvg() {
     </svg>
   );
 }
-
-const calendar = () => (
-  <div className="calendar">
-    <p>Coming soon...</p>
-  </div>
-);
 
 function roundedIcon(icon: React.ReactNode, link?: string) {
   return (
