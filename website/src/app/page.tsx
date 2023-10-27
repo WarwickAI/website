@@ -1,3 +1,5 @@
+import ParticleBackground from "./particles/background";
+
 export default function Home() {
   // On large screens:
   //   Home page displays the logo in the vertical center of the page along with
@@ -44,6 +46,7 @@ export default function Home() {
       <div className="grid grid-cols-1 place-content-center justify-self-center text-black">
         {calendar()}
       </div>
+      <ParticleBackground />
     </div>
   );
 }
