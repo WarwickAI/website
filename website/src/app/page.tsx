@@ -76,7 +76,7 @@ const calendar = () => (
 
 function roundedIcon(icon: React.ReactNode, link?: string) {
   return (
-    <a href={link} className="group">
+    <a href={link} className="group z-10">
       <div className="grid h-12 w-12 grid-cols-1 place-content-center rounded-lg border-4 border-wai-gray p-2 group-hover:border-purple">
         {icon}
       </div>
