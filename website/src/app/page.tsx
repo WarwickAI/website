@@ -20,9 +20,12 @@ export default function Home() {
     <div id="background" className="z-0 bg-white">
       <div
         id="content"
-        className="z-10 grid h-screen grid-cols-1 place-content-center gap-4 bg-white p-4 md:grid-cols-2"
+        className="grid h-screen grid-cols-1 gap-4 p-4 md:grid-cols-2"
       >
-        <div id="logo-with-links" className="justify-self-center">
+        <div
+          id="logo-with-links"
+          className="grid grid-cols-1 place-content-center justify-self-center"
+        >
           <div
             id="logo"
             className="mb-16 place-content-center justify-self-center drop-shadow-xl"
@@ -52,7 +55,10 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 place-content-center justify-self-center text-black">
+        <div
+          id="calendar"
+          className="md:w-5/8 grid w-3/4 grid-cols-1 justify-self-center text-black md:place-content-center lg:w-1/2"
+        >
           <Events />
         </div>
       </div>
