@@ -7,7 +7,7 @@ import FullCalendar from "@fullcalendar/react";
 import React from "react";
 
 const apiKey = process.env.GOOGLE_CAL_API_KEY || "FAKE_KEY";
-const calendarId = process.env.GOOGLE_CALENDAR_ID || "FAKE_ID";
+const calendarId = process.env.GOOGLE_CAL_ID || "FAKE_ID";
 
 export default class Calendar extends React.Component {
   render() {
