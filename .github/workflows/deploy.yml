@@ -70,6 +70,9 @@ jobs:
         run: ${{ steps.detect-package-manager.outputs.manager }} ${{ steps.detect-package-manager.outputs.command }}
       - name: Build with Next.js
         run: ${{ steps.detect-package-manager.outputs.runner }} next build
+        env:
+          GOOGLE_CAL_API_KEY: ${{ secrets.GOOGLE_CAL_API_KEY }}
+          GOOGLE_CAL_ID: ${{ secrets.GOOGLE_CAL_ID }}
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v1
         with:
