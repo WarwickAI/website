@@ -13,7 +13,6 @@ Created using:
 
 Code formatting:
 
-1. `cd website`
 1. `npm install -D prettier prettier-plugin-tailwindcss` (Installing Prettier)
 1. `npx prettier ./src --write --plugin=prettier-plugin-tailwindcss` (Running
    Prettier)
@@ -28,7 +27,6 @@ Recommended VS Code extensions:
 
 To run locally with hot reloading:
 
-1. `cd website`
 1. `npm run dev`
 
 ## Deploying
