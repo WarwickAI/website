@@ -4,6 +4,7 @@
 // FullCalendar is a client side library, and forces the use of "use client".
 // This exposes the API key to the client when using their google calendar API.
 
+import { DateInput, EventInput } from "@fullcalendar/core/index.js";
 import { calendar_v3 } from "@googleapis/calendar";
 import { google } from "googleapis";
 import React from "react";
@@ -18,56 +19,55 @@ var lastUpdated = new Date();
 const rateLimitMinutes = 1;
 lastUpdated.setFullYear(1970);
 
-var events = loadEvents();
+var events: EventInput[];
+loadEvents();
 
 function Events() {
   loadEvents();
-  return (
-    <div>
-      <Calendar events={events} />
-    </div>
-  );
+  return <Calendar events={events} />;
 }
 
 export default Events;
 
-async function loadEvents () {
+async function loadEvents() {
   // Loads events from Google Calendar API with a rate limit.
 
   // If we've already loaded events in the last minute, return the cached events.
   const now = new Date();
   const diff = now.getTime() - lastUpdated.getTime();
   const diffMinutes = Math.floor(diff / 60000);
-
-  console.log("diffMinutes: " + diffMinutes);
-  if (diffMinutes < rateLimitMinutes) return events;
-
+  if (diffMinutes < rateLimitMinutes) {
+    // Cache hit.
+    return console.log("Returning cached events.");
+  }
   lastUpdated = now;
 
-  console.log("Loading events from Google Calendar API.");
-
   // Otherwise, load events from Google Calendar API.
+  console.log("Loading events from Google Calendar API.");
   const response = await getEventsFromGoogle();
-  if (!response) return console.log("No response from API.");
+  if (!response) {
+    return console.log("No response from API.");
+  }
   if (response.status !== 200) {
     return console.log("API returned status code: " + response.status);
   }
-  if (!response.data.items) return console.log("No upcoming events found.");
+  if (!response.data.items) {
+    return console.log("No upcoming events found.");
+  }
 
   const google_calendar_events = response.data.items;
   if (google_calendar_events.length) {
     events = converListToFullCalendarEvents(google_calendar_events);
+    return console.log("Loaded events from Google Calendar API.");
+  } else {
+    return console.log("No upcoming events found.");
   }
 }
-
 
 async function getEventsFromGoogle() {
   const timeMin = new Date();
   const timeMax = new Date();
-  console.log(apiKey);
-  console.log(calendarId);
   timeMax.setDate(timeMax.getDate() + 7);
-
   return google_calendar.events.list({
     calendarId: calendarId,
     timeMin: timeMin.toISOString(),
@@ -91,12 +91,17 @@ function convertGoogleToFullCalendarEvent(
     throw new Error("No id found on event.");
   }
 
+  const start: DateInput = googleCalendarEvent.start.dateTime || "";
+  const end: DateInput = googleCalendarEvent.end.dateTime || "";
+  const title: string = googleCalendarEvent.summary || "";
+  const url = googleCalendarEvent.htmlLink || undefined;
+
   const fullCalendarEvent = {
     id: googleCalendarEvent.id,
-    title: googleCalendarEvent.summary,
-    start: googleCalendarEvent.start.dateTime,
-    end: googleCalendarEvent.end.dateTime,
-    url: googleCalendarEvent.htmlLink,
+    title: title,
+    start: start,
+    end: end,
+    url: url,
     extendedProps: {
       description: googleCalendarEvent.description,
       location: googleCalendarEvent.location,
@@ -108,7 +113,7 @@ function convertGoogleToFullCalendarEvent(
 
 function converListToFullCalendarEvents(
   googleCalendarEvents: calendar_v3.Schema$Event[]
-) {
+): EventInput[] {
   // Converts a list of events.
   const fullCalendarEvents = googleCalendarEvents.map((event) =>
     convertGoogleToFullCalendarEvent(event)
