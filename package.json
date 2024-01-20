@@ -13,9 +13,10 @@
   },
   "dependencies": {
     "@fullcalendar/core": "^6.1.9",
-    "@fullcalendar/google-calendar": "^6.1.9",
     "@fullcalendar/list": "^6.1.9",
     "@fullcalendar/react": "^6.1.9",
+    "@googleapis/calendar": "^9.6.0",
+    "googleapis": "^131.0.0",
     "next": "13.5.6",
     "react": "^18",
     "react-dom": "^18",

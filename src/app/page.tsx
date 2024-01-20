@@ -1,4 +1,4 @@
-import Events from "./calendar/events";
+import Events from "./calendar/google_calendar_api";
 import "./globals.css";
 import ParticleBackground from "./particles/background";
 
