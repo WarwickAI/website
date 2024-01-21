@@ -7,13 +7,13 @@ import FullCalendar from "@fullcalendar/react";
 
 import React from "react";
 
-const Calendar = (events: EventSourceInput ) => {
+const Calendar = () => {
   return (
     <FullCalendar
       viewClassNames={["w-full h-full"]}
       plugins={[listPlugin]}
       initialView="list"
-      events={events}
+      eventSources={["/api"]}
       noEventsContent={function () {
         return (
           <div className="text-center">

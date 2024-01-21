@@ -1,38 +1,33 @@
 // Google Calendar API for loading events into FullCalendar.
-//
-// We use the google calendar API on the server side to hide API keys.
-// FullCalendar is a client side library, and forces the use of "use client".
-// This exposes the API key to the client when using their google calendar API.
 
 import { DateInput, EventInput } from "@fullcalendar/core/index.js";
 import { calendar_v3 } from "@googleapis/calendar";
 import { google } from "googleapis";
-import React from "react";
-import Calendar from "./full_calendar_api";
 
 const apiKey = process.env.GOOGLE_CAL_API_KEY || "FAKE_KEY";
 const calendarId = process.env.GOOGLE_CAL_ID || "FAKE_ID";
-const google_calendar = google.calendar({ version: "v3", auth: apiKey });
+const googleCalendar = google.calendar({ version: "v3", auth: apiKey });
 
 // We rate limit the calendar API to 1 new request every minute.
 var lastUpdated = new Date();
-const rateLimitMinutes = 1;
-lastUpdated.setFullYear(1970);
+const rateLimitMinutes = 5;
+lastUpdated.setFullYear(1970); // Force a refresh on first load.
 
 var events: EventInput[];
-loadEvents();
 
-function Events() {
-  loadEvents();
-  return <Calendar events={events} />;
+export const dynamic = "force-dynamic"; // defaults to auto
+export async function GET(_: Request) {
+  // Loads events from Google Calendar API and displays them in a calendar.
+  await loadEvents();
+  return new Response(JSON.stringify(events), {
+    headers: { "content-type": "application/json" },
+  });
 }
-
-export default Events;
 
 async function loadEvents() {
   // Loads events from Google Calendar API with a rate limit.
 
-  // If we've already loaded events in the last minute, return the cached events.
+  // If we've already loaded events in the last 5 minutes, return the cached events.
   const now = new Date();
   const diff = now.getTime() - lastUpdated.getTime();
   const diffMinutes = Math.floor(diff / 60000);
@@ -55,10 +50,10 @@ async function loadEvents() {
     return console.log("No upcoming events found.");
   }
 
-  const google_calendar_events = response.data.items;
-  if (google_calendar_events.length) {
-    events = converListToFullCalendarEvents(google_calendar_events);
-    return console.log("Loaded events from Google Calendar API.");
+  const googleCalendarEvents = response.data.items;
+  if (googleCalendarEvents.length) {
+    events = converListToFullCalendarEvents(googleCalendarEvents);
+    return events;
   } else {
     return console.log("No upcoming events found.");
   }
@@ -68,7 +63,7 @@ async function getEventsFromGoogle() {
   const timeMin = new Date();
   const timeMax = new Date();
   timeMax.setDate(timeMax.getDate() + 7);
-  return google_calendar.events.list({
+  return googleCalendar.events.list({
     calendarId: calendarId,
     timeMin: timeMin.toISOString(),
     timeMax: timeMax.toISOString(),

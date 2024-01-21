@@ -1,4 +1,4 @@
-import Events from "./calendar/google_calendar_api";
+import Calendar from "./calendar/full_calendar_api";
 import "./globals.css";
 import ParticleBackground from "./particles/background";
 
@@ -38,19 +38,19 @@ export default function Home() {
             {roundedIcon(githubSvg(), "https://www.github.com/WarwickAI")}
             {roundedIcon(
               instagramSvg(),
-              "https://www.instagram.com/warwick_ai/",
+              "https://www.instagram.com/warwick_ai/"
             )}
             {roundedIcon(
               linkedinSvg(),
-              "https://www.linkedin.com/company/warwick-ai/",
+              "https://www.linkedin.com/company/warwick-ai/"
             )}
             {roundedIcon(
               mediumSvg(),
-              "https://medium.com/warwick-artificial-intelligence",
+              "https://medium.com/warwick-artificial-intelligence"
             )}
             {roundedIcon(
               studentUnionSvg(),
-              "https://www.warwicksu.com/societies-sports/societies/warwickai/",
+              "https://www.warwicksu.com/societies-sports/societies/warwickai/"
             )}
           </div>
         </div>
@@ -59,7 +59,7 @@ export default function Home() {
           id="calendar"
           className="md:w-5/8 grid w-3/4 grid-cols-1 justify-self-center text-black md:place-content-center lg:w-1/2"
         >
-          <Events />
+          <Calendar />
         </div>
       </div>
 
