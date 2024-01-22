@@ -107,6 +107,13 @@ const particlesConfig = {
     },
   },
   retina_detect: true,
+  background: {
+    color: "#FFFFFF",
+    image: "",
+    position: "50% 50%",
+    repeat: "no-repeat" as const,
+    size: "cover" as const,
+  },
 };
 
 export default particlesConfig;

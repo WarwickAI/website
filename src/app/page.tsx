@@ -17,7 +17,7 @@ export default function Home() {
     //
     // On small screens:
     //   Single column. Logo first, then calendar.
-    <div id="background" className="z-0 bg-white">
+    <div id="background" className="z-0">
       <div
         id="content"
         className="grid h-screen grid-cols-1 gap-4 p-1 md:grid-cols-2"

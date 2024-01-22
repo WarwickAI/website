@@ -4,7 +4,6 @@ import Particles from "react-tsparticles";
 import particlesConfig from "./config";
 
 const particleStyle = {
-  // position: "fixed" as const,
   left: "0",
   top: "0",
   width: "100%",
