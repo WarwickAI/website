@@ -16,12 +16,13 @@ lastUpdated.setFullYear(1970); // Force a refresh on first load.
 var events: EventInput[];
 
 export const dynamic = "force-dynamic"; // defaults to auto
-export async function GET(_: Request) {
+export async function GET(request: Request) {
   // Loads events from Google Calendar API and displays them in a calendar.
-  await loadEvents();
-  return new Response(JSON.stringify(events), {
-    headers: { "content-type": "application/json" },
-  });
+  let result = await loadEvents();
+  if (!result) {
+    return Response.json([]);
+  }
+  return Response.json(events);
 }
 
 async function loadEvents() {
@@ -33,7 +34,8 @@ async function loadEvents() {
   const diffMinutes = Math.floor(diff / 60000);
   if (diffMinutes < rateLimitMinutes) {
     // Cache hit.
-    return console.log("Returning cached events.");
+    console.log("Returning cached events.");
+    return events;
   }
   lastUpdated = now;
 
@@ -47,7 +49,9 @@ async function loadEvents() {
     return console.log("API returned status code: " + response.status);
   }
   if (!response.data.items) {
-    return console.log("No upcoming events found.");
+    console.log("No upcoming events found.");
+    events = [];
+    return events;
   }
 
   const googleCalendarEvents = response.data.items;
@@ -55,7 +59,9 @@ async function loadEvents() {
     events = converListToFullCalendarEvents(googleCalendarEvents);
     return events;
   } else {
-    return console.log("No upcoming events found.");
+    console.log("No upcoming events found.");
+    events = [];
+    return events;
   }
 }
 
