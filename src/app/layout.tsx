@@ -15,8 +15,8 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/images/favicon.svg",
-        type: "image/svg+xml",
+        url: "/images/wai.jpg",
+        type: "image/jpeg",
         sizes: "64x64",
       },
     ],
@@ -24,6 +24,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "WAI",
     description: "Warwick AI",
+    siteName: "WAI",
     type: "website",
     locale: "en_GB",
     url: "https://warwick.ai",
