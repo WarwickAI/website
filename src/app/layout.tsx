@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "WAI",
     description: "Warwick AI",
-    siteName: "WAI",
+    siteName: "Warwick.AI",
     type: "website",
     locale: "en_GB",
     url: "https://warwick.ai",
