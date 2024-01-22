@@ -29,7 +29,7 @@ export const metadata: Metadata = {
     url: "https://warwick.ai",
     images: [
       {
-        url: "https://warwick.ai/images/wai.svg",
+        url: "https://warwick.ai/images/wai.jpg",
         width: 64,
         height: 64,
         alt: "WAI logo",
