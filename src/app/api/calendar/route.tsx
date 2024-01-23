@@ -13,7 +13,9 @@ var lastUpdated = new Date();
 const rateLimitMinutes = 5;
 lastUpdated.setFullYear(1970); // Force a refresh on first load.
 
+// Refresh events every 5 minutes minus 10 seconds to never force a user to wait.
 var events: EventInput[];
+setInterval(forceLoadEvents, 60000 * rateLimitMinutes - 10000);
 
 export const dynamic = "force-dynamic"; // defaults to auto
 export async function GET(request: Request) {
@@ -40,6 +42,10 @@ async function loadEvents() {
   lastUpdated = now;
 
   // Otherwise, load events from Google Calendar API.
+  return await forceLoadEvents();
+}
+
+async function forceLoadEvents() {
   console.log("Loading events from Google Calendar API.");
   const response = await getEventsFromGoogle();
   if (!response) {
