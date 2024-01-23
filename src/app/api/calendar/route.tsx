@@ -39,7 +39,6 @@ async function loadEvents() {
     console.log("Returning cached events.");
     return events;
   }
-  lastUpdated = now;
 
   // Otherwise, load events from Google Calendar API.
   return await forceLoadEvents();
@@ -54,6 +53,8 @@ async function forceLoadEvents() {
   if (response.status !== 200) {
     return console.log("API returned status code: " + response.status);
   }
+
+  lastUpdated = new Date();
   if (!response.data.items) {
     console.log("No upcoming events found.");
     events = [];

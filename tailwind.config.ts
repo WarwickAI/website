@@ -8,6 +8,7 @@ const config: Config = {
       current: "currentColor",
       black: "#08121f",
       white: "#efefef",
+      "pure-white": "#ffffff",
       "wai-gray": "#3c3c3c",
       purple: "#6D60C1",
       lavender: "#A6A6E2",
@@ -16,6 +17,10 @@ const config: Config = {
       "dull-blue-green": "#C4DDDC",
     },
     extend: {
+      dropShadow: {
+        "sm-wai-gray": "0 1px 1px rgba(60, 60, 60, 0.25)",
+        "lg-wai-gray": "0 20px 13px rgba(60, 60, 60, 0.25)",
+      },
       keyframes: {
         colourPulse: {
           "0%, 100%": {

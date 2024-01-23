@@ -1,3 +1,4 @@
+import Link from "next/link";
 import Calendar from "./calendar/full_calendar_api";
 import "./globals.css";
 import ParticleBackground from "./particles/background";
@@ -17,49 +18,61 @@ export default function Home() {
     //
     // On small screens:
     //   Single column. Logo first, then calendar.
-    <div id="background" className="z-0">
+    <div id="background" className="z-0 bg-pure-white">
       <div
         id="content"
-        className="grid h-screen grid-cols-1 gap-4 p-1 md:grid-cols-2"
+        className="grid h-screen grid-cols-1 gap-12 p-1 overflow-y-auto place-content-center"
       >
         <div
-          id="logo-with-links"
-          className="grid grid-cols-1 place-content-center justify-self-center"
+          id="logo-and-calendar"
+          className="grid grid-cols-1 gap-12 md:gap-2 p-1 md:grid-cols-2 place-content-start md:place-content-center"
         >
           <div
-            id="logo"
-            className="mb-16 place-content-center justify-self-center drop-shadow-xl"
+            id="logo-with-links"
+            className="grid grid-cols-1 place-content-center justify-self-center"
           >
-            {logoSvg()}
+            <div
+              id="logo"
+              className="mt-4 mb-4 ml-auto mr-auto md:mb-16 h-30 place-content-center justify-self-center drop-shadow-sm-wai-gray"
+            >
+              {logoSvg()}
+            </div>
+            <div id="links" className="grid grid-cols-6 gap-2">
+              {roundedIcon(discordSvg(), "https://discord.gg/43FnkSMEPX")}
+              {roundedIcon(githubSvg(), "https://www.github.com/WarwickAI")}
+              {roundedIcon(
+                instagramSvg(),
+                "https://www.instagram.com/warwick_ai/"
+              )}
+              {roundedIcon(
+                linkedinSvg(),
+                "https://www.linkedin.com/company/warwick-ai/"
+              )}
+              {roundedIcon(
+                mediumSvg(),
+                "https://medium.com/warwick-artificial-intelligence"
+              )}
+              {roundedIcon(
+                studentUnionSvg(),
+                "https://www.warwicksu.com/societies-sports/societies/warwickai/"
+              )}
+            </div>
           </div>
 
-          <div id="links" className="grid grid-cols-6 gap-2">
-            {roundedIcon(discordSvg(), "https://discord.gg/43FnkSMEPX")}
-            {roundedIcon(githubSvg(), "https://www.github.com/WarwickAI")}
-            {roundedIcon(
-              instagramSvg(),
-              "https://www.instagram.com/warwick_ai/"
-            )}
-            {roundedIcon(
-              linkedinSvg(),
-              "https://www.linkedin.com/company/warwick-ai/"
-            )}
-            {roundedIcon(
-              mediumSvg(),
-              "https://medium.com/warwick-artificial-intelligence"
-            )}
-            {roundedIcon(
-              studentUnionSvg(),
-              "https://www.warwicksu.com/societies-sports/societies/warwickai/"
-            )}
+          <div
+            id="calendar"
+            className="md:w-7/8 grid w-7/8 grid-cols-1 justify-self-center text-black md:place-content-center lg:w-3/4"
+          >
+            <Calendar />
           </div>
         </div>
 
-        <div
-          id="calendar"
-          className="md:w-7/8 grid w-7/8 grid-cols-1 justify-self-center text-black md:place-content-center lg:w-3/4"
-        >
-          <Calendar />
+        <div id="learn-more" className="grid grid-cols-1 place-content-start">
+          <Link href="/home"
+          className="shadow-sm shadow-wai-gray hover:shadow-purple bg-pure-white text-xl font-mono font-bold text-center text-wai-gray border-4 rounded-lg border-wai-gray hover:border-purple hover:text-purple p-4 w-fit justify-self-center"
+          >
+            LEARN MORE
+          </Link>
         </div>
       </div>
 
@@ -85,13 +98,13 @@ function logoSvg() {
   );
 }
 
-function roundedIcon(icon: React.ReactNode, link?: string) {
+function roundedIcon(icon: React.ReactNode, link: string) {
   return (
-    <a href={link} className="group">
-      <div className="grid h-12 w-12 grid-cols-1 place-content-center rounded-lg border-4 border-wai-gray p-2 group-hover:border-purple">
+    <Link href={link} className="group">
+      <div className="shadow-sm shadow-wai-gray bg-pure-white grid h-11 w-11 sm:h-12 sm:w-12 grid-cols-1 place-content-center rounded-lg border-4 border-wai-gray p-2 group-hover:border-purple">
         {icon}
       </div>
-    </a>
+    </Link>
   );
 }
 

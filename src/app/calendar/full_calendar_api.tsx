@@ -9,7 +9,10 @@ import React from "react";
 const Calendar = () => {
   return (
     <FullCalendar
-      viewClassNames={["w-full h-full"]}
+      noEventsClassNames={["w-full h-full p-4"]}
+      viewClassNames={[
+        "shadow-lg bg-pure-white font-mono text-wai-gray border-4 rounded-lg border-wai-gray",
+      ]}
       plugins={[listPlugin]}
       initialView="list"
       events={function (fetchInfo, successCallback, failureCallback) {
