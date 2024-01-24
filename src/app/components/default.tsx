@@ -1,5 +1,5 @@
 import "../globals.css";
-import ParticleBackground from "../particles/background";
+import ParticleBackground from "./particles/background";
 
 export default function defaultPage(component: JSX.Element) {
   // Component must be wrapped in a single div that will be removed.
