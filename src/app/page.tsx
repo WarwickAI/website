@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Calendar from "./calendar/full_calendar_api";
+import defaultPage from "./components/default";
 import "./globals.css";
-import ParticleBackground from "./particles/background";
 
 export default function Home() {
   // On large screens:
@@ -18,11 +18,8 @@ export default function Home() {
     //
     // On small screens:
     //   Single column. Logo first, then calendar.
-    <div id="background" className="z-0 bg-pure-white">
-      <div
-        id="content"
-        className="grid h-screen grid-cols-1 gap-12 p-1 overflow-y-auto place-content-center"
-      >
+    defaultPage(
+      <div>
         <div
           id="logo-and-calendar"
           className="grid grid-cols-1 gap-12 md:gap-2 p-1 md:grid-cols-2 place-content-start md:place-content-center"
@@ -37,6 +34,7 @@ export default function Home() {
             >
               {logoSvg()}
             </div>
+
             <div id="links" className="grid grid-cols-6 gap-2">
               {roundedIcon(discordSvg(), "https://discord.gg/43FnkSMEPX")}
               {roundedIcon(githubSvg(), "https://www.github.com/WarwickAI")}
@@ -68,16 +66,15 @@ export default function Home() {
         </div>
 
         <div id="learn-more" className="grid grid-cols-1 place-content-start">
-          <Link href="/home"
-          className="shadow-sm shadow-wai-gray hover:shadow-purple bg-pure-white text-xl font-mono font-bold text-center text-wai-gray border-4 rounded-lg border-wai-gray hover:border-purple hover:text-purple p-4 w-fit justify-self-center"
+          <Link
+            href="/home"
+            className="shadow-sm shadow-wai-gray hover:shadow-purple bg-pure-white text-xl font-mono font-bold text-center text-wai-gray border-4 rounded-lg border-wai-gray hover:border-purple hover:text-purple p-4 w-fit justify-self-center"
           >
-            LEARN MORE
+            learn more
           </Link>
         </div>
       </div>
-
-      <ParticleBackground />
-    </div>
+    )
   );
 }
 
