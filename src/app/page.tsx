@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Calendar from "./calendar/full_calendar_api";
+import Button from "./components/button";
 import defaultPage from "./components/default";
 import "./globals.css";
 
@@ -66,12 +67,7 @@ export default function Home() {
         </div>
 
         <div id="learn-more" className="grid grid-cols-1 place-content-start">
-          <Link
-            href="/home"
-            className="shadow-sm shadow-wai-gray hover:shadow-purple bg-pure-white text-xl font-mono font-bold text-center text-wai-gray border-4 rounded-lg border-wai-gray hover:border-purple hover:text-purple p-4 w-fit justify-self-center"
-          >
-            learn more
-          </Link>
+          <Button enabled={true} text="learn more" href="/home" />
         </div>
       </div>
     )
