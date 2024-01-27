@@ -1,12 +1,13 @@
 // FullCalendar API
 "use client";
 
+import { EventInput } from "@fullcalendar/core/index.js";
 import listPlugin from "@fullcalendar/list";
 import FullCalendar from "@fullcalendar/react";
 
 import React from "react";
 
-const Calendar = () => {
+export default function Calendar(props: { events: EventInput[] }) {
   return (
     <FullCalendar
       noEventsClassNames={["w-full h-full p-4"]}
@@ -15,19 +16,7 @@ const Calendar = () => {
       ]}
       plugins={[listPlugin]}
       initialView="list"
-      events={function (fetchInfo, successCallback, failureCallback) {
-        // Fetches events from the API at /api.
-        fetch("/api/calendar")
-          .then(function (response) {
-            return response.json();
-          })
-          .then(function (events) {
-            successCallback(events);
-          })
-          .catch(function (error) {
-            failureCallback(error);
-          });
-      }}
+      events={props.events}
       noEventsContent={function () {
         return (
           <div className="text-center">
@@ -42,6 +31,4 @@ const Calendar = () => {
       eventColor="#6D60C1"
     />
   );
-};
-
-export default Calendar;
+}

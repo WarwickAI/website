@@ -1,10 +1,13 @@
 import Link from "next/link";
 import Calendar from "./calendar/full_calendar_api";
+import { loadEvents } from "./calendar/google_api";
 import Button from "./components/button";
 import defaultPage from "./components/default";
 import "./globals.css";
 
-export default function Home() {
+export const dynamic = "force-dynamic"; // defaults to auto
+
+export default async function Home() {
   // On large screens:
   //   Home page displays the logo in the vertical center of the page along with
   //   a calendar of events. For now the calendar can be text only. The calendar
@@ -12,6 +15,7 @@ export default function Home() {
   //
   // On small screens:
   //   Calendar is below the logo
+  const events = await loadEvents();
 
   return (
     // On large screens:
@@ -74,7 +78,7 @@ export default function Home() {
             id="calendar"
             className="md:w-7/8 grid w-7/8 grid-cols-1 justify-self-center text-black md:place-content-center lg:w-3/4"
           >
-            <Calendar />
+            <Calendar events={events} />
           </div>
         </div>
 
