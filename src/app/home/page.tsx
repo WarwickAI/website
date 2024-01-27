@@ -19,24 +19,28 @@ export default function Home() {
           text="projects"
           enabled={true}
           extraClasses={extraClasses}
+          ariaLabel="Learn about our projects."
         />
         <Button
           href="/research"
           text="research"
           enabled={true}
           extraClasses={extraClasses}
+          ariaLabel="Learn about our research."
         />
         <Button
           href="/safety"
           text="safety"
           enabled={true}
           extraClasses={extraClasses}
+          ariaLabel="Learn about our safety department."
         />
         <Button
           href="/education"
           text="education"
           enabled={true}
           extraClasses={extraClasses}
+          ariaLabel="Learn about our courses and tutorials."
         />
       </div>
     </div>

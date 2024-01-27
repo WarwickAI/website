@@ -37,23 +37,35 @@ export default function Home() {
             </div>
 
             <div id="links" className="grid grid-cols-6 gap-2">
-              {roundedIcon(discordSvg(), "https://discord.gg/43FnkSMEPX")}
-              {roundedIcon(githubSvg(), "https://www.github.com/WarwickAI")}
+              {roundedIcon(
+                discordSvg(),
+                "https://discord.gg/43FnkSMEPX",
+                "Join our Discord server."
+              )}
+              {roundedIcon(
+                githubSvg(),
+                "https://www.github.com/WarwickAI",
+                "View our GitHub repositories."
+              )}
               {roundedIcon(
                 instagramSvg(),
-                "https://www.instagram.com/warwick_ai/"
+                "https://www.instagram.com/warwick_ai/",
+                "Follow us on Instagram."
               )}
               {roundedIcon(
                 linkedinSvg(),
-                "https://www.linkedin.com/company/warwick-ai/"
+                "https://www.linkedin.com/company/warwick-ai/",
+                "Follow us on LinkedIn."
               )}
               {roundedIcon(
                 mediumSvg(),
-                "https://medium.com/warwick-artificial-intelligence"
+                "https://medium.com/warwick-artificial-intelligence",
+                "Read our Medium blog."
               )}
               {roundedIcon(
                 studentUnionSvg(),
-                "https://www.warwicksu.com/societies-sports/societies/warwickai/"
+                "https://www.warwicksu.com/societies-sports/societies/warwickai/",
+                "Join our society!"
               )}
             </div>
           </div>
@@ -67,7 +79,12 @@ export default function Home() {
         </div>
 
         <div id="learn-more" className="grid grid-cols-1 place-content-start">
-          <Button enabled={true} text="learn more" href="/home" />
+          <Button
+            enabled={true}
+            text="learn more"
+            href="/home"
+            ariaLabel="Learn more about Warwick AI."
+          />
         </div>
       </div>
     )
@@ -91,9 +108,9 @@ function logoSvg() {
   );
 }
 
-function roundedIcon(icon: React.ReactNode, link: string) {
+function roundedIcon(icon: React.ReactNode, link: string, ariaLabel: string) {
   return (
-    <Link href={link} className="group">
+    <Link href={link} className="group" aria-label={ariaLabel}>
       <div className="shadow-sm shadow-wai-gray bg-pure-white grid h-11 w-11 sm:h-12 sm:w-12 grid-cols-1 place-content-center rounded-lg border-4 border-wai-gray p-2 group-hover:border-purple">
         {icon}
       </div>
