@@ -3,7 +3,8 @@ import React from "react";
 import Particles from "react-tsparticles";
 import particlesConfig from "./config";
 
-const particleStyle = {
+const particleStyle: React.CSSProperties = {
+  position: "absolute",
   left: "0",
   top: "0",
   width: "100%",

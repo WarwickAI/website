@@ -35,7 +35,7 @@ export default async function Home() {
           >
             <div
               id="logo"
-              className="mt-4 mb-4 ml-auto mr-auto md:mb-16 h-30 place-content-center justify-self-center drop-shadow-sm-wai-gray"
+              className="mt-4 mb-4 md:mb-16 h-full  drop-shadow-sm-wai-gray"
             >
               {logoSvg()}
             </div>
