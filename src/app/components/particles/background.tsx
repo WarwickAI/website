@@ -3,18 +3,9 @@ import React from "react";
 import Particles from "react-tsparticles";
 import particlesConfig from "./config";
 
-const particleStyle: React.CSSProperties = {
-  position: "absolute",
-  left: "0",
-  top: "0",
-  width: "100%",
-  height: "100%",
-  zIndex: "0",
-};
-
 export default function ParticleBackground() {
   return (
-    <div style={particleStyle}>
+    <div className="left-0 top-0 w-full h-full z-2">
       <Particles params={particlesConfig} />
     </div>
   );

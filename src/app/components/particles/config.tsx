@@ -1,4 +1,6 @@
-const particlesConfig = {
+import { IOptions, RecursivePartial } from "react-tsparticles";
+
+const particlesConfig: RecursivePartial<IOptions> = {
   particles: {
     number: {
       value: 20,
@@ -15,14 +17,6 @@ const particlesConfig = {
       stroke: {
         width: 0,
         color: "#5F5F5F",
-      },
-      polygon: {
-        nb_sides: 5,
-      },
-      image: {
-        src: "img/github.svg",
-        width: 100,
-        height: 100,
       },
     },
     opacity: {
@@ -47,7 +41,7 @@ const particlesConfig = {
     },
     line_linked: {
       enable: true,
-      distance: 250,
+      distance: 300,
       color: "#6D60C1",
       opacity: 0.2,
       width: 1,
@@ -60,20 +54,11 @@ const particlesConfig = {
       straight: false,
       out_mode: "out" as const,
       bounce: false,
-      attract: {
-        enable: false,
-        rotateX: 600,
-        rotateY: 1200,
-      },
     },
   },
   interactivity: {
-    detect_on: "canvas" as const,
+    detect_on: "window" as const,
     events: {
-      onhover: {
-        enable: false,
-        mode: "bubble" as const,
-      },
       onclick: {
         enable: true,
         mode: "repulse" as const,
@@ -81,31 +66,14 @@ const particlesConfig = {
       resize: true,
     },
     modes: {
-      grab: {
-        distance: 400,
-        line_linked: {
-          opacity: 1,
-        },
-      },
-      bubble: {
-        distance: 400,
-        size: 40,
-        duration: 2,
-        opacity: 8,
-        speed: 3,
-      },
       repulse: {
         distance: 200,
         duration: 0.4,
       },
-      push: {
-        particles_nb: 4,
-      },
-      remove: {
-        particles_nb: 2,
-      },
     },
   },
+  pauseOnBlur: true,
+  pauseOnOutsideViewport: true,
   retina_detect: true,
   background: {
     color: "#FFFFFF",
@@ -114,6 +82,7 @@ const particlesConfig = {
     repeat: "no-repeat" as const,
     size: "cover" as const,
   },
+  fpsLimit: 90,
 };
 
 export default particlesConfig;
