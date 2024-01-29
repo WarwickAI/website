@@ -11,26 +11,27 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@fullcalendar/core": "^6.1.9",
-    "@fullcalendar/list": "^6.1.9",
-    "@fullcalendar/react": "^6.1.9",
+    "@fullcalendar/core": "^6.1.10",
+    "@fullcalendar/list": "^6.1.10",
+    "@fullcalendar/react": "^6.1.10",
     "@googleapis/calendar": "^9.6.0",
+    "@tsparticles/engine": "^3.1.0",
+    "@tsparticles/react": "^3.0.0",
+    "@tsparticles/slim": "^3.1.0",
     "googleapis": "^131.0.0",
     "next": "^14.1.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-tsparticles": "^1.37.5"
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/node": "^20.11.10",
+    "@types/react": "^18.2.48",
+    "@types/react-dom": "^18.2.18",
     "autoprefixer": "^10.4.17",
-    "gh-pages": "^6.0.0",
     "postcss": "^8.4.33",
-    "prettier": "^3.0.3",
-    "prettier-plugin-tailwindcss": "^0.5.6",
+    "prettier": "^3.2.4",
+    "prettier-plugin-tailwindcss": "^0.5.11",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "typescript": "^5.3.3"
   }
 }
