@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     noimageindex: true,
   },
   title: "WAI",
-  description: "Warwick AI",
+  description: "Warwick Artificial Intelligence is a student-run society that provides students with the opportunity to learn and use various emerging technologies in the field of Artificial Intelligence!",
   icons: {
     icon: [
       {
@@ -23,7 +23,8 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "WAI",
-    description: "Warwick AI",
+    description:
+      "Warwick Artificial Intelligence is a student-run society that provides students with the opportunity to learn and use various emerging technologies in the field of Artificial Intelligence!",
     siteName: "Warwick.AI",
     type: "website",
     locale: "en_GB",
