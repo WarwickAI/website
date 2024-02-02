@@ -85,9 +85,9 @@ export default async function Home() {
         <div id="learn-more" className="grid grid-cols-1 place-content-start">
           <Button
             enabled={true}
-            text="learn more"
-            href="/home"
-            ariaLabel="Learn more about Warwick AI."
+            text="Competition"
+            href="/competition"
+            ariaLabel="Compete in our competition!"
           />
         </div>
       </div>
