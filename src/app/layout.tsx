@@ -11,20 +11,20 @@ export const metadata: Metadata = {
     noimageindex: true,
   },
   title: "WAI",
-  description: "Warwick Artificial Intelligence is a student-run society that provides students with the opportunity to learn and use various emerging technologies in the field of Artificial Intelligence!",
+  description: "Warwick Artificial Intelligence is the gateway to AI at the University of Warwick with various projects, educational courses and research opportunities on offer as well as a range of social events. Students of all levels and backgrounds are welcome.",
   icons: {
     icon: [
       {
-        url: "/images/wai.jpg",
-        type: "image/jpeg",
-        sizes: "64x64",
+        url: "/images/favicon.svg",
+        type: "image/svg+xml",
+        sizes: "96x96",
       },
     ],
   },
   openGraph: {
     title: "WAI",
     description:
-      "Warwick Artificial Intelligence is a student-run society that provides students with the opportunity to learn and use various emerging technologies in the field of Artificial Intelligence!",
+      "Warwick Artificial Intelligence is the gateway to AI at the University of Warwick with various projects, educational courses and research opportunities on offer as well as a range of social events. Students of all levels and backgrounds are welcome.",
     siteName: "Warwick.AI",
     type: "website",
     locale: "en_GB",
