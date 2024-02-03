@@ -4,6 +4,8 @@ Planning to use Next.js with Tailwind CSS and TypeScript.
 
 ## Getting Started
 
+Requires Node.js 20.
+
 Created using:
 
 1. `npx create-next-app@latest website --typescript` (Next.js with TypeScript)

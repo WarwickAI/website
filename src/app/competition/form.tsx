@@ -1,9 +1,19 @@
+// Competition submission form
+//
+// This client side component sends a file to the some server side endpoint.
+
 "use client";
 
 import React from "react";
+import { useFormState } from "react-dom";
 import { useDropzone } from "react-dropzone";
+import { handleSubmission } from "./upload";
 
-export default function CompetitionSubmission(_props: any) {
+const initialState = {
+  message: "",
+};
+
+export default function CompetitionSubmission() {
   const { acceptedFiles, fileRejections, getRootProps, getInputProps } =
     useDropzone({
       accept: {
@@ -31,37 +41,64 @@ export default function CompetitionSubmission(_props: any) {
     </li>
   ));
 
+  const [state, formAction] = useFormState(handleSubmission, initialState);
   return (
-    <section className="shadow-sm shadow-wai-gray bg-pure-white text-xl font-mono font-bold text-center text-wai-gray border-4 border-dashed rounded-lg border-wai-gray p-4 justify-self-center hover:bg-purple">
-      <div {...getRootProps({ className: "dropzone" })}>
-        <input {...getInputProps()} />
-        <p>Drag & drop your submission here. Or click to select file.</p>
-        <em>(Only *.zip will be accepted.)</em>
+    <form
+      action={(formData: FormData) => {
+        if (acceptedFiles.length === 0) {
+          // TODO(czarlinski): Add a message to the user.
+          return;
+        }
+        formData.set("file", acceptedFiles[0]);
+        return formAction(formData);
+      }}
+      className="shadow-sm shadow-wai-gray bg-pure-white text-xl font-mono font-bold text-center text-wai-gray border-4 rounded-lg border-wai-gray p-4 justify-self-center"
+    >
+      <div className="shadow-sm shadow-wai-gray bg-pure-white text-xl font-mono font-bold text-center text-wai-gray border-4  rounded-lg border-wai-gray p-4 justify-self-center hover:bg-purple">
+        <input type="text" name="name" placeholder="Name" required />
+      </div>
 
-        <br></br>
-        <br></br>
+      <div className="shadow-sm shadow-wai-gray bg-pure-white text-xl font-mono font-bold text-center text-wai-gray border-4 border-dashed rounded-lg border-wai-gray p-4 justify-self-center hover:bg-purple">
+        <div {...getRootProps({ className: "dropzone" })}>
+          <input {...getInputProps()} />
+          <p>Drag & drop your submission here. Or click to select file.</p>
+          <em>(Only *.zip will be accepted.)</em>
 
-        <aside>
-          <h4>Accepted files</h4>
-          <ul>
-            {acceptedFileItems.length === 0 ? (
-              <em>No files accepted.</em>
-            ) : (
-              acceptedFileItems
-            )}
-          </ul>
+          <br></br>
           <br></br>
 
-          <h4>Rejected files</h4>
-          <ul>
-            {fileRejectionItems.length === 0 ? (
-              <em>No files rejected.</em>
-            ) : (
-              fileRejectionItems
-            )}
-          </ul>
-        </aside>
+          <p>{state?.message}</p>
+
+          <aside>
+            <h4>Accepted files</h4>
+            <ul>
+              {acceptedFileItems.length === 0 ? (
+                <em>No files accepted.</em>
+              ) : (
+                acceptedFileItems
+              )}
+            </ul>
+            <br></br>
+
+            <h4>Rejected files</h4>
+            <ul>
+              {fileRejectionItems.length === 0 ? (
+                <em>No files rejected.</em>
+              ) : (
+                fileRejectionItems
+              )}
+            </ul>
+          </aside>
+        </div>
       </div>
-    </section>
+
+      <br></br>
+
+      <input
+        type="submit"
+        value="Submit"
+        className="shadow-sm shadow-wai-gray bg-pure-white text-xl font-mono font-bold text-center text-wai-gray border-4 rounded-lg border-wai-gray p-4 justify-self-center hover:bg-purple"
+      />
+    </form>
   );
 }
