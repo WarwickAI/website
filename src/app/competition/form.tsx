@@ -55,7 +55,7 @@ export default function CompetitionSubmission() {
       className="shadow-sm shadow-wai-gray bg-pure-white text-xl font-mono font-bold text-center text-wai-gray border-4 rounded-lg border-wai-gray p-4 justify-self-center"
     >
       <div className="shadow-sm shadow-wai-gray bg-pure-white text-xl font-mono font-bold text-center text-wai-gray border-4  rounded-lg border-wai-gray p-4 justify-self-center hover:bg-purple">
-        <input type="text" name="name" placeholder="Name" required />
+        <input type="text" name="studentId" placeholder="Student ID" required />
       </div>
 
       <div className="shadow-sm shadow-wai-gray bg-pure-white text-xl font-mono font-bold text-center text-wai-gray border-4 border-dashed rounded-lg border-wai-gray p-4 justify-self-center hover:bg-purple">
