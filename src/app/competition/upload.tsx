@@ -6,8 +6,9 @@
 "use server";
 
 import { z } from "zod";
-import { uploadFile } from "./cloudflare";
+import { uploadFileToR2, uploadNewToKV } from "./cloudflare";
 
+// Rate limit successful submissions to 1 per hour.
 const rateLimitedUsers = new Map<string, number>();
 const rateLimit = 60 * 60 * 1000; // 60 minutes
 
@@ -32,24 +33,16 @@ export async function handleSubmission(prevState: any, formData: FormData) {
   const submission: ValidSubmission | InvalidSubmission =
     validataFormDataSchema(formData);
 
-  // Invalid submission.
+  // ValidSubmission | InvalidSubmission
   if ("message" in submission) {
     return submission;
   }
-
-  // Valid submission below.
-  if (submission.file.type !== "application/zip") {
-    return { message: "File must be a zip file." };
-  }
-  if (submission.file.size > 5242880) {
-    // 5MiB
-    return { message: "File must not be larger than 5MiB." };
-  }
+  // ValidSubmission
 
   // Escape the student ID to be numerical only.
   submission.studentId = submission.studentId.replace(/\D/g, "");
 
-  // Rate limit the user.
+  // Rate limit the user from their last successful submission.
   const now = Date.now();
   const lastSubmission = rateLimitedUsers.get(submission.studentId);
   if (lastSubmission && now - lastSubmission < rateLimit) {
@@ -58,12 +51,33 @@ export async function handleSubmission(prevState: any, formData: FormData) {
       message:
         "Your submission was rejected. Please wait 1 hour between submissions.",
     };
-  } else {
-    rateLimitedUsers.set(submission.studentId, now);
   }
 
-  const file = await uploadFile(submission.file, submission.studentId + ".zip");
+  // Validate the file.
+  if (submission.file.type !== "application/zip") {
+    return { message: "File must be a zip file." };
+  }
+  if (submission.file.size > 5242880) {
+    // 5MiB
+    return { message: "File must not be larger than 5MiB." };
+  }
 
+  // Upload file to R2 and the student ID with email to KV.
+  const file = await uploadFileToR2(submission.file, submission.studentId + ".zip");
+  if (!file) {
+    console.log("R2 upload failed.");
+    return { message: "File upload failed. Please try again soon." };
+  }
+  const kv = await uploadNewToKV([
+    { key: submission.studentId, value: submission.studentEmail },
+  ]);
+  if (!kv) {
+    console.log("KV upload failed.");
+    return { message: "Form data upload failed. Please try again soon." };
+  }
+
+  // Update the rate limit after a successful submission.
+  rateLimitedUsers.set(submission.studentId, now);
   return { message: `File ${submission.file.name} uploaded successfully.` };
 }
 

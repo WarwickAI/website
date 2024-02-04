@@ -7,6 +7,7 @@
 
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
+// Cloudflare R2 bucket details.
 const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID || "FAKE_ACCOUNT_ID";
 const BUCKET_NAME = process.env.CLOUDFLARE_R2_BUCKET_NAME || "FAKE_BUCKET_NAME";
 const ACCESS_KEY_ID =
@@ -25,19 +26,50 @@ const S3 = new S3Client({
   },
 });
 
-export async function uploadFile(file: File, fileName: string) {
+export async function uploadFileToR2(file: File, fileName: string) {
   // Upload file to the cloudflare R2 bucket through the API.
-  console.log(
-    await S3.send(
-      new PutObjectCommand({
-        Bucket: BUCKET_NAME,
-        Key: fileName,
-        Body: Buffer.from(await file.arrayBuffer()),
-        ContentType: "application/zip",
-        ContentLength: file.size,
-      })
-    )
+  const result = await S3.send(
+    new PutObjectCommand({
+      Bucket: BUCKET_NAME,
+      Key: fileName,
+      Body: Buffer.from(await file.arrayBuffer()),
+      ContentType: "application/zip",
+      ContentLength: file.size,
+    })
   );
+  // Check if the file was uploaded successfully.
+  return result.$metadata.httpStatusCode === 200;
+}
 
-  // TODO(czarlinski): Notify the user of the success.
+// Cloudflare KV store details.
+const KV_NAMESPACE_STORAGE_API_TOKEN =
+  process.env.CLOUDFLARE_KV_STORAGE_API_TOKEN || "FAKE_KV_API_TOKEN";
+const KV_NAMESPACE_NEW_ID =
+  process.env.CLOUDFLARE_KV_STORAGE_NAMESPACE_NEW_ID || "FAKE_KV_NEW_ID";
+const KV_NAMESPACE_OLD_ID =
+  process.env.CLOUDFLARE_KV_STORAGE_NAMESPACE_OLD_ID || "FAKE_KV_OLD_ID";
+
+const KV_ACCOUNT_URL = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/storage/kv/namespaces`;
+const KV_NEW_URL = `${KV_ACCOUNT_URL}/${KV_NAMESPACE_NEW_ID}`;
+const KV_OLD_URL = `${KV_ACCOUNT_URL}/${KV_NAMESPACE_OLD_ID}`;
+
+const KV_HEADER: HeadersInit = {
+  Authorization: `Bearer ${KV_NAMESPACE_STORAGE_API_TOKEN}`,
+  "Content-Type": "application/json",
+};
+
+type KVValue = {
+  key: string;
+  value: string;
+};
+
+export async function uploadNewToKV(key_values: KVValue[]) {
+  // Upload file to the cloudflare KV store through the API.
+  const body = JSON.stringify(key_values);
+  const result = await fetch(`${KV_NEW_URL}/bulk`, {
+    method: "PUT",
+    headers: KV_HEADER,
+    body: body,
+  });
+  return result.ok;
 }
