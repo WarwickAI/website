@@ -63,7 +63,10 @@ export async function handleSubmission(prevState: any, formData: FormData) {
   }
 
   // Upload file to R2 and the student ID with email to KV.
-  const file = await uploadFileToR2(submission.file, submission.studentId + ".zip");
+  const file = await uploadFileToR2(
+    submission.file,
+    submission.studentId + ".zip"
+  );
   if (!file) {
     console.log("R2 upload failed.");
     return { message: "File upload failed. Please try again soon." };
@@ -75,6 +78,8 @@ export async function handleSubmission(prevState: any, formData: FormData) {
     console.log("KV upload failed.");
     return { message: "Form data upload failed. Please try again soon." };
   }
+
+  updateApi();
 
   // Update the rate limit after a successful submission.
   rateLimitedUsers.set(submission.studentId, now);
@@ -97,5 +102,21 @@ function validataFormDataSchema(
       "Invalid submission: " + e.message + ". " + formData.toString()
     );
     return { message: "Invalid submission." };
+  }
+}
+
+const WAI_KV_CLEAR_API_TOKEN =
+  process.env.WAI_KV_CLEAR_API_TOKEN || "FAKE_WAI_KV_CLEAR_API_TOKEN";
+
+async function updateApi() {
+  // Update the cloudflare API to indicate a new submission.
+  const response = await fetch("https://warwick.ai/api/cloudflare", {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${WAI_KV_CLEAR_API_TOKEN}`,
+    },
+  });
+  if (response.status !== 200) {
+    console.log("Failed to update API: " + response.status);
   }
 }
