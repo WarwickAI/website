@@ -15,7 +15,11 @@ export default function Button(props: {
       "hover:shadow-purple hover:border-purple hover:text-purple";
     const allClassNames = `${classNames} ${enabledClassNames} ${props.extraClasses}`;
     return (
-      <Link href={props.href} className={allClassNames} aria-label={props.ariaLabel}>
+      <Link
+        href={props.href}
+        className={allClassNames}
+        aria-label={props.ariaLabel}
+      >
         {props.text}
       </Link>
     );
