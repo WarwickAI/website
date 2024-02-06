@@ -12,24 +12,26 @@ export async function GET(request: Request) {
   return new Response(newSubmissionsExist.toString(), { status: 200 });
 }
 
-// Clear the value if the bearer token is correct.
-export async function POST(request: Request) {
-  if (
-    request.headers.get("Authorization") !== `Bearer ${WAI_KV_CLEAR_API_TOKEN}`
-  ) {
+export async function DELETE(request: Request) {
+  // Clear the value if the bearer token is correct.
+  if (!isAuth(request)) {
     return new Response("Unauthorized", { status: 401 });
   }
   newSubmissionsExist = false;
   return new Response("Cleared", { status: 200 });
 }
 
-// Set the value if the bearer token is correct.
 export async function PUT(request: Request) {
-  if (
-    request.headers.get("Authorization") !== `Bearer ${WAI_KV_CLEAR_API_TOKEN}`
-  ) {
+  // Set the value if the bearer token is correct.
+  if (!isAuth(request)) {
     return new Response("Unauthorized", { status: 401 });
   }
   newSubmissionsExist = true;
   return new Response("Set", { status: 200 });
+}
+
+function isAuth(request: Request) {
+  return (
+    request.headers.get("Authorization") === `Bearer ${WAI_KV_CLEAR_API_TOKEN}`
+  );
 }
