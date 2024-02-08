@@ -5,8 +5,6 @@ import { EventInput } from "@fullcalendar/core/index.js";
 import listPlugin from "@fullcalendar/list";
 import FullCalendar from "@fullcalendar/react";
 
-import React from "react";
-
 export default function Calendar(props: { events: EventInput[] }) {
   return (
     <FullCalendar

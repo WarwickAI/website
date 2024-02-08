@@ -1,7 +1,7 @@
 // TODO(JakubCzarlinski): Add home page.
-import Button from "../components/button";
-import comingSoon from "../components/coming_soon";
-import defaultPage from "../components/default";
+import Button from "@/components/button";
+import comingSoon from "@/components/coming_soon";
+import defaultPage from "@/components/default";
 import "../globals.css";
 
 export default function Home() {

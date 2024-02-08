@@ -1,5 +1,4 @@
-import defaultPage from "../components/default";
-import "../globals.css";
+import defaultPage from "./default";
 
 export default function comingSoon() {
   return defaultPage(

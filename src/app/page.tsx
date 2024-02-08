@@ -1,8 +1,8 @@
 import Link from "next/link";
-import Calendar from "./calendar/full_calendar_api";
-import { loadEvents } from "./calendar/google_api";
-import Button from "./components/button";
-import defaultPage from "./components/default";
+import Button from "@/components/button";
+import Calendar from "@/components/calendar/full_calendar_api";
+import { loadEvents } from "@/components/calendar/google_api";
+import defaultPage from "@/components/default";
 import "./globals.css";
 
 export const dynamic = "force-dynamic"; // defaults to auto

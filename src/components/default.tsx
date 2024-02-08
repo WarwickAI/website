@@ -1,4 +1,3 @@
-import "../globals.css";
 import ParticleBackground from "./particles/background";
 
 export default function defaultPage(component: JSX.Element) {

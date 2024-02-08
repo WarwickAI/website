@@ -1,7 +1,7 @@
 // Competition uploading page
-import BackButton from "../components/back_button";
-import Button from "../components/button";
-import defaultPage from "../components/default";
+import BackButton from "@/components/back_button";
+import Button from "@/components/button";
+import defaultPage from "@/components/default";
 import CompetitionSubmission from "./form";
 
 export default function Home() {
