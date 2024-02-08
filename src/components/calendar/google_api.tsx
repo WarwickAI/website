@@ -53,13 +53,13 @@ async function getEventsFromGoogle(): Promise<
 > {
   const timeMin = new Date();
   const timeMax = new Date();
-  timeMax.setDate(timeMax.getDate() + 7);
+  timeMax.setDate(timeMax.getDate() + 14);
   return googleCalendar.events.list({
     calendarId: calendarId,
     timeMin: timeMin.toISOString(),
     timeMax: timeMax.toISOString(),
     singleEvents: true,
-    maxResults: 50,
+    maxResults: 10,
   });
 }
 
