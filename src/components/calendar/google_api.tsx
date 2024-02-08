@@ -1,3 +1,4 @@
+import { CalendarEvent } from "@/components/calendar/list_calendar";
 import { DateInput, EventInput } from "@fullcalendar/core/index.js";
 import { GaxiosPromise, calendar_v3 } from "@googleapis/calendar";
 import { google } from "googleapis";
@@ -25,10 +26,10 @@ type FullCalendarEvent = {
   description: string | null | undefined;
 };
 
-var events: EventInput[] = [];
+var events: CalendarEvent[] = [];
 setInterval(forceLoadEvents, 60000 * rateLimitMinutes - 10000);
 
-export async function loadEvents(): Promise<EventInput[]> {
+export async function loadEvents(): Promise<CalendarEvent[]> {
   // Loads events from Google Calendar API with a rate limit.
 
   // If we've already loaded events in the last 5 minutes, return the cached events.
@@ -46,7 +47,7 @@ export async function loadEvents(): Promise<EventInput[]> {
   return result;
 }
 
-async function forceLoadEvents(): Promise<EventInput[]> {
+async function forceLoadEvents(): Promise<CalendarEvent[]> {
   console.log("Loading events from Google Calendar API.");
   const response = await getEventsFromGoogle();
   if (!response) {
@@ -89,13 +90,13 @@ async function getEventsFromGoogle(): Promise<
     timeMin: timeMin.toISOString(),
     timeMax: timeMax.toISOString(),
     singleEvents: true,
-    maxResults: 150,
+    maxResults: 50,
   });
 }
 
 function convertGoogleToFullCalendarEvent(
   googleCalendarEvent: calendar_v3.Schema$Event
-): FullCalendarEvent {
+): CalendarEvent {
   // Converts a single event from the Google Calendar API to a FullCalendar API.
   if (!googleCalendarEvent.start) {
     throw new Error("No start time found on event.");
@@ -110,23 +111,22 @@ function convertGoogleToFullCalendarEvent(
   const end: DateInput = googleCalendarEvent.end.dateTime || "";
   const title: string = googleCalendarEvent.summary || "";
   const url = googleCalendarEvent.htmlLink || undefined;
+  const location = googleCalendarEvent.location || undefined;
+  const description = googleCalendarEvent.description || undefined;
   return {
     id: googleCalendarEvent.id,
     title: title,
     start: start,
     end: end,
     url: url,
-    extendedProps: {
-      description: googleCalendarEvent.description,
-      location: googleCalendarEvent.location,
-    },
-    description: googleCalendarEvent.description,
+    location: location,
+    description: description,
   };
 }
 
 function converListToFullCalendarEvents(
-  googleCalendarEvents: calendar_v3.Schema$Event[]
-): EventInput[] {
+  googleCalendarEvents: calendar_v3.Schema$Event[],
+): CalendarEvent[] {
   // Converts a list of events.
   const fullCalendarEvents = googleCalendarEvents.map((event) =>
     convertGoogleToFullCalendarEvent(event)

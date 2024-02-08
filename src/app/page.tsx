@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Button from "@/components/button";
-import Calendar from "@/components/calendar/full_calendar_api";
 import { loadEvents } from "@/components/calendar/google_api";
+import ListCalendar from "@/components/calendar/list_calendar";
 import defaultPage from "@/components/default";
 import "./globals.css";
 
@@ -78,7 +78,7 @@ export default async function Home() {
             id="calendar"
             className="md:w-7/8 grid w-7/8 grid-cols-1 justify-self-center text-black md:place-content-center lg:w-3/4"
           >
-            <Calendar events={events} />
+            <ListCalendar events={events} />
           </div>
         </div>
 
