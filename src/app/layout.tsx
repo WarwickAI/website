@@ -5,7 +5,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://warwick.ai"),
+  metadataBase: new URL("https://www.warwick.ai"),
   applicationName: "Warwick AI",
   robots: {
     noimageindex: true,
@@ -29,10 +29,10 @@ export const metadata: Metadata = {
     siteName: "Warwick.AI",
     type: "website",
     locale: "en_GB",
-    url: "https://warwick.ai",
+    url: "https://www.warwick.ai",
     images: [
       {
-        url: "https://warwick.ai/images/wai.jpg",
+        url: "https://www.warwick.ai/images/wai.jpg",
         width: 64,
         height: 64,
         alt: "WAI logo",
