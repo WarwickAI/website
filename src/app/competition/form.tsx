@@ -52,9 +52,9 @@ export default function CompetitionSubmission() {
         formData.set("file", acceptedFiles[0]);
         return formAction(formData);
       }}
-      className="shadow-sm shadow-wai-gray bg-pure-white text-xl font-mono font-bold text-center text-wai-gray border-4 rounded-lg border-wai-gray p-4 justify-self-center"
+      className="justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray"
     >
-      <div className="shadow-sm shadow-wai-gray bg-pure-white text-xl font-mono font-bold text-center text-wai-gray border-4 rounded-lg border-wai-gray p-4 justify-self-center">
+      <div className="justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray">
         <label htmlFor="studentId">Student ID (digits only)</label>
         <br></br>
         <input
@@ -65,7 +65,7 @@ export default function CompetitionSubmission() {
           required
         />
       </div>
-      <div className="shadow-sm shadow-wai-gray bg-pure-white text-xl font-mono font-bold text-center text-wai-gray border-4 rounded-lg border-wai-gray p-4 justify-self-center">
+      <div className="justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray">
         <label htmlFor="email">University of Warwick Email Address</label>
         <br></br>
 
@@ -77,7 +77,7 @@ export default function CompetitionSubmission() {
         />
       </div>
 
-      <div className="shadow-sm shadow-wai-gray bg-pure-white text-xl font-mono font-bold text-center text-wai-gray border-4 border-dashed rounded-lg border-wai-gray p-4 justify-self-center hover:bg-purple">
+      <div className="justify-self-center rounded-lg border-4 border-dashed border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray hover:bg-purple">
         <div {...getRootProps({ className: "dropzone" })}>
           <input {...getInputProps()} />
           <p>Drag & drop your submission here. Or click to select file.</p>
@@ -129,7 +129,7 @@ export default function CompetitionSubmission() {
       <input
         type="submit"
         value="Submit"
-        className="shadow-sm shadow-wai-gray bg-pure-white text-xl font-mono font-bold text-center text-wai-gray border-4 rounded-lg border-wai-gray p-4 justify-self-center hover:bg-purple"
+        className="justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray hover:bg-purple"
       />
     </form>
   );

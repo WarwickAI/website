@@ -12,7 +12,7 @@ export default function Home() {
     <div>
       <div
         id="home-page-grid"
-        className="grid grid-cols-1 gap-12 md:gap-2 p-1 md:grid-cols-2 place-content-start md:place-content-center"
+        className="grid grid-cols-1 place-content-start gap-12 p-1 md:grid-cols-2 md:place-content-center md:gap-2"
       >
         <Button
           href="/projects"
@@ -43,6 +43,6 @@ export default function Home() {
           ariaLabel="Learn about our courses and tutorials."
         />
       </div>
-    </div>
+    </div>,
   );
 }

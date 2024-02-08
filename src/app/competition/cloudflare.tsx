@@ -35,7 +35,7 @@ export async function uploadFileToR2(file: File, fileName: string) {
       Body: Buffer.from(await file.arrayBuffer()),
       ContentType: "application/zip",
       ContentLength: file.size,
-    })
+    }),
   );
   // Check if the file was uploaded successfully.
   return result.$metadata.httpStatusCode === 200;

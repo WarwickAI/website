@@ -7,10 +7,10 @@ export default function comingSoon() {
         id="page-coming-soon"
         className="grid grid-cols-1 place-content-start"
       >
-        <p className="shadow-sm shadow-wai-gray bg-pure-white text-xl font-mono font-bold text-center text-wai-gray border-4 rounded-lg border-wai-gray p-4 w-fit justify-self-center">
+        <p className="w-fit justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray">
           page coming soon
         </p>
       </div>
-    </div>
+    </div>,
   );
 }

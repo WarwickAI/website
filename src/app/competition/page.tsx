@@ -16,13 +16,13 @@ export default function Home() {
           text="Submissions are not currently open."
         />
         <BackButton />
-      </div>
+      </div>,
     );
   }
 
   return defaultPage(
     <div>
       <CompetitionSubmission />
-    </div>
+    </div>,
   );
 }

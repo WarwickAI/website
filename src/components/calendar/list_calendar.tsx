@@ -55,17 +55,17 @@ function generateList(events: CalendarEvent[]): JSX.Element {
 
     // Make times in the format 9:00am - 12:00pm
     const startHours = startDate.getHours();
-    const startMinutes = startDate.getMinutes();
+    const startMinutes = startDate.getMinutes().toString().padStart(2, "0");
     const startAmPm = startHours >= 12 ? "pm" : "am";
     const startHour = startHours % 12 || 12;
 
     const endHours = endDate.getHours();
-    const endMinutes = endDate.getMinutes();
+    const endMinutes = endDate.getMinutes().toString().padStart(2, "0");
     const endAmPm = endHours >= 12 ? "pm" : "am";
     const endHour = endHours % 12 || 12;
 
-    const startTimeString = `${startHour}:${startMinutes.toString().padStart(2, "0")}${startAmPm}`;
-    const endTimeString = `${endHour}:${endMinutes.toString().padStart(2, "0")}${endAmPm}`;
+    const startTimeString = `${startHour}:${startMinutes}${startAmPm}`;
+    const endTimeString = `${endHour}:${endMinutes}${endAmPm}`;
 
     // Check if we need to make a new header for the date.
     if (startDateString !== lastDate) {

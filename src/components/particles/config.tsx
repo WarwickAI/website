@@ -4,7 +4,7 @@ const particlesConfig: RecursivePartial<IOptions> = {
   autoPlay: true,
   background: {
     color: {
-      value: "#FFFFFF"
+      value: "#FFFFFF",
     },
     position: "50% 50%",
     repeat: "no-repeat",
@@ -13,38 +13,38 @@ const particlesConfig: RecursivePartial<IOptions> = {
   fpsLimit: 90,
   fullScreen: {
     enable: true,
-    zIndex: 0
+    zIndex: 0,
   },
   interactivity: {
     detectsOn: "window",
     events: {
       onClick: {
         enable: true,
-        mode: "repulse"
+        mode: "repulse",
       },
       resize: {
-        enable: true
-      }
+        enable: true,
+      },
     },
     modes: {
       repulse: {
         distance: 200,
-        duration: 0.4
-      }
-    }
+        duration: 0.4,
+      },
+    },
   },
   particles: {
     color: {
-      value: "#6D60C1"
+      value: "#6D60C1",
     },
     links: {
       color: {
-        value: "#6D60C1"
+        value: "#6D60C1",
       },
       distance: 300,
       enable: true,
       opacity: 0.2,
-      width: 1
+      width: 1,
     },
     move: {
       direction: "none",
@@ -52,29 +52,29 @@ const particlesConfig: RecursivePartial<IOptions> = {
       outModes: "out",
       random: true,
       speed: 1,
-      straight: false
+      straight: false,
     },
     number: {
       density: {
-        enable: true
+        enable: true,
       },
-      value: 40
+      value: 40,
     },
     opacity: {
-      value: 0.5
+      value: 0.5,
     },
     shape: {
-      type: "circle"
+      type: "circle",
     },
     size: {
       value: {
         max: 3,
-        min: 1
-      }
-    }
+        min: 1,
+      },
+    },
   },
   pauseOnBlur: true,
-  pauseOnOutsideViewport: true
+  pauseOnOutsideViewport: true,
 };
 
 export default particlesConfig;

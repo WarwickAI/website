@@ -65,7 +65,7 @@ export async function handleSubmission(prevState: any, formData: FormData) {
   // Upload file to R2 and the student ID with email to KV.
   const file = await uploadFileToR2(
     submission.file,
-    submission.studentId + ".zip"
+    submission.studentId + ".zip",
   );
   if (!file) {
     console.log("R2 upload failed.");
@@ -87,7 +87,7 @@ export async function handleSubmission(prevState: any, formData: FormData) {
 }
 
 function validataFormDataSchema(
-  formData: FormData
+  formData: FormData,
 ): ValidSubmission | InvalidSubmission {
   try {
     return submissionSchema.parse({
@@ -99,7 +99,7 @@ function validataFormDataSchema(
     // Invalid submission are logged for debugging. Invalid submission should
     // not occur unless the client is tampering with the form.
     console.log(
-      "Invalid submission: " + e.message + ". " + formData.toString()
+      "Invalid submission: " + e.message + ". " + formData.toString(),
     );
     return { message: "Invalid submission." };
   }

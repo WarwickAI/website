@@ -7,7 +7,7 @@ export default function defaultPage(component: JSX.Element) {
     <div id="background" className="z-0 bg-pure-white">
       <div
         id="content"
-        className="grid min-h-svh grid-cols-1 gap-12 p-1 overflow-y-auto place-content-center"
+        className="grid min-h-svh grid-cols-1 place-content-center gap-12 overflow-y-auto p-1"
       >
         {children}
       </div>

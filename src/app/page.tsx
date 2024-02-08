@@ -1,8 +1,8 @@
-import Link from "next/link";
 import Button from "@/components/button";
 import { loadEvents } from "@/components/calendar/google_api";
 import ListCalendar from "@/components/calendar/list_calendar";
 import defaultPage from "@/components/default";
+import Link from "next/link";
 import "./globals.css";
 
 export const dynamic = "force-dynamic"; // defaults to auto
@@ -27,7 +27,7 @@ export default async function Home() {
       <div>
         <div
           id="logo-and-calendar"
-          className="grid grid-cols-1 gap-12 md:gap-2 p-1 md:grid-cols-2 place-content-start md:place-content-center"
+          className="grid grid-cols-1 place-content-start gap-12 p-1 md:grid-cols-2 md:place-content-center md:gap-2"
         >
           <div
             id="logo-with-links"
@@ -35,7 +35,7 @@ export default async function Home() {
           >
             <div
               id="logo"
-              className="mt-4 mb-4 md:mb-16 h-full  drop-shadow-sm-wai-gray"
+              className="mb-4 mt-4 h-full drop-shadow-sm-wai-gray  md:mb-16"
             >
               {logoSvg()}
             </div>
@@ -44,39 +44,39 @@ export default async function Home() {
               {roundedIcon(
                 discordSvg(),
                 "https://discord.gg/43FnkSMEPX",
-                "Join our Discord server."
+                "Join our Discord server.",
               )}
               {roundedIcon(
                 githubSvg(),
                 "https://www.github.com/WarwickAI",
-                "View our GitHub repositories."
+                "View our GitHub repositories.",
               )}
               {roundedIcon(
                 instagramSvg(),
                 "https://www.instagram.com/warwick_ai/",
-                "Follow us on Instagram."
+                "Follow us on Instagram.",
               )}
               {roundedIcon(
                 linkedinSvg(),
                 "https://www.linkedin.com/company/warwick-ai/",
-                "Follow us on LinkedIn."
+                "Follow us on LinkedIn.",
               )}
               {roundedIcon(
                 mediumSvg(),
                 "https://medium.com/warwick-artificial-intelligence",
-                "Read our Medium blog."
+                "Read our Medium blog.",
               )}
               {roundedIcon(
                 studentUnionSvg(),
                 "https://www.warwicksu.com/societies-sports/societies/warwickai/",
-                "Join our society!"
+                "Join our society!",
               )}
             </div>
           </div>
 
           <div
             id="calendar"
-            className="md:w-7/8 grid w-7/8 grid-cols-1 justify-self-center text-black md:place-content-center lg:w-3/4"
+            className="md:w-7/8 w-7/8 grid grid-cols-1 justify-self-center text-black md:place-content-center lg:w-3/4"
           >
             <ListCalendar events={events} />
           </div>
@@ -90,7 +90,7 @@ export default async function Home() {
             ariaLabel="Compete in our competition!"
           />
         </div>
-      </div>
+      </div>,
     )
   );
 }
@@ -115,7 +115,7 @@ function logoSvg() {
 function roundedIcon(icon: React.ReactNode, link: string, ariaLabel: string) {
   return (
     <Link href={link} className="group" aria-label={ariaLabel}>
-      <div className="shadow-sm shadow-wai-gray bg-pure-white grid h-11 w-11 sm:h-12 sm:w-12 grid-cols-1 place-content-center rounded-lg border-4 border-wai-gray p-2 group-hover:border-purple">
+      <div className="grid h-11 w-11 grid-cols-1 place-content-center rounded-lg border-4 border-wai-gray bg-pure-white p-2 shadow-sm shadow-wai-gray group-hover:border-purple sm:h-12 sm:w-12">
         {icon}
       </div>
     </Link>
