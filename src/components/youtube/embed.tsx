@@ -21,11 +21,8 @@ export default function YoutubeEmbed() {
       <p className="text-center font-mono text-lg text-wai-gray">
         Welcome to CodeNight!
       </p>
-
       <iframe
-        className="rounded-lg shadow-lg"
-        width="480"
-        height="270"
+        className="h-[200px] w-[355px] rounded-lg shadow-lg md:h-[270px] md:w-[480px]"
         src="https://www.youtube.com/embed/jfKfPfyJRdk"
         title="lofi hip hop radio 📚 - beats to relax/study to"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
