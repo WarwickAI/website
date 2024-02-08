@@ -37,3 +37,5 @@ next-env.d.ts
 # Local test files
 test.sh
 example.json
+
+competition.py
