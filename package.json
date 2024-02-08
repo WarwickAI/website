@@ -12,9 +12,6 @@
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.504.0",
-    "@fullcalendar/core": "^6.1.10",
-    "@fullcalendar/list": "^6.1.10",
-    "@fullcalendar/react": "^6.1.10",
     "@googleapis/calendar": "^9.6.0",
     "@tsparticles/engine": "^3.1.0",
     "@tsparticles/react": "^3.0.0",
