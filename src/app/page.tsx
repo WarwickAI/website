@@ -82,12 +82,23 @@ export default async function Home() {
           </div>
         </div>
 
-        <div id="learn-more" className="grid grid-cols-1 place-content-start">
+        <div
+          id="learn-more"
+          className="flex w-3/5 flex-wrap place-content-center place-self-center"
+        >
+          <Button
+            enabled={true}
+            text="Summit Tickets"
+            href="/summit"
+            ariaLabel="Buy summit tickets!"
+            extraClasses="m-2"
+          />
           <Button
             enabled={true}
             text="Competition"
             href="/competition"
             ariaLabel="Compete in our competition!"
+            extraClasses="m-2"
           />
         </div>
       </div>,
