@@ -2,6 +2,7 @@ import Button from "@/components/button";
 import { loadEvents } from "@/components/calendar/google_api";
 import ListCalendar from "@/components/calendar/list_calendar";
 import defaultPage from "@/components/default";
+import YoutubeEmbed from "@/components/youtube/embed";
 import Link from "next/link";
 import "./globals.css";
 
@@ -101,6 +102,7 @@ export default async function Home() {
             extraClasses="m-2"
           />
         </div>
+        <YoutubeEmbed />
       </div>,
     )
   );
