@@ -12,7 +12,11 @@ export type CalendarEvent = {
   description?: string; // Description of the event
 };
 
-export default function ListCalendar(props: { events: CalendarEvent[] }) {
+export default function ListCalendar(props: {
+  events: CalendarEvent[];
+  enableLocation: boolean;
+  enableLinks: boolean;
+}) {
   // A calendar that displays events as a list grouped by day.
   //
   // The list is displayed in a single column.
@@ -27,7 +31,7 @@ export default function ListCalendar(props: { events: CalendarEvent[] }) {
   }
 
   const sortedEvents = sortEventsByDate(props.events);
-  return generateList(sortedEvents);
+  return generateList(sortedEvents, props.enableLocation, props.enableLinks);
 }
 
 function sortEventsByDate(events: CalendarEvent[]): CalendarEvent[] {
@@ -37,7 +41,11 @@ function sortEventsByDate(events: CalendarEvent[]): CalendarEvent[] {
   });
 }
 
-function generateList(events: CalendarEvent[]): JSX.Element {
+function generateList(
+  events: CalendarEvent[],
+  enableLocation: boolean,
+  enableLinks: boolean,
+): JSX.Element {
   // Generate a 1 column table of events, grouped by day.
   let lastDate = "";
   const elements: JSX.Element[] = [];
@@ -86,23 +94,49 @@ function generateList(events: CalendarEvent[]): JSX.Element {
       lastDate = startDateString;
     }
     const border = isLast ? "" : "border-b border-wai-gray border-opacity-25";
-    elements.push(
-      <Link href={event.url || ""} key={event.id}>
-        <div
-          className={`grid grid-cols-9 pb-2 pt-2 hover:bg-purple hover:bg-opacity-50 ${border} group`}
+    if (enableLinks) {
+      elements.push(
+        <Link
+          href={event.url || ""}
+          key={event.id}
+          className="group"
+          aria-label={event.title}
         >
-          <p className="col-span-4 pl-4  text-start">
-            {`${startTimeString} - ${endTimeString}`}
-          </p>
+          <div
+            className={`grid grid-cols-9 pb-2 pt-2 hover:bg-purple hover:bg-opacity-50 ${border} group`}
+          >
+            <p className="col-span-4 pl-4  text-start">
+              {`${startTimeString} - ${endTimeString}`}
+              {enableLocation ? ` @ ${event.location}` : ""}
+            </p>
 
-          <div className="col-span-1 inline-block h-3 w-3 place-self-center rounded-full bg-purple bg-opacity-95"></div>
+            <div className="col-span-1 inline-block h-3 w-3 place-self-center rounded-full bg-purple bg-opacity-95"></div>
 
-          <p className={"col-span-4 pr-4 text-start group-hover:underline"}>
-            {event.title}
-          </p>
-        </div>
-      </Link>,
-    );
+            <p className={"col-span-4 pr-4 text-start group-hover:underline"}>
+              {event.title}
+            </p>
+          </div>
+        </Link>,
+      );
+    } else {
+      // No links or hover effects to indicate that the events are not
+      // clickable.
+      elements.push(
+        <div key={event.id}>
+          {" "}
+          <div className={`grid grid-cols-9 pb-2 pt-2 ${border}`}>
+            <p className="col-span-4 pl-4  text-start">
+              {`${startTimeString} - ${endTimeString}`}
+              {enableLocation ? ` @ ${event.location}` : ""}
+            </p>
+
+            <div className="col-span-1 inline-block h-3 w-3 place-self-center rounded-full bg-purple bg-opacity-95"></div>
+
+            <p className={"col-span-4 pr-4 text-start"}>{event.title}</p>
+          </div>
+        </div>,
+      );
+    }
   }
 
   return (

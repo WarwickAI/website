@@ -79,7 +79,7 @@ export default async function Home() {
             id="calendar"
             className="md:w-7/8 w-7/8 grid grid-cols-1 justify-self-center text-black md:place-content-center lg:w-3/4"
           >
-            <ListCalendar events={events} />
+            <ListCalendar events={events} enableLocation={false} enableLinks/>
           </div>
         </div>
 
