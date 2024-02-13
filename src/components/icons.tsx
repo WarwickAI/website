@@ -67,7 +67,7 @@ const studentUnionSvg = (
 );
 
 export const WaiLogo = (
-  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2091 658" height={100}>
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2091 658">
     <defs>
       <linearGradient id="gradient">
         <stop offset="0%" className="animate-colourPulse" />

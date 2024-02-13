@@ -42,7 +42,7 @@ export default async function Home() {
             id="logo-with-links"
             className="grid grid-cols-1 place-content-center justify-self-center"
           >
-            <div className="mb-4 mt-4 h-full drop-shadow-sm-wai-gray md:mb-16">
+            <div className="pb-4 pt-4 h-full drop-shadow-sm-wai-gray md:pb-12">
               {WaiLogo}
             </div>
 
