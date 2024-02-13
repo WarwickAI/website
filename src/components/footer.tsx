@@ -1,6 +1,5 @@
 // Footer for the website
 import { WaiLogo } from "@/components/icons";
-import noiseSvg from "@/components/noise.svg";
 import Link from "next/link";
 
 export default function Footer() {
