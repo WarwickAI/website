@@ -71,9 +71,9 @@ export default async function Home() {
         >
           <Button
             enabled={true}
-            text="Summit Tickets"
+            text="Summit Details"
             href="/summit"
-            ariaLabel="Buy summit tickets!"
+            ariaLabel="Find out more about the summit!"
             extraClasses="m-2"
           />
           <Button

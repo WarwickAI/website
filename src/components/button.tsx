@@ -11,7 +11,7 @@ export default function Button(props: {
   if (props.enabled) {
     const enabledClassNames =
       "hover:shadow-purple hover:border-purple hover:text-purple";
-    const allClassNames = `${classNames} ${enabledClassNames} ${props.extraClasses}`;
+    const allClassNames = `${classNames} ${enabledClassNames} ${props.extraClasses || ""}`;
     return (
       <Link
         href={props.href}
@@ -22,7 +22,7 @@ export default function Button(props: {
       </Link>
     );
   } else {
-    const allClassNames = `${classNames} ${props.extraClasses}`;
+    const allClassNames = `${classNames} ${props.extraClasses || ""}`;
     return <p className={allClassNames}>{props.text}</p>;
   }
 }

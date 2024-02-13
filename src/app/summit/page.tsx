@@ -1,6 +1,7 @@
 // Summit details and ticket purchase page.
 // TODO(JakubCzarlinski): Remove after the event.
 
+import Button from "@/components/button";
 import ListCalendar, {
   CalendarEvent,
 } from "@/components/calendar/list_calendar";
@@ -8,7 +9,7 @@ import defaultPage from "@/components/default";
 import { redirect } from "next/navigation";
 
 export default function Home() {
-  const enablePage = false;
+  const enablePage = true;
   if (!enablePage) {
     return redirect(
       "https://www.warwicksu.com/venues-events/events/57846/25060/",
@@ -77,7 +78,7 @@ export default function Home() {
     },
     {
       id: "7",
-      title: "Summit Code Night Social with Warwick GDSC",
+      title: "Summit CodeNight Social with Warwick GDSC",
       start: "2024-02-17T18:00:00Z",
       end: "2024-02-17T20:00:00Z",
       location: "OC0.02",
@@ -122,30 +123,39 @@ export default function Home() {
 
   return defaultPage(
     <div>
-      <h1 className="text-center font-mono text-5xl font-bold text-wai-gray">
+      <h1 className="text-center font-mono text-5xl font-bold text-wai-gray pt-16">
         WAI Summit 2024
       </h1>
       <div className="grid grid-cols-1 gap-12 p-4 lg:grid-cols-2 lg:gap-12">
-        <div className="h-fit rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-justify font-mono text-wai-gray shadow-sm shadow-wai-gray">
-          Artificial Intelligence is one of the biggest technological advances
-          in recent years, underpinning development such as self-driving cars,
-          image generation and ChatGPT! Whether you're a machine learning expert
-          or just getting started, this Summit will give you the opportunity to
-          learn about AI's industry applications, get hands-on with cutting-edge
-          models and discuss the safety implications of superintelligent
-          machines! There will also be plenty of opportunities to network and
-          make connections which may be your first step into a career in the AI
-          industry.
-          <br />
-          <br />
-          This event will take place in the Oculus on the 17th and 18th
-          February, with talks, workshops and discussion panels happening from
-          11am to 5/6pm, with our Summit CodeNight social taking place in the
-          evening on the 17th! Buying a ticket will give you a wristband which
-          will grant entry to all events taking place throughout the weekend,
-          you will be able to collect your wristband from 9am on the 17th in
-          OC0.01. There will also be a static exhibition of AI research and
-          projects in OC0.02 throughout the event.
+        <div className="grid justify-content-center gap-12">
+          <div className="h-fit rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-justify font-mono text-wai-gray shadow-sm shadow-wai-gray">
+            Artificial Intelligence is one of the biggest technological advances
+            in recent years, underpinning development such as self-driving cars,
+            image generation and ChatGPT! Whether you're a machine learning
+            expert or just getting started, this Summit will give you the
+            opportunity to learn about AI's industry applications, get hands-on
+            with cutting-edge models and discuss the safety implications of
+            superintelligent machines! There will also be plenty of
+            opportunities to network and make connections which may be your
+            first step into a career in the AI industry.
+            <br />
+            <br />
+            This event will take place in the Oculus on the 17th and 18th
+            February, with talks, workshops and discussion panels happening from
+            11am to 5/6pm, with our Summit CodeNight social taking place in the
+            evening on the 17th! Buying a ticket will give you a wristband which
+            will grant entry to all events taking place throughout the weekend,
+            you will be able to collect your wristband from 9am on the 17th in
+            OC0.01. There will also be a static exhibition of AI research and
+            projects in OC0.02 throughout the event.
+          </div>
+          <Button
+            enabled={true}
+            text="Summit Tickets"
+            href="https://www.warwicksu.com/venues-events/events/57846/25060/"
+            ariaLabel="Buy summit tickets!"
+            extraClasses="h-fit"
+          />
         </div>
         <ListCalendar
           events={events}

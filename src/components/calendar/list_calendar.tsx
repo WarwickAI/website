@@ -86,7 +86,7 @@ function generateList(
       elements.push(
         <div
           key={dateString}
-          className={`w-full border-b border-wai-gray border-opacity-25 bg-wai-gray bg-opacity-10 p-2`}
+          className="w-fill border-b border-wai-gray border-opacity-25 bg-wai-gray bg-opacity-10 p-2"
         >
           <h2 className="pl-2 text-start font-bold">{dateString}</h2>
         </div>,
@@ -103,16 +103,16 @@ function generateList(
           aria-label={event.title}
         >
           <div
-            className={`grid grid-cols-9 pb-2 pt-2 hover:bg-purple hover:bg-opacity-50 ${border} group`}
+            className={`group grid grid-cols-9 pb-2 pt-2 hover:bg-purple hover:bg-opacity-50 ${border}`}
           >
-            <p className="col-span-4 pl-4  text-start">
-              {`${startTimeString} - ${endTimeString}`}
-              {enableLocation ? ` @ ${event.location}` : ""}
-            </p>
+            <div className="col-span-4 pl-4 text-start">
+              <p>{`${startTimeString} - ${endTimeString}`}</p>
+              <p>{enableLocation ? ` @ ${event.location}` : ""}</p>
+            </div>
 
             <div className="col-span-1 inline-block h-3 w-3 place-self-center rounded-full bg-purple bg-opacity-95"></div>
 
-            <p className={"col-span-4 pr-4 text-start group-hover:underline"}>
+            <p className="col-span-4 pr-4 text-start group-hover:underline">
               {event.title}
             </p>
           </div>
@@ -125,22 +125,21 @@ function generateList(
         <div key={event.id}>
           {" "}
           <div className={`grid grid-cols-9 pb-2 pt-2 ${border}`}>
-            <p className="col-span-4 pl-4  text-start">
-              {`${startTimeString} - ${endTimeString}`}
-              {enableLocation ? ` @ ${event.location}` : ""}
-            </p>
+            <div className="col-span-4 pl-4 text-start">
+              <p>{`${startTimeString} - ${endTimeString}`}</p>
+              <p>{enableLocation ? ` @ ${event.location}` : ""}</p>
+            </div>
 
             <div className="col-span-1 inline-block h-3 w-3 place-self-center rounded-full bg-purple bg-opacity-95"></div>
 
-            <p className={"col-span-4 pr-4 text-start"}>{event.title}</p>
+            <p className="col-span-4 pr-4 text-start">{event.title}</p>
           </div>
         </div>,
       );
     }
   }
-
   return (
-    <div className="grid-1 h-full w-full overflow-hidden rounded-lg border border-wai-gray border-opacity-25 bg-pure-white text-center font-mono text-wai-gray shadow-lg">
+    <div className="h-full w-full overflow-hidden rounded-lg border border-wai-gray border-opacity-25 bg-pure-white text-center font-mono text-sm text-wai-gray shadow-lg md:text-base">
       {elements}
     </div>
   );
