@@ -62,7 +62,7 @@ export default function CompetitionSubmission() {
         <label htmlFor="email">University of Warwick Email Address</label>
         <br></br>
         <input
-          className="text-center w-1/2"
+          className="w-96 max-w-full text-center"
           type="email"
           name="studentEmail"
           placeholder="name@warwick.ac.uk"
