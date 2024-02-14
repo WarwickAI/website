@@ -18,7 +18,7 @@ type ValidSubmission = {
   file: File;
 };
 
-type InvalidSubmission = {
+type ReturnMessage = {
   message: string;
 };
 
@@ -30,10 +30,10 @@ const submissionSchema = z.object({
 
 export async function handleSubmission(prevState: any, formData: FormData) {
   // Validate the submission.
-  const submission: ValidSubmission | InvalidSubmission =
+  const submission: ValidSubmission | ReturnMessage =
     validataFormDataSchema(formData);
 
-  // ValidSubmission | InvalidSubmission
+  // ValidSubmission | ReturnMessage
   if ("message" in submission) {
     return submission;
   }
@@ -88,20 +88,20 @@ export async function handleSubmission(prevState: any, formData: FormData) {
 
 function validataFormDataSchema(
   formData: FormData,
-): ValidSubmission | InvalidSubmission {
+): ValidSubmission | ReturnMessage {
   try {
     return submissionSchema.parse({
       studentId: formData.get("studentId") as string,
       studentEmail: formData.get("studentEmail") as string,
       file: formData.get("file") as File,
-    });
+    }) as ValidSubmission;
   } catch (e: any) {
     // Invalid submission are logged for debugging. Invalid submission should
     // not occur unless the client is tampering with the form.
     console.log(
       "Invalid submission: " + e.message + ". " + formData.toString(),
     );
-    return { message: "Invalid submission." };
+    return { message: "Invalid submission." } as ReturnMessage;
   }
 }
 
