@@ -52,6 +52,7 @@ export default function CompetitionSubmission() {
         <input
           className="text-center"
           type="text"
+          id="studentId"
           name="studentId"
           placeholder="2134567"
           pattern="[0-9]{6,8}"
@@ -59,11 +60,12 @@ export default function CompetitionSubmission() {
         />
       </div>
       <div className="justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray">
-        <label htmlFor="email">University of Warwick Email Address</label>
+        <label htmlFor="studentEmail">University of Warwick Email Address</label>
         <br></br>
         <input
           className="w-96 max-w-full text-center"
           type="email"
+          id="studentEmail"
           name="studentEmail"
           placeholder="name@warwick.ac.uk"
           required
