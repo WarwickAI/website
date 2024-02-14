@@ -110,7 +110,7 @@ const WAI_KV_CLEAR_API_TOKEN =
 
 async function updateApi() {
   // Update the cloudflare API to indicate a new submission.
-  const response = await fetch("https://warwick.ai/api/cloudflare", {
+  const response = await fetch("https://www.warwick.ai/api/cloudflare", {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${WAI_KV_CLEAR_API_TOKEN}`,
