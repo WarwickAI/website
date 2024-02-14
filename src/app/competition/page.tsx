@@ -5,7 +5,7 @@ import defaultPage from "@/components/default";
 import CompetitionSubmission from "./form";
 
 export default function Home() {
-  const submissionOpen = false;
+  const submissionOpen = true;
 
   if (!submissionOpen) {
     return defaultPage(
