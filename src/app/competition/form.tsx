@@ -36,13 +36,21 @@ export default function CompetitionSubmission() {
   return (
     <form
       action={(formData: FormData) => {
-        setLocalError("");
-        if (acceptedFiles.length === 0) {
-          setLocalError("A file is required.");
+        try {
+          setLocalError("");
+          if (acceptedFiles.length === 0) {
+            setLocalError("A file is required.");
+            return;
+          }
+          formData.set("file", acceptedFiles[0]);
+          return formAction(formData);
+        } catch (e) {
+          setLocalError(
+            "An unexpected error occurred. Please try again soon. Let us know if the issue persists.",
+          );
+          console.error(e);
           return;
         }
-        formData.set("file", acceptedFiles[0]);
-        return formAction(formData);
       }}
       className="max-w-3xl justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray"
     >
@@ -60,7 +68,9 @@ export default function CompetitionSubmission() {
         />
       </div>
       <div className="justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray">
-        <label htmlFor="studentEmail">University of Warwick Email Address</label>
+        <label htmlFor="studentEmail">
+          University of Warwick Email Address
+        </label>
         <br></br>
         <input
           className="w-96 max-w-full text-center"

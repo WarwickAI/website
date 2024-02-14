@@ -32,24 +32,33 @@ const S3 = new S3Client({
 
 export async function uploadFileToR2(file: File, fileName: string) {
   // Upload file to the cloudflare R2 bucket through the API. Delete old file too.
-  const deleteOld = await S3.send(
-    new DeleteObjectCommand({
-      Bucket: BUCKET_NAME,
-      Key: fileName,
-    }),
-  );
+  try {
+    const deleteOld = await S3.send(
+      new DeleteObjectCommand({
+        Bucket: BUCKET_NAME,
+        Key: fileName,
+      }),
+    );
+  } catch (e) {
+    console.log("Failed to delete old file: " + e);
+  }
 
-  const result = await S3.send(
-    new PutObjectCommand({
-      Bucket: BUCKET_NAME,
-      Key: fileName,
-      Body: Buffer.from(await file.arrayBuffer()),
-      ContentType: "application/zip",
-      ContentLength: file.size,
-    }),
-  );
-  // Check if the file was uploaded successfully.
-  return result.$metadata.httpStatusCode === 200;
+  try {
+    const result = await S3.send(
+      new PutObjectCommand({
+        Bucket: BUCKET_NAME,
+        Key: fileName,
+        Body: Buffer.from(await file.arrayBuffer()),
+        ContentType: "application/zip",
+        ContentLength: file.size,
+      }),
+    );
+    // Check if the file was uploaded successfully.
+    return result.$metadata.httpStatusCode === 200;
+  } catch (e) {
+    console.log("Failed to upload new file: " + e);
+    return false;
+  }
 }
 
 // Cloudflare KV store details.
