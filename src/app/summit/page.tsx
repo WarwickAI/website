@@ -57,7 +57,7 @@ export default function Home() {
     {
       id: "4",
       title:
-        "AI Safety Panel with Google DeepMind, UK Institute of AI Safety and Effecitve Altruism",
+        "AI Safety Panel Discussion with Google DeepMind, Conjecture, Oxford University and Arcadia Impact",
       start: "2024-02-17T13:00:00Z",
       end: "2024-02-17T14:00:00Z",
       location: "OC1.05",
