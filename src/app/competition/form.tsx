@@ -4,55 +4,47 @@
 
 "use client";
 
-import React from "react";
-import { useFormState } from "react-dom";
+import { useState } from "react";
+import { useFormState, useFormStatus } from "react-dom";
 import { useDropzone } from "react-dropzone";
 import { handleSubmission } from "./upload";
 
 const initialState = {
   message: "",
+  loading: false,
 };
 
 export default function CompetitionSubmission() {
-  const { acceptedFiles, fileRejections, getRootProps, getInputProps } =
-    useDropzone({
-      accept: {
-        "application/zip": [".zip"],
-      },
-      maxFiles: 1,
-      multiple: false,
-      maxSize: 5242880, // 5MiB
-    });
+  const { acceptedFiles, getRootProps, getInputProps } = useDropzone({
+    accept: {
+      "application/zip": [".zip"],
+    },
+    maxFiles: 1,
+    multiple: false,
+    maxSize: 5242880, // 5MiB
+  });
 
   const acceptedFileItems = acceptedFiles.map((file: File) => (
     <li key={file.name}>
-      {file.name} - {file.size} bytes
-    </li>
-  ));
-
-  const fileRejectionItems = fileRejections.map(({ file, errors }) => (
-    <li key={file.name}>
-      {file.name} - {file.size} bytes
-      <ul>
-        {errors.map((e) => (
-          <li key={e.code}>{e.message}</li>
-        ))}
-      </ul>
+      Accepted file: {file.name} - {file.size} bytes
     </li>
   ));
 
   const [state, formAction] = useFormState(handleSubmission, initialState);
+  const [localError, setLocalError] = useState("");
+
   return (
     <form
       action={(formData: FormData) => {
+        setLocalError("");
         if (acceptedFiles.length === 0) {
-          // TODO(czarlinski): Add a message to the user.
+          setLocalError("A file is required.");
           return;
         }
         formData.set("file", acceptedFiles[0]);
         return formAction(formData);
       }}
-      className="justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray"
+      className="max-w-3xl justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray"
     >
       <div className="justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray">
         <label htmlFor="studentId">Student ID (digits only)</label>
@@ -68,7 +60,6 @@ export default function CompetitionSubmission() {
       <div className="justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray">
         <label htmlFor="email">University of Warwick Email Address</label>
         <br></br>
-
         <input
           type="email"
           name="studentEmail"
@@ -81,39 +72,19 @@ export default function CompetitionSubmission() {
         <div {...getRootProps({ className: "dropzone" })}>
           <input {...getInputProps()} />
           <p>Drag & drop your submission here. Or click to select file.</p>
-          <em>(Only *.zip will be accepted.)</em>
+          <em className="text-base">(Only *.zip will be accepted.)</em>
 
-          <br></br>
-          <br></br>
-
-          <p>{state?.message}</p>
-
-          <aside>
-            <h4>Accepted files</h4>
-            <ul>
-              {acceptedFileItems.length === 0 ? (
-                <em>No files accepted.</em>
-              ) : (
-                acceptedFileItems
-              )}
-            </ul>
-            <br></br>
-
-            <h4>Rejected files</h4>
-            <ul>
-              {fileRejectionItems.length === 0 ? (
-                <em>No files rejected.</em>
-              ) : (
-                fileRejectionItems
-              )}
-            </ul>
+          <aside className="p-4">
+            {acceptedFileItems.length === 0 ? (
+              <em>No files accepted.</em>
+            ) : (
+              acceptedFileItems
+            )}
           </aside>
         </div>
       </div>
 
-      <br></br>
-
-      <p className="text-sm">
+      <p className="p-4 text-sm">
         Upon submission, your student ID will be publicly visible on our website
         and used for processing your submitted zip archive. Your university
         email address will be used for verification of your student status,
@@ -126,11 +97,22 @@ export default function CompetitionSubmission() {
         the above terms and conditions.
       </p>
 
-      <input
-        type="submit"
-        value="Submit"
-        className="justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray hover:bg-purple"
-      />
+      <p className="p-4">{localError || state.message}</p>
+
+      <SubmitButton />
     </form>
+  );
+}
+
+function SubmitButton() {
+  // A button that is disabled when the form is pending.
+  const status = useFormStatus();
+  return (
+    <input
+      type="submit"
+      value={status.pending ? "Submitting..." : "Submit"}
+      disabled={status.pending}
+      className="m-2 w-1/2 justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray hover:bg-purple"
+    />
   );
 }

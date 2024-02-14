@@ -22,6 +22,9 @@ export default function Home() {
 
   return defaultPage(
     <div>
+      <h1 className="pt-16 text-center font-mono text-5xl font-bold text-wai-gray">
+        Pac-Man AI Competition
+      </h1>
       <CompetitionSubmission />
     </div>,
   );
