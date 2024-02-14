@@ -5,7 +5,11 @@
 
 "use server";
 
-import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import {
+  DeleteObjectCommand,
+  PutObjectCommand,
+  S3Client,
+} from "@aws-sdk/client-s3";
 
 // Cloudflare R2 bucket details.
 const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID || "FAKE_ACCOUNT_ID";
@@ -27,7 +31,14 @@ const S3 = new S3Client({
 });
 
 export async function uploadFileToR2(file: File, fileName: string) {
-  // Upload file to the cloudflare R2 bucket through the API.
+  // Upload file to the cloudflare R2 bucket through the API. Delete old file too.
+  const deleteOld = await S3.send(
+    new DeleteObjectCommand({
+      Bucket: BUCKET_NAME,
+      Key: fileName,
+    }),
+  );
+
   const result = await S3.send(
     new PutObjectCommand({
       Bucket: BUCKET_NAME,
