@@ -123,40 +123,54 @@ export default function Home() {
 
   return defaultPage(
     <div>
-      <h1 className="text-center font-mono text-5xl font-bold text-wai-gray pt-16">
-        WAI Summit 2024
-      </h1>
-      <div className="grid grid-cols-1 gap-12 p-4 lg:grid-cols-2 lg:gap-12">
-        <div className="grid justify-content-center gap-12">
-          <div className="h-fit rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-justify font-mono text-wai-gray shadow-sm shadow-wai-gray">
-            Artificial Intelligence is one of the biggest technological advances
-            in recent years, underpinning development such as self-driving cars,
-            image generation and ChatGPT! Whether you're a machine learning
-            expert or just getting started, this Summit will give you the
-            opportunity to learn about AI's industry applications, get hands-on
-            with cutting-edge models and discuss the safety implications of
-            superintelligent machines! There will also be plenty of
-            opportunities to network and make connections which may be your
-            first step into a career in the AI industry.
+      <div>
+        <h1 className="pt-16 text-center font-mono text-5xl font-bold text-wai-gray">
+          WAI Summit 2024
+        </h1>
+        <h2 className="text-center font-mono text-xl font-bold text-wai-gray">
+          17th and 18th February
+        </h2>
+      </div>
+
+      <div className="grid grid-cols-1 place-content-center gap-12 p-3 pb-12 lg:grid-cols-2 lg:gap-12 lg:p-4">
+        <div className="m-auto grid h-fit max-w-lg grid-cols-1 gap-8 rounded-lg border-4 border-wai-gray bg-pure-white p-2 shadow-sm shadow-wai-gray md:p-4">
+          <p className="font-mono text-sm text-wai-gray md:text-base">
+            Welcome to the exciting world of Artificial Intelligence, where
+            innovation meets possibility! Join us on a journey into the
+            incredible advancements that AI has brought, from self-driving cars
+            to image generation and the amazing ChatGPT.
             <br />
             <br />
-            This event will take place in the Oculus on the 17th and 18th
-            February, with talks, workshops and discussion panels happening from
-            11am to 5/6pm, with our Summit CodeNight social taking place in the
-            evening on the 17th! Buying a ticket will give you a wristband which
-            will grant entry to all events taking place throughout the weekend,
-            you will be able to collect your wristband from 9am on the 17th in
-            OC0.01. There will also be a static exhibition of AI research and
-            projects in OC0.02 throughout the event.
-          </div>
+            🤖 Whether you're a seasoned machine learning pro or just dipping
+            your toes into the AI waters, this Summit is your golden
+            opportunity! Explore the real-world applications of AI, dive into
+            hands-on experiences with cutting-edge models, and let's chat about
+            the safety measures around superintelligent machines.
+            <br />
+            <br />
+            🌐 Plus, seize the chance to network and make connections that could
+            be your first step into a thriving career in the AI industry.
+            <br />
+            <br />
+            🕘 Don't forget to snag your wristband starting at 9 am on the 17th
+            in OC0.01.
+            <br />
+            <br />
+            🎨 And be sure to check out the captivating static exhibition
+            showcasing AI research and projects in OC0.02 throughout the event.
+            <br />
+            <br />
+            See you there! 🚀
+          </p>
           <Button
             enabled={true}
             text="Summit Tickets"
             href="https://www.warwicksu.com/venues-events/events/57846/25060/"
             ariaLabel="Buy summit tickets!"
-            extraClasses="h-fit"
+            extraClasses="h-fit m-4"
           />
         </div>
+
         <ListCalendar
           events={events}
           enableLinks={false}
