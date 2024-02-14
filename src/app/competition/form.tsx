@@ -50,6 +50,7 @@ export default function CompetitionSubmission() {
         <label htmlFor="studentId">Student ID (digits only)</label>
         <br></br>
         <input
+          className="text-center"
           type="text"
           name="studentId"
           placeholder="2134567"
@@ -61,6 +62,7 @@ export default function CompetitionSubmission() {
         <label htmlFor="email">University of Warwick Email Address</label>
         <br></br>
         <input
+          className="text-center w-1/2"
           type="email"
           name="studentEmail"
           placeholder="name@warwick.ac.uk"
