@@ -97,8 +97,7 @@ export default function CompetitionSubmission() {
         the above terms and conditions.
       </p>
 
-      <p className="p-4">{localError || state.message}</p>
-
+      <p className="p-4">{localError || state?.message || ""}</p>
       <SubmitButton />
     </form>
   );
