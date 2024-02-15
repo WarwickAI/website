@@ -58,7 +58,7 @@ export default function CompetitionSubmission() {
         <label htmlFor="studentId">Student ID (digits only)</label>
         <br></br>
         <input
-          className="text-center"
+          className="w-full text-center md:w-96"
           type="text"
           id="studentId"
           name="studentId"
@@ -73,7 +73,7 @@ export default function CompetitionSubmission() {
         </label>
         <br></br>
         <input
-          className="w-96 max-w-full text-center"
+          className="w-full max-w-full text-center md:w-96"
           type="email"
           id="studentEmail"
           name="studentEmail"
@@ -83,10 +83,13 @@ export default function CompetitionSubmission() {
       </div>
 
       <div className="justify-self-center rounded-lg border-4 border-dashed border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray hover:bg-purple">
+        <label htmlFor="file">Submission</label>
         <div {...getRootProps({ className: "dropzone" })}>
-          <input {...getInputProps()} />
+          <input {...getInputProps({ id: "file" })} />
           <p>Drag & drop your submission here. Or click to select file.</p>
-          <em className="text-base">(Only *.zip will be accepted.)</em>
+          <em className="text-base">
+            (Only *.zip below 5MiB will be accepted.)
+          </em>
 
           <aside className="p-4">
             {acceptedFileItems.length === 0 ? (
@@ -125,6 +128,7 @@ function SubmitButton() {
       type="submit"
       value={status.pending ? "Submitting..." : "Submit"}
       disabled={status.pending}
+      aria-disabled={status.pending}
       className="m-2 w-1/2 justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray hover:bg-purple"
     />
   );

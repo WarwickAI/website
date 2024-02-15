@@ -1,7 +1,7 @@
 // Competition uploading page
 import BackButton from "@/components/back_button";
 import Button from "@/components/button";
-import defaultPage from "@/components/default";
+import defaultPage, { defaultPageWithScroll } from "@/components/default";
 import CompetitionSubmission from "./form";
 
 export default function Home() {
@@ -20,12 +20,108 @@ export default function Home() {
     );
   }
 
-  return defaultPage(
-    <div>
-      <h1 className="pt-16 text-center font-mono text-5xl font-bold text-wai-gray">
+  return defaultPageWithScroll(
+    // Centered splash
+    <>
+      <h1 className="-mt-24 pt-16 text-center font-mono text-5xl font-bold text-wai-gray">
         Pac-Man AI Competition
       </h1>
+      <div className="justify-self-center">
+        <p className="max-w-3xl pb-4 text-center font-mono text-lg text-wai-gray md:text-xl">
+          We are excited to announce that we are hosting our first ever
+          competition!
+          <br />
+          <br />
+          Your challenge is to create 2 best performing Pacman agents, which
+          will go head-to-head against other submissions in a best of 3 Capture
+          The Flag! To enter, read the guidelines below and submit your
+          competition file. Submissions by the top 3 contestants will be awarded
+          prizes!
+          <br />
+          <br />
+          Good luck!
+        </p>
+      </div>
+      {Pacman}
+    </>,
+
+    // Content
+    <div className="-mt-56 grid grid-cols-1 place-content-center gap-12 p-1 pb-8">
+      <div className="w-full justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray md:w-fit">
+        <h2 className="pb-4">Instructions:</h2>
+
+        <p className="pb-4">
+          Download the guide below! In the guide you will find information on:
+        </p>
+        <ul className="list-disc pb-4 pl-8">
+          <li>Creating your Pacman agents.</li>
+          <li>Submitting your agents.</li>
+          <li>Extra resources.</li>
+        </ul>
+
+        <div className="flex justify-center">
+          <Button
+            href="https://drive.google.com/file/d/1lBM5U8IIzs5_Qapioc_wGkg9NDPfBOS2/view?usp=drive_link"
+            text="Download Guide"
+            enabled={true}
+            extraClasses="mb-2"
+          />
+        </div>
+      </div>
       <CompetitionSubmission />
     </div>,
   );
 }
+
+const Pacman = (
+  <div>
+    <style>
+      {`
+        @keyframes chomp {
+          from {
+            stroke-dasharray: 157,100;
+            stroke-dashoffset: 0;
+          }
+          to {
+            stroke-dasharray: 126,100;
+            stroke-dashoffset: -15;
+          }
+        }
+        @keyframes dots {
+          from {
+            width: 95%;
+          }
+          to {
+            width: 5%;
+          }
+        }
+        .animated-circle {
+          animation: chomp .15s linear infinite alternate;
+        }
+        .dots {
+          background-image: linear-gradient(to left, #ddd 20%, transparent 0%);
+          background-position: center right;
+          background-size: 50px 10px;
+          background-repeat: repeat-x;
+          animation: dots 5s linear infinite;
+        }
+      `}
+    </style>
+    <div className="pacman-environment w-vw box-border overflow-hidden bg-black">
+      <div className="h-3 w-full rounded-xl border-x-2 border-y-2 border-solid border-[#2121de]"></div>
+      <div className="path relative -ml-[200px] -mr-[200px] mb-2 mt-2 h-20">
+        <div className="dots float-right h-full w-full">
+          <svg className="h-full" viewBox="0 0 100 100">
+            <circle
+              className="animated-circle fill-none stroke-[yellow] stroke-[50%]"
+              cx="50%"
+              cy="50%"
+              r="25%"
+            ></circle>
+          </svg>
+        </div>
+      </div>
+      <div className="h-3 w-full rounded-xl border-x-2 border-y-2 border-solid border-[#2121de]"></div>
+    </div>
+  </div>
+);
