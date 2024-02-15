@@ -18,41 +18,41 @@ export default function Home() {
   // Split the page into two columns.
 
   // Saturday 17th February 2024
-  // Introduction from WAI Pres and VP 11am OC1.05
-  // Competition Annoucements 11:30am OC1.05
-  // Seeing the Unseen: Using CNNs for Image Steganalysis 12pm OC1.05
-  // AI Safety Panel feat. Deepmind, UK Institute of AI Safety and Effecitve Altruism 1pm OC1.05
-  // Creating an AI Startup by Truss Archive 2pm OC1.05
-  // The AI Revolution: Ethics, Technology and Society by IATL 4pm OC1.05
+  // Introduction from WAI Pres and VP 11am OC0.03
+  // Competition Annoucements 11:30am OC0.03
+  // Seeing the Unseen: Using CNNs for Image Steganalysis 12pm OC0.03
+  // AI Safety Panel feat. Deepmind, UK Institute of AI Safety and Effecitve Altruism 1pm OC0.03
+  // Creating an AI Startup by Truss Archive 2pm OC0.03
+  // The AI Revolution: Ethics, Technology and Society by IATL 4pm OC0.03
   // Summit Code Night Social with Warwick GDSC 6pm OC0.02
 
   // Sunday:
-  // AI and Blockchain Workshop by Encode Club 11am OC1.05
+  // AI and Blockchain Workshop by Encode Club 11am OC0.03
   // AI Speed Friending 12pm OC0.02
-  // WAI Project Presentations 2pm OC1.05
-  // AI, Politics and Disinformation 3pm OC1.05
-  // Closing Remarks from WAI Pres 4pm OC1.05
+  // WAI Project Presentations 2pm OC0.03
+  // AI, Politics and Disinformation 3pm OC0.03
+  // Closing Remarks from WAI Pres 4pm OC0.03
   const events: CalendarEvent[] = [
     {
       id: "1",
       title: "Introduction from WAI Pres and VP",
       start: "2024-02-17T11:00:00Z",
       end: "2024-02-17T11:30:00Z",
-      location: "OC1.05",
+      location: "OC0.03",
     },
     {
       id: "2",
       title: "Competition Annoucements",
       start: "2024-02-17T11:30:00Z",
       end: "2024-02-17T12:00:00Z",
-      location: "OC1.05",
+      location: "OC0.03",
     },
     {
       id: "3",
       title: "Seeing the Unseen: Using CNNs for Image Steganalysis",
       start: "2024-02-17T12:00:00Z",
       end: "2024-02-17T13:00:00Z",
-      location: "OC1.05",
+      location: "OC0.03",
     },
     {
       id: "4",
@@ -60,21 +60,21 @@ export default function Home() {
         "AI Safety Panel Discussion with Google DeepMind, Conjecture, Oxford University and Arcadia Impact",
       start: "2024-02-17T13:00:00Z",
       end: "2024-02-17T14:00:00Z",
-      location: "OC1.05",
+      location: "OC0.03",
     },
     {
       id: "5",
       title: "Creating an AI Startup by Truss Archive",
       start: "2024-02-17T14:00:00Z",
       end: "2024-02-17T16:00:00Z",
-      location: "OC1.05",
+      location: "OC0.03",
     },
     {
       id: "6",
       title: "The AI Revolution: Ethics, Technology and Society by IATL",
       start: "2024-02-17T16:00:00Z",
       end: "2024-02-17T18:00:00Z",
-      location: "OC1.05",
+      location: "OC0.03",
     },
     {
       id: "7",
@@ -89,7 +89,7 @@ export default function Home() {
       title: "AI and Blockchain Workshop by Encode Club",
       start: "2024-02-18T11:00:00Z",
       end: "2024-02-18T12:00:00Z",
-      location: "OC1.05",
+      location: "OC0.03",
     },
     {
       id: "9",
@@ -103,21 +103,21 @@ export default function Home() {
       title: "WAI Project Presentations",
       start: "2024-02-18T14:00:00Z",
       end: "2024-02-18T15:00:00Z",
-      location: "OC1.05",
+      location: "OC0.03",
     },
     {
       id: "11",
       title: "AI, Politics and Disinformation",
       start: "2024-02-18T15:00:00Z",
       end: "2024-02-18T16:00:00Z",
-      location: "OC1.05",
+      location: "OC0.03",
     },
     {
       id: "12",
       title: "Closing Remarks from WAI Pres",
       start: "2024-02-18T16:00:00Z",
       end: "2024-02-18T17:00:00Z",
-      location: "OC1.05",
+      location: "OC0.03",
     },
   ];
 
