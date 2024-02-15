@@ -104,12 +104,12 @@ export default function CompetitionSubmission() {
       <p className="p-4 text-sm">
         Upon submission, your student ID will be publicly visible on our website
         and used for processing your submitted zip archive. Your university
-        email address will be used for verification of your student status,
-        checking for a valid ticket, and contacting you upon being eligible for
-        a prize or if there are any issues with your submission. Files will be
-        deleted within 7 days of the competition finishing. To be eligible for a
-        prize you must have a ticket for the 2024 WAI Summit, be in the top 3
-        submissions on the leaderboard, and not be disqualified. Malicious
+        email address and student ID will be used for verification of your
+        student status, and contacting you upon being eligible for a prize or if
+        there are any issues with your submission. Files will be deleted within
+        7 days of the competition finishing. To be eligible for a prize you must
+        be a member of the Warwick Artificial Intelligence society, be in the
+        top 3 submissions on the leaderboard, and not be disqualified. Malicious
         entires will cause in your disqualification. By submitting you agree to
         the above terms and conditions.
       </p>
