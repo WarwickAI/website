@@ -102,14 +102,14 @@ const Pacman = (
         }
       `}
     </style>
-    <div className="w-vw box-border overflow-hidden bg-black">
-      <div className="h-3 w-full rounded-xl border-x-2 border-y-2 border-solid border-[#2121de]"></div>
+    <div className="w-vw -ml-1 -mr-1 box-border overflow-hidden bg-wai-gray">
+      <div className="h-3 w-full rounded-xl"></div>
       <div className="path relative -ml-[200px] -mr-[200px] mb-2 mt-2 h-20">
         <div
           className="float-right h-full w-full"
           style={{
             backgroundImage:
-              "linear-gradient(to left, #ddd 20%, transparent 0%)",
+              "linear-gradient(to left, #efefef 20%, transparent 0%)",
             backgroundPosition: "center right",
             backgroundSize: "50px 10px",
             backgroundRepeat: "repeat-x",
@@ -118,7 +118,7 @@ const Pacman = (
         >
           <svg className="h-full" viewBox="0 0 100 100">
             <circle
-              className="animated-circle fill-none stroke-[yellow] stroke-[50%]"
+              className="animated-circle fill-none stroke-[#ffee00] stroke-[50%]"
               style={{ animation: "chomp .15s linear infinite alternate" }}
               cx="50%"
               cy="50%"
@@ -127,7 +127,7 @@ const Pacman = (
           </svg>
         </div>
       </div>
-      <div className="h-3 w-full rounded-xl border-x-2 border-y-2 border-solid border-[#2121de]"></div>
+      <div className="h-3 w-full rounded-xl"></div>
     </div>
   </div>
 );
