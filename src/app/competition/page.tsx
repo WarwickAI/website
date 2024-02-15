@@ -23,7 +23,7 @@ export default function Home() {
   return defaultPageWithScroll(
     // Centered splash
     <>
-      <h1 className="-mt-24 pt-16 text-center font-mono text-5xl font-bold text-wai-gray">
+      <h1 className="pt-16 text-center font-mono text-5xl font-bold text-wai-gray">
         Pac-Man AI Competition
       </h1>
       <div className="justify-self-center">
@@ -43,11 +43,16 @@ export default function Home() {
         </p>
       </div>
       {Pacman}
+      <div className="w-full max-w-3xl justify-self-center rounded-lg border-4 border-blue-green bg-pure-white p-4 font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray md:w-fit">
+        Submissions are not currently open. We are in the testing the
+        competition environment. All submission will be deleted. Please check
+        back soon!
+      </div>
     </>,
 
     // Content
-    <div className="-mt-56 grid grid-cols-1 place-content-center gap-12 p-1 pb-8">
-      <div className="w-full justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray md:w-fit">
+    <div className="grid grid-cols-1 place-content-center gap-12 p-1 pb-8">
+      <div className="w-full max-w-3xl justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray md:w-fit">
         <h2 className="pb-4">Instructions:</h2>
 
         <p className="pb-4">
@@ -95,25 +100,26 @@ const Pacman = (
             width: 5%;
           }
         }
-        .animated-circle {
-          animation: chomp .15s linear infinite alternate;
-        }
-        .dots {
-          background-image: linear-gradient(to left, #ddd 20%, transparent 0%);
-          background-position: center right;
-          background-size: 50px 10px;
-          background-repeat: repeat-x;
-          animation: dots 5s linear infinite;
-        }
       `}
     </style>
-    <div className="pacman-environment w-vw box-border overflow-hidden bg-black">
+    <div className="w-vw box-border overflow-hidden bg-black">
       <div className="h-3 w-full rounded-xl border-x-2 border-y-2 border-solid border-[#2121de]"></div>
       <div className="path relative -ml-[200px] -mr-[200px] mb-2 mt-2 h-20">
-        <div className="dots float-right h-full w-full">
+        <div
+          className="float-right h-full w-full"
+          style={{
+            backgroundImage:
+              "linear-gradient(to left, #ddd 20%, transparent 0%)",
+            backgroundPosition: "center right",
+            backgroundSize: "50px 10px",
+            backgroundRepeat: "repeat-x",
+            animation: "dots 5s linear infinite",
+          }}
+        >
           <svg className="h-full" viewBox="0 0 100 100">
             <circle
               className="animated-circle fill-none stroke-[yellow] stroke-[50%]"
+              style={{ animation: "chomp .15s linear infinite alternate" }}
               cx="50%"
               cy="50%"
               r="25%"
