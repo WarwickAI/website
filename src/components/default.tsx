@@ -38,3 +38,21 @@ export function defaultPageWithScroll(
     </div>
   );
 }
+
+export function defaultPageNoSplash(component: JSX.Element) {
+  // Component must be wrapped in a single div that will be removed.
+  return (
+    <div id="background" className="z-0 bg-pure-white">
+      <div
+        id="content"
+        className="grid min-h-svh overflow-y-auto overflow-x-hidden"
+      >
+        <div className="min-h-svh">
+          <div className="grid h-fit grid-cols-1 gap-12 p-1">{component}</div>
+        </div>
+        <Footer />
+      </div>
+      <ParticleBackground />
+    </div>
+  );
+}

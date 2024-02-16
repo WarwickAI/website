@@ -28,10 +28,21 @@ const config: Config = {
           },
           "50%": { "stop-color": "#6D60C1" },
         },
+        text: {
+          "0%, 100%": {
+            "background-size": "200% 200%",
+            "background-position": "left center",
+          },
+          "50%": {
+            "background-size": "200% 200%",
+            "background-position": "right center",
+          },
+        },
       },
       animation: {
         colourPulse: "colourPulse 10s ease-in-out infinite",
         colourPulseOffset: "colourPulse 10s ease-in-out infinite -5s",
+        text: "text 1.5s ease-in-out infinite",
       },
     },
   },
