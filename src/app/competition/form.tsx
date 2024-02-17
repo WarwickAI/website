@@ -4,7 +4,7 @@
 
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { useDropzone } from "react-dropzone";
 import { handleSubmission } from "./upload";
@@ -32,26 +32,32 @@ export default function CompetitionSubmission() {
 
   const [state, formAction] = useFormState(handleSubmission, initialState);
   const [localError, setLocalError] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
+
+  async function handleNewSubmission(formData: FormData) {
+    try {
+      setLocalError("");
+      if (acceptedFiles.length === 0) {
+        setLocalError("A file is required.");
+        return;
+      }
+      formData.set("file", acceptedFiles[0]);
+      formRef.current?.reset();
+      acceptedFiles.splice(0, acceptedFiles.length);
+      return formAction(formData);
+    } catch (e) {
+      setLocalError(
+        "An unexpected error occurred. Please try again soon. Let us know if the issue persists.",
+      );
+      console.error(e);
+      return;
+    }
+  }
 
   return (
     <form
-      action={(formData: FormData) => {
-        try {
-          setLocalError("");
-          if (acceptedFiles.length === 0) {
-            setLocalError("A file is required.");
-            return;
-          }
-          formData.set("file", acceptedFiles[0]);
-          return formAction(formData);
-        } catch (e) {
-          setLocalError(
-            "An unexpected error occurred. Please try again soon. Let us know if the issue persists.",
-          );
-          console.error(e);
-          return;
-        }
-      }}
+      ref={formRef}
+      action={handleNewSubmission}
       className="max-w-3xl justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray"
     >
       <div className="justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray">
