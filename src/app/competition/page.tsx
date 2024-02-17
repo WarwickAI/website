@@ -45,9 +45,8 @@ export default function Home() {
       </div>
       <Pacman />
       <div className="w-full max-w-3xl justify-self-center rounded-lg border-4 border-blue-green bg-pure-white p-4 font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray md:w-fit">
-        Submissions are not currently open. We are in the process of testing the
-        competition environment. All submission will be deleted. Please check
-        back soon!
+        Submissions will open on 12pm Monday 19th February 2024. Time to get
+        ready!
       </div>
 
       <Button

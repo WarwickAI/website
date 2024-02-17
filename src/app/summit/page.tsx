@@ -156,7 +156,7 @@ export default function Home() {
             be your first step into a thriving career in the AI industry.
             <br />
             <br />
-            🕘 Don't forget to snag your wristband starting at 9 am on the 17th
+            🕘 Don't forget to snag your wristband starting at 9am on the 17th
             in OC0.01.
             <br />
             <br />
