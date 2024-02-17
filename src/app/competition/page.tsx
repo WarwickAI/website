@@ -71,10 +71,16 @@ export default function Home() {
           <li>Extra resources.</li>
         </ul>
 
-        <div className="flex justify-center">
+        <div className="grid grid-cols-1 md:grid-cols-2 place-content-evenly">
           <Button
-            href="https://drive.google.com/file/d/1lBM5U8IIzs5_Qapioc_wGkg9NDPfBOS2/view?usp=drive_link"
+            href="https://drive.google.com/file/d/1DYTTBrxv2MaLm7fGhhX3dwN3HJTwXXn4/view?usp=drive_link"
             text="Download Guide"
+            enabled={true}
+            extraClasses="mb-2"
+          />
+          <Button
+            href="https://drive.google.com/file/d/15w9OcPIWhUvK5Xey7vmrTTgHmJSbtq19/view?usp=drive_link"
+            text="Sample Submission"
             enabled={true}
             extraClasses="mb-2"
           />
