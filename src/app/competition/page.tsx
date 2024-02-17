@@ -49,6 +49,13 @@ export default function Home() {
         competition environment. All submission will be deleted. Please check
         back soon!
       </div>
+
+      <Button
+        href="/competition/leaderboard"
+        text="Leaderboard"
+        enabled={true}
+        extraClasses="mb-4"
+      />
     </>,
 
     // Content

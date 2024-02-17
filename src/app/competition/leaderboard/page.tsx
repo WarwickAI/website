@@ -105,11 +105,11 @@ export default async function Home() {
   const thirdStyle = "text-2xl font-bold text-lavender";
   return defaultPageNoSplash(
     <>
-      <h1 className="h-fit pt-16 text-center font-mono text-5xl font-bold text-wai-gray">
+      <h1 className="h-fit pt-[10vh] text-center font-mono text-5xl font-bold text-wai-gray">
         Pac-Man AI Competition Leaderboard
       </h1>
 
-      <div className="pb-16 pt-16">
+      <div className="pb-[10vh] pt-[10vh]">
         <Pacman />
       </div>
 
