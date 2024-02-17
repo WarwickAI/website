@@ -8,6 +8,8 @@ import ListCalendar, {
 import defaultPage from "@/components/default";
 import { redirect } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 export default function Home() {
   const enablePage = true;
   if (!enablePage) {
@@ -32,6 +34,8 @@ export default function Home() {
   // WAI Project Presentations 2pm OC0.03
   // AI, Politics and Disinformation 3pm OC0.03
   // Closing Remarks from WAI Pres 4pm OC0.03
+
+  const currentTime = Date.now();
   const events: CalendarEvent[] = [
     {
       id: "1",
@@ -175,6 +179,7 @@ export default function Home() {
           events={events}
           enableLinks={false}
           enableLocation={true}
+          currentTime={currentTime}
         />
       </div>
     </div>,

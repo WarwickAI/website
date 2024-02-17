@@ -16,6 +16,7 @@ export default function ListCalendar(props: {
   events: CalendarEvent[];
   enableLocation: boolean;
   enableLinks: boolean;
+  currentTime?: number;
 }) {
   // A calendar that displays events as a list grouped by day.
   //
@@ -31,7 +32,12 @@ export default function ListCalendar(props: {
   }
 
   const sortedEvents = sortEventsByDate(props.events);
-  return generateList(sortedEvents, props.enableLocation, props.enableLinks);
+  return generateList(
+    sortedEvents,
+    props.enableLocation,
+    props.enableLinks,
+    props.currentTime,
+  );
 }
 
 function sortEventsByDate(events: CalendarEvent[]): CalendarEvent[] {
@@ -45,6 +51,7 @@ function generateList(
   events: CalendarEvent[],
   enableLocation: boolean,
   enableLinks: boolean,
+  currentTime?: number,
 ): JSX.Element {
   // Generate a 1 column table of events, grouped by day.
   let lastDate = "";
@@ -75,6 +82,13 @@ function generateList(
     const startTimeString = `${startHour}:${startMinutes}${startAmPm}`;
     const endTimeString = `${endHour}:${endMinutes}${endAmPm}`;
 
+    // Check if the event is currently happening.
+    const isCurrentEvent =
+      currentTime !== undefined &&
+      startDate.getTime() < currentTime &&
+      endDate.getTime() > currentTime;
+    const currentEventStyle = isCurrentEvent ? "bg-lavender bg-opacity-50" : "";
+
     // Check if we need to make a new header for the date.
     if (startDateString !== lastDate) {
       const date = new Date(event.start);
@@ -103,7 +117,7 @@ function generateList(
           aria-label={event.title}
         >
           <div
-            className={`group grid grid-cols-9 pb-2 pt-2 hover:bg-purple hover:bg-opacity-50 ${border}`}
+            className={`group grid grid-cols-9 pb-2 pt-2 hover:bg-purple hover:bg-opacity-50  ${border} ${currentEventStyle}`}
           >
             <div className="col-span-4 pl-4 text-start">
               <p>{`${startTimeString} - ${endTimeString}`}</p>
@@ -124,7 +138,9 @@ function generateList(
       elements.push(
         <div key={event.id}>
           {" "}
-          <div className={`grid grid-cols-9 pb-2 pt-2 ${border}`}>
+          <div
+            className={`grid grid-cols-9 pb-2 pt-2 ${border} ${currentEventStyle}`}
+          >
             <div className="col-span-4 pl-4 text-start">
               <p>{`${startTimeString} - ${endTimeString}`}</p>
               <p>{enableLocation ? ` @ ${event.location}` : ""}</p>

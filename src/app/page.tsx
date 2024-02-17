@@ -25,6 +25,7 @@ export default async function Home() {
   // On small screens:
   //   Calendar is below the logo
   const events = await loadEvents();
+  const currentTime = Date.now();
 
   return (
     // On large screens:
@@ -42,7 +43,7 @@ export default async function Home() {
             id="logo-with-links"
             className="grid grid-cols-1 place-content-center justify-self-center"
           >
-            <div className="pb-4 pt-4 h-full drop-shadow-sm-wai-gray md:pb-12">
+            <div className="h-full pb-4 pt-4 drop-shadow-sm-wai-gray md:pb-12">
               {WaiLogo}
             </div>
 
@@ -61,6 +62,7 @@ export default async function Home() {
               events={events}
               enableLocation={false}
               enableLinks={true}
+              currentTime={currentTime}
             />
           </div>
         </div>
