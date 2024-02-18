@@ -134,6 +134,15 @@ export default function Home() {
         <h2 className="text-center font-mono text-xl font-bold text-wai-gray">
           17th and 18th February
         </h2>
+        <div className="flex justify-center p-4">
+          <Button
+            enabled={true}
+            text="Feedback Form"
+            href="https://docs.google.com/forms/d/1Bb4GSBiJG1rDW1lgKhF92bK38tg_Q7iGWAf4jHRAk4U/edit?usp=drivesdk"
+            ariaLabel="Fill in our the summit feedback form."
+            extraClasses="h-fit m-4"
+          />
+        </div>
       </div>
 
       <div className="grid grid-cols-1 place-content-center gap-12 p-3 pb-12 lg:grid-cols-2 lg:gap-12 lg:p-4">
