@@ -3,6 +3,7 @@ import BackButton from "@/components/back_button";
 import Button from "@/components/button";
 import defaultPage, { defaultPageWithScroll } from "@/components/default";
 import { Pacman } from "@/components/pacman";
+import Link from "next/link";
 import CompetitionSubmission from "./form";
 
 export default function Home() {
@@ -71,7 +72,38 @@ export default function Home() {
           <li>Extra resources.</li>
         </ul>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 place-content-evenly">
+        <p className="pb-4">
+          We will be supporting Python 3.11 with PyTorch 2.2. We highly
+          recommend using Conda environments to manage your dependencies.
+          <br />
+          <br />
+          If you require any additional packages, please let us know in the
+          discord under #pacman-competition.
+          <br />
+          <br />
+          Downloads:
+        </p>
+
+        <div className="grid grid-cols-1 text-base">
+          Conda:
+          <Link
+            href={"https://docs.anaconda.com/free/miniconda/miniconda-install/"}
+            aria-label="Download Miniconda"
+            className="text-wrap pb-4 pl-4 pr-4 text-sm"
+          >
+            https://docs.anaconda.com/free/miniconda/miniconda-install/
+          </Link>
+          PyTorch:
+          <Link
+            href={"https://pytorch.org/get-started/locally/"}
+            aria-label="Download PyTorch"
+            className="text-wrap pb-4 pl-4 pr-4 text-sm"
+          >
+             https://pytorch.org/get-started/locally/
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-1 place-content-evenly md:grid-cols-2">
           <Button
             href="https://drive.google.com/file/d/1DYTTBrxv2MaLm7fGhhX3dwN3HJTwXXn4/view?usp=drive_link"
             text="Download Guide"
