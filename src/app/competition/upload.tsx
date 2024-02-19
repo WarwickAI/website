@@ -28,8 +28,14 @@ const submissionSchema = z.object({
   file: z.instanceof(File),
 });
 
+export const dynamic = "force-dynamic";
+
 export async function handleSubmission(prevState: any, formData: FormData) {
   // Reject if the date is before the competition start date.
+  const competitionStartDate = new Date("2024-02-19T12:00:00Z");
+  if (Date.now() < competitionStartDate.getTime()) {
+    return { message: "Submissions are not open yet." };
+  }
 
   // Validate the submission.
   const submission: ValidSubmission | ReturnMessage =

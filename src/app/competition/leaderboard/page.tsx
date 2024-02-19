@@ -49,7 +49,7 @@ async function forceLoadLeaderboard(): Promise<string> {
     const response = await S3.send(
       new GetObjectCommand({
         Bucket: BUCKET_NAME,
-        Key: "player_stats.csv",
+        Key: "player_leaderboard.csv",
       }),
     );
 
