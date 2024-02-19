@@ -46,8 +46,8 @@ export default function Home() {
       </div>
       <Pacman />
       <div className="w-full max-w-3xl justify-self-center rounded-lg border-4 border-blue-green bg-pure-white p-4 font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray md:w-fit">
-        Submissions will open on 12pm Monday 19th February 2024. Time to get
-        ready!
+        Submissions are now open! The competition will end on midnight, 24th
+        April 2024. With results being announced on codenight the day after.
       </div>
 
       <Button
@@ -81,6 +81,12 @@ export default function Home() {
           discord under #pacman-competition.
           <br />
           <br />
+          You can submit once per hour. New submissions will override your
+          previous submission. The leaderboard will be hidden on the last day of
+          the competition, although, it will not be frozen so submit with
+          caution!
+          <br />
+          <br />
           Downloads:
         </p>
 
@@ -99,7 +105,7 @@ export default function Home() {
             aria-label="Download PyTorch"
             className="text-wrap pb-4 pl-4 pr-4 text-sm"
           >
-             https://pytorch.org/get-started/locally/
+            https://pytorch.org/get-started/locally/
           </Link>
         </div>
 
