@@ -25,7 +25,7 @@ export default function ListCalendar(props: {
     return (
       <div className="h-full w-full rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-center font-mono text-wai-gray shadow-lg">
         <p className="text-lg">
-          Join our discord to find our more about upcoming events.
+          Join our discord to find out more about upcoming events.
         </p>
       </div>
     );
