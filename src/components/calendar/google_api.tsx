@@ -76,11 +76,24 @@ function convertGoogleToFullCalendarEvent(
   if (!googleCalendarEvent.id) {
     throw new Error("No id found on event.");
   }
+
+  const start = new Date(googleCalendarEvent.start.dateTime || "");
+  const end = new Date(googleCalendarEvent.end.dateTime || "");
+
+  // Shift the time by the timezone offset.
+  const timezone = "Europe/London";
+  const timeZonedStart = new Date(
+    start.toLocaleString("en-US", { timeZone: timezone }),
+  );
+  const diff = timeZonedStart.getTime() - start.getTime();
+  const shiftedStart = new Date(start.getTime() + diff);
+  const shiftedEnd = new Date(end.getTime() + diff);
+
   return {
     id: googleCalendarEvent.id,
     title: googleCalendarEvent.summary || "",
-    start: googleCalendarEvent.start.dateTime || "",
-    end: googleCalendarEvent.end.dateTime || "",
+    start: shiftedStart.toISOString() || "",
+    end: shiftedEnd.toISOString() || "",
     url: googleCalendarEvent.htmlLink || undefined,
     location: googleCalendarEvent.location || undefined,
     description: googleCalendarEvent.description || undefined,
