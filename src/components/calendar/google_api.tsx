@@ -85,8 +85,8 @@ function convertGoogleToFullCalendarEvent(
   return {
     id: googleCalendarEvent.id,
     title: googleCalendarEvent.summary || "",
-    start: googleCalendarEvent.start.dateTime || "",
-    end: googleCalendarEvent.end.dateTime || "",
+    start: shiftedStart.toISOString() || "",
+    end: shiftedEnd.toISOString() || "",
     url: googleCalendarEvent.htmlLink || undefined,
     location: googleCalendarEvent.location || undefined,
     description: googleCalendarEvent.description || undefined,
