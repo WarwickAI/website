@@ -6,6 +6,9 @@ const apiKey = process.env.GOOGLE_CAL_API_KEY || "FAKE_KEY";
 const calendarId = process.env.GOOGLE_CAL_ID || "FAKE_ID";
 const googleCalendar = google.calendar({ version: "v3", auth: apiKey });
 
+// For timezone fandangling
+const moment = require('moment-timezone');
+
 // Refresh events every 5 minutes minus 10 seconds to never force a user to wait.
 var lastUpdated = new Date();
 const rateLimitMinutes = 5;
@@ -31,6 +34,7 @@ export async function loadEvents(): Promise<CalendarEvent[]> {
 async function forceLoadEvents(): Promise<CalendarEvent[]> {
   console.log("Loading events from Google Calendar API.");
   const response = await getEventsFromGoogle();
+
   if (response.status !== 200) {
     console.log("API returned status code: " + response.status);
     events = [];
@@ -77,18 +81,7 @@ function convertGoogleToFullCalendarEvent(
     throw new Error("No id found on event.");
   }
 
-  const start = new Date(googleCalendarEvent.start.dateTime || "");
-  const end = new Date(googleCalendarEvent.end.dateTime || "");
-
-  // Shift the time by the timezone offset.
-  const timezone = "Europe/London";
-  const timeZonedStart = new Date(
-    start.toLocaleString("en-US", { timeZone: timezone }),
-  );
-  const diff = timeZonedStart.getTime() - start.getTime();
-  const shiftedStart = new Date(start.getTime() + diff);
-  const shiftedEnd = new Date(end.getTime() + diff);
-
+  // Beware, timezones exist :) 
   return {
     id: googleCalendarEvent.id,
     title: googleCalendarEvent.summary || "",
@@ -107,5 +100,6 @@ function convertToCalendarEvents(
   const fullCalendarEvents = googleCalendarEvents.map((event) =>
     convertGoogleToFullCalendarEvent(event),
   );
+
   return fullCalendarEvents;
 }
