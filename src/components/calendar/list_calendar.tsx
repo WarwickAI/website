@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 
+const moment = require('moment-timezone');
+
 export type CalendarEvent = {
   id: string;
   title: string;
@@ -30,7 +32,6 @@ export default function ListCalendar(props: {
       </div>
     );
   }
-
   const sortedEvents = sortEventsByDate(props.events);
   return generateList(
     sortedEvents,
@@ -60,49 +61,30 @@ function generateList(
   for (let i = 0; i < events.length; i++) {
     const event = events[i];
     const isLast = i === events.length - 1;
-    const startDate = new Date(event.start);
-    const endDate = new Date(event.end);
-    const startDateString = startDate.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
 
-    // Make times in the format 9:00am - 12:00pm
-    const startHours = startDate.getHours();
-    const startMinutes = startDate.getMinutes().toString().padStart(2, "0");
-    const startAmPm = startHours >= 12 ? "pm" : "am";
-    const startHour = startHours % 12 || 12;
+    // Handle the date and time using moment-timezone. 
+    const startDate = moment.tz(event.start, "Europe/London");
+    const endDate = moment.tz(event.end, "Europe/London");
+    const startDateString = startDate.format("LL");
 
-    const endHours = endDate.getHours();
-    const endMinutes = endDate.getMinutes().toString().padStart(2, "0");
-    const endAmPm = endHours >= 12 ? "pm" : "am";
-    const endHour = endHours % 12 || 12;
-
-    const startTimeString = `${startHour}:${startMinutes}${startAmPm}`;
-    const endTimeString = `${endHour}:${endMinutes}${endAmPm}`;
+    const startTimeString = startDate.format('h:mma');
+    const endTimeString = endDate.format('h:mma');
 
     // Check if the event is currently happening.
     const isCurrentEvent =
       currentTime !== undefined &&
-      startDate.getTime() < currentTime &&
-      endDate.getTime() > currentTime;
+      startDate.valueOf() < currentTime &&
+      endDate.valueOf() > currentTime;
     const currentEventStyle = isCurrentEvent ? "bg-lavender bg-opacity-50" : "";
 
     // Check if we need to make a new header for the date.
     if (startDateString !== lastDate) {
-      const date = new Date(event.start);
-      const dateString = date.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      });
       elements.push(
         <div
-          key={dateString}
+          key={startDateString}
           className="w-fill border-b border-wai-gray border-opacity-25 bg-wai-gray bg-opacity-10 p-2"
         >
-          <h2 className="pl-2 text-start font-bold">{dateString}</h2>
+          <h2 className="pl-2 text-start font-bold">{startDateString}</h2>
         </div>,
       );
       lastDate = startDateString;
