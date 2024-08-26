@@ -11,7 +11,7 @@ import { redirect } from "next/navigation";
 export const dynamic = "force-dynamic";
 
 export default function Home() {
-  const enablePage = true;
+  const enablePage = false;
   if (!enablePage) {
     return redirect(
       "https://www.warwicksu.com/venues-events/events/57846/25060/",
