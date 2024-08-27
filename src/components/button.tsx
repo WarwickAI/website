@@ -10,12 +10,7 @@ export default function Button(props: {
   const classNames = `shadow-sm shadow-wai-gray bg-pure-white text-xl font-mono font-bold text-center text-wai-gray border-4 rounded-lg border-wai-gray p-4 justify-self-center`;
   
   // To allow for \n linebreaks
-  const formattedText = props.text.split('\n').map((line, index) => (
-    <span key={index}>
-      {line}
-      <br />
-    </span>
-  ));
+  const textStyle = { whiteSpace: 'pre-line' };
   
   if (props.enabled) {
     const enabledClassNames = "hover:shadow-purple hover:border-purple hover:text-purple";
@@ -25,12 +20,13 @@ export default function Button(props: {
         href={props.href}
         className={allClassNames}
         aria-label={props.ariaLabel}
+        style={textStyle}
       >
-        {formattedText}
+        {props.text}
       </Link>
     );
   } else {
     const allClassNames = `${classNames} ${props.extraClasses || ""}`;
-    return <p className={allClassNames}>{formattedText}</p>;
+    return <p style={textStyle} className={allClassNames}>{props.text}</p>;
   }
 }
