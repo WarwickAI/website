@@ -13,7 +13,7 @@ import {
 } from "@/components/icons";
 import YoutubeEmbed from "@/components/youtube/embed";
 import "./globals.css";
-import KonamiCodeListener from "@/components/easter_eggs/KonamiCode";
+import KonamiCodeListener from "@/components/easter_eggs/konami_code";
 
 export const dynamic = "force-dynamic"; // defaults to auto
 
@@ -37,7 +37,7 @@ export default async function Home() {
     defaultPage(
       <div>
         <KonamiCodeListener />
-        
+
         <div
           id="logo-and-calendar"
           className="grid grid-cols-1 place-content-start gap-12 p-1 md:grid-cols-2 md:place-content-center md:gap-2"
