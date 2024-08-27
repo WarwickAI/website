@@ -1,11 +1,12 @@
 // Summit details and ticket purchase page.
-// TODO(JakubCzarlinski): Remove after the event.
 
+import BackButton from "@/components/back_button";
 import Button from "@/components/button";
 import ListCalendar, {
   CalendarEvent,
 } from "@/components/calendar/list_calendar";
 import defaultPage from "@/components/default";
+import Notice from "@/components/notice";
 import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
@@ -13,8 +14,15 @@ export const dynamic = "force-dynamic";
 export default function Home() {
   const enablePage = false;
   if (!enablePage) {
-    return redirect(
-      "https://www.warwicksu.com/venues-events/events/57846/25060/",
+    return defaultPage(
+      <div>
+        <Button
+          enabled={true}
+          href="https://www.warwicksu.com/venues-events/events/57846/25060/"
+          text={"Summit details for academic year 2024/2025 are not currently available\n\nClick here to see what we did in 2024!"}
+        />
+        <BackButton />
+      </div>,
     );
   }
   // Split the page into two columns.
