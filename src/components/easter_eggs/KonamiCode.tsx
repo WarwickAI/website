@@ -29,8 +29,8 @@ const KonamiCodeListener: React.FC = () => {
     // Konami Code check
     if (JSON.stringify(keySequence) === JSON.stringify(konamiCode)) {
       console.log("Konami Code entered!");
-      setKeySequence([]); 
-      
+      setKeySequence([]);
+
       // I hide this from you :)
       redirect(atob('aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1kUXc0dzlXZ1hjUQ=='))
     }
@@ -42,7 +42,7 @@ const KonamiCodeListener: React.FC = () => {
     };
   }, [keySequence]);
 
-  return null; 
+  return null;
 };
 
 export default KonamiCodeListener;

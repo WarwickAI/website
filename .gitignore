@@ -22,6 +22,9 @@ bun.lockb
 .DS_Store
 *.pem
 
+# VSCode Config
+/.vscode
+
 # debug
 npm-debug.log*
 yarn-debug.log*
