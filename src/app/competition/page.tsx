@@ -5,6 +5,7 @@ import defaultPage, { defaultPageWithScroll } from "@/components/default";
 import { Pacman } from "@/components/pacman";
 import Link from "next/link";
 import CompetitionSubmission from "./form";
+import Notice from "@/components/notice";
 
 export default function Home() {
   const submissionOpen = false;
@@ -12,16 +13,16 @@ export default function Home() {
   if (!submissionOpen) {
     return defaultPage(
       <div>
-        <Button
-          enabled={false}
-          href=""
-          text="Submissions are not currently open."
-        />
+        <Notice>
+          Submissions are not currently open.
+        </Notice>
         <BackButton />
       </div>,
     );
   }
 
+
+  // TODO: Replace this 
   return defaultPageWithScroll(
     // Centered splash
     <>
