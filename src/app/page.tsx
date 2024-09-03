@@ -76,6 +76,13 @@ export default async function Home() {
         >
           <Button
             enabled={true}
+            text="Meet the Exec!"
+            href="/meet_the_exec"
+            ariaLabel="Meet the exec!"
+            extraClasses="m-2"
+          />
+          <Button
+            enabled={true}
             text="Summit Details"
             href="/summit"
             ariaLabel="Find out more about the summit!"
