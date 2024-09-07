@@ -1,0 +1,59 @@
+/* Wrapper class for defining size variables */
+.wrapper {
+    /* Set the default size here */
+    --tile-size: 100px;
+}
+
+.blankTile {
+    width: var(--tile-size);
+    height: var(--tile-size);
+}
+
+.tile0 {
+    background-color: #AAA;
+}
+
+.tile1 {
+    background-color: #777;
+}
+
+/* Chess piece styles */
+.chessPiece {
+    width: var(--tile-size);
+    height: var(--tile-size);
+    background-image: url('/images/chess/Chess_Pieces_Sprite.png');
+    background-size: 600%;
+}
+
+/* Positioning for chess pieces */
+.white {
+    background-position-y: 0px;
+}
+
+.black {
+    background-position-y: var(--tile-size);
+}
+
+.king {
+    background-position-x: 0px;
+}
+
+.queen {
+    background-position-x: calc(var(--tile-size) * -1);
+}
+
+.bishop {
+    background-position-x: calc(var(--tile-size) * -2);
+}
+
+.knight {
+    background-position-x: calc(var(--tile-size) * -3);
+}
+
+.rook {
+    background-position-x: calc(var(--tile-size) * -4);
+}
+
+.pawn {
+    background-position-x: calc(var(--tile-size) * -5);
+}
