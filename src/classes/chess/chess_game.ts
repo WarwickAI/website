@@ -11,11 +11,13 @@ export class ChessGame {
     public halfMoveClock: number = NaN;
     public fullMoveClock: number = NaN;
 
+    public validPosition: boolean = true;
+
     public board: (Piece | undefined)[][] = [[]];  // [Row][Column]
 
     constructor(fenString: string) {
-        console.log(`Digesting ${fenString}`);
-        this.digestFen(fenString);
+        //console.log(`Digesting ${fenString}`);
+        this.validPosition = this.digestFen(fenString);
     }
 
     // Digest the FEN string
