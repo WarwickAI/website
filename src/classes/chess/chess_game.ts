@@ -70,41 +70,26 @@ export class ChessGame {
 
     // Digest a single letter when creating the board
     private digestBoardLetter(letter: string, row: number) {
-        let colour = letter.toUpperCase() === letter ? "white" : "black";
+        const colour = letter.toUpperCase() === letter ? "white" : "black";
 
-        switch (letter.toLowerCase()) {
-            // Pawn
-            case "p":
-                return this.board[row].push(new Piece("pawn", colour))
+        const pieceMapping: { [key: string]: string } = {
+            p: "pawn",
+            r: "rook",
+            n: "knight",
+            b: "bishop",
+            q: "queen",
+            k: "king"
+        };
+        const pieceType = pieceMapping[letter.toLowerCase()];
 
-            // Rook
-            case "r":
-                return this.board[row].push(new Piece("rook", colour))
+        if (pieceType)
+            return this.board[row].push(new Piece(pieceType, colour));
 
-            // Knight
-            case "n":
-                return this.board[row].push(new Piece("knight", colour))
+        // Check if number
+        let blank = +letter;
+        if (isNaN(blank)) return;
 
-            // Bishop
-            case "b":
-                return this.board[row].push(new Piece("bishop", colour))
-
-            // Queen
-            case "q":
-                return this.board[row].push(new Piece("queen", colour))
-
-            // King
-            case "k":
-                return this.board[row].push(new Piece("king", colour))
-
-            // Number? (Blanks)
-            default:
-                let blank = +letter;
-                if (isNaN(blank)) return;
-
-                for (let i = 0; i < blank; i++)
-                    this.board[row].push(undefined);
-                break;
-        }
+        for (let i = 0; i < blank; i++)
+            this.board[row].push(undefined);
     }
 }
