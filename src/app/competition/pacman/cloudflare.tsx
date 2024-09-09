@@ -14,10 +14,8 @@ import {
 // Cloudflare R2 bucket details.
 const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID || "FAKE_ACCOUNT_ID";
 const BUCKET_NAME = process.env.CLOUDFLARE_R2_BUCKET_NAME || "FAKE_BUCKET_NAME";
-const ACCESS_KEY_ID =
-  process.env.CLOUDFLARE_R2_S3_ACCESS_KEY_ID || "FAKE_ACCESS_KEY_ID";
-const SECRET_ACCESS_KEY =
-  process.env.CLOUDFLARE_R2_S3_SECRET_ACCESS_KEY || "FAKE_SECRET_ACCESS_KEY";
+const ACCESS_KEY_ID = process.env.CLOUDFLARE_R2_S3_ACCESS_KEY_ID || "FAKE_ACCESS_KEY_ID";
+const SECRET_ACCESS_KEY = process.env.CLOUDFLARE_R2_S3_SECRET_ACCESS_KEY || "FAKE_SECRET_ACCESS_KEY";
 
 // Out bucket is in the EU jurisdiction, so we must use the eu endpoint, rather
 // than ${accountId}.r2...
@@ -62,12 +60,9 @@ export async function uploadFileToR2(file: File, fileName: string) {
 }
 
 // Cloudflare KV store details.
-const KV_NAMESPACE_STORAGE_API_TOKEN =
-  process.env.CLOUDFLARE_KV_STORAGE_API_TOKEN || "FAKE_KV_API_TOKEN";
-const KV_NAMESPACE_NEW_ID =
-  process.env.CLOUDFLARE_KV_STORAGE_NAMESPACE_NEW_ID || "FAKE_KV_NEW_ID";
-const KV_NAMESPACE_OLD_ID =
-  process.env.CLOUDFLARE_KV_STORAGE_NAMESPACE_OLD_ID || "FAKE_KV_OLD_ID";
+const KV_NAMESPACE_STORAGE_API_TOKEN = process.env.CLOUDFLARE_KV_STORAGE_API_TOKEN || "FAKE_KV_API_TOKEN";
+const KV_NAMESPACE_NEW_ID = process.env.CLOUDFLARE_KV_STORAGE_NAMESPACE_NEW_ID || "FAKE_KV_NEW_ID";
+const KV_NAMESPACE_OLD_ID = process.env.CLOUDFLARE_KV_STORAGE_NAMESPACE_OLD_ID || "FAKE_KV_OLD_ID";
 
 const KV_ACCOUNT_URL = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/storage/kv/namespaces`;
 const KV_NEW_URL = `${KV_ACCOUNT_URL}/${KV_NAMESPACE_NEW_ID}`;

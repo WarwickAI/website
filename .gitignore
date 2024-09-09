@@ -45,3 +45,6 @@ test.sh
 example.json
 
 competition.py
+
+# Exec data (hosted elsewhere)
+/public/data/*

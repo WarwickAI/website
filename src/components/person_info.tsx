@@ -8,10 +8,9 @@ export default function PersonInfo(props: {
     description: string;
     extraClasses?: string;
 }) {
-    const baseClassNames = `w-[70vw] shadow-sm shadow-wai-gray bg-pure-white text-xl font-mono font-bold text-center text-wai-gray border-4 rounded-lg border-wai-gray p-4 justify-self-center flex items-center`;
+    const baseClassNames = `w-[70vw] shadow-sm whitespace-pre-line shadow-wai-gray bg-pure-white text-xl font-mono font-bold text-center text-wai-gray border-4 rounded-lg border-wai-gray p-4 justify-self-center flex items-center`;
     const cardClassNames = `${baseClassNames} ${props.extraClasses || ""}`;
     const tagClassNames = `${props.tagColour ? `!${props.tagColour}` : "text-wai-gray"}`;
-    console.log(tagClassNames);
 
     return (
         <div className={cardClassNames}>
