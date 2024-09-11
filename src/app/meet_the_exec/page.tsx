@@ -47,7 +47,13 @@ export default function Home() {
                 // Randomise the order of everyone other than the president for each client. This is to keep things fair.
                 const president = exec[0];
                 const otherExec = exec.slice(1);
-                setExecData([president, ...otherExec.sort(() => Math.random() - 0.5)]);
+
+                // Fisher-Yates shuffle 
+                for (let i = otherExec.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [otherExec[i], otherExec[j]] = [otherExec[j], otherExec[i]];
+                }
+                setExecData([president, ...otherExec]);
 
             } catch (error) {
                 console.error("Error fetching CSV:", error);
