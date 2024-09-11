@@ -33,14 +33,22 @@ export default function Home() {
                 const response = await fetch(execDetailsCSV);
                 const csvText = await response.text();
 
+                let exec: csvMeetTheExec[] = [];
+
                 // Use PapaParse to parse the CSV
                 Papa.parse(csvText, {
                     header: true,
                     skipEmptyLines: true,
                     complete: function (results) {
-                        setExecData(results.data as csvMeetTheExec[]);
+                        exec = results.data as csvMeetTheExec[];
                     },
                 });
+
+                // Randomise the order of everyone other than the president for each client. This is to keep things fair.
+                const president = exec[0];
+                const otherExec = exec.slice(1);
+                setExecData([president, ...otherExec.sort(() => Math.random() - 0.5)]);
+
             } catch (error) {
                 console.error("Error fetching CSV:", error);
             }
