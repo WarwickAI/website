@@ -48,3 +48,6 @@ competition.py
 
 # Exec data (hosted elsewhere)
 /public/data/*
+
+# Jake's utility files
+RebaseBranch.sh

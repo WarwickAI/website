@@ -1,9 +1,14 @@
 // A single chess piece
-export class Piece {
-    name: string;
-    colour: string;
 
-    constructor(name: string, colour: string) {
+export type PieceColour = "white" | "black";
+export type PieceType = "p" | "r" | "n" | "b" | "q" | "k";
+
+
+export class Piece {
+    name: PieceType;
+    colour: PieceColour;
+
+    constructor(name: PieceType, colour: PieceColour) {
         this.name = name;
         this.colour = colour;
     }
