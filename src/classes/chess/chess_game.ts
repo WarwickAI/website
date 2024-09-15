@@ -1,4 +1,6 @@
-import { Piece } from "./piece";
+import { MovementEngine } from "./movement_engine";
+import { Piece, PieceType } from "./piece";
+
 
 export class ChessGame {
     public blackCastleKingside: boolean = false;
@@ -14,11 +16,73 @@ export class ChessGame {
     public validPosition: boolean = true;
 
     public board: (Piece | undefined)[][] = [[]];  // [Row][Column]
+    public movementEngine: MovementEngine;
+
 
     constructor(fenString: string) {
-        //console.log(`Digesting ${fenString}`);
         this.validPosition = this.digestFen(fenString);
+
+        this.movementEngine = new MovementEngine(this);
     }
+
+
+    // To FEN
+    public toFEN(): string {
+        let FEN = "";
+
+        // Section 1: Board
+        for (let y = 0; y < this.board.length; y++) {
+            let blankCounter = 0;
+            for (let x = 0; x < this.board[y].length; x++) {
+                let piece: Piece | undefined = this.board[y][x];
+
+                // Blank space
+                if (piece === undefined) {
+                    blankCounter++;
+                    continue;
+                }
+
+                // Blank space has ended
+                if (blankCounter > 0) {
+                    FEN += blankCounter.toString();
+                    blankCounter = 0;
+                }
+
+                const pieceKey = piece.name;
+
+                // Add piece to FEN
+                FEN += piece.colour === "white" ? pieceKey.toUpperCase() : pieceKey.toLowerCase();
+            }
+
+            // Add any extra blanks
+            if (blankCounter > 0) {
+                FEN += blankCounter.toString();
+                blankCounter = 0;
+            }
+            FEN += "/";
+        }
+
+        // Section 2.
+        FEN += " ";
+        FEN += this.nextToMove === "black" ? "b" : "w";     // This is reversed to default to white's move
+
+        // Section 3. (Ugly, I am sorry)
+        FEN += " ";
+        FEN += this.blackCastleKingside ? "k" : "";
+        FEN += this.blackCastleQueenside ? "q" : "";
+        FEN += this.whiteCastleKingside ? "K" : "";
+        FEN += this.whiteCastleQueenside ? "Q" : "";
+
+        // Section 4
+        FEN += " ";
+        FEN += this.enPassantTarget === undefined ? "-" : this.enPassantTarget;
+
+        // Section 5 & 6
+        FEN += " ";
+        FEN += `${this.halfMoveClock} ${this.fullMoveClock}`;
+        return FEN;
+    }
+
 
     // Digest the FEN string
     private digestFen(fenString: string): boolean {
@@ -72,18 +136,12 @@ export class ChessGame {
     private digestBoardLetter(letter: string, row: number) {
         const colour = letter.toUpperCase() === letter ? "white" : "black";
 
-        const pieceMapping: { [key: string]: string } = {
-            p: "pawn",
-            r: "rook",
-            n: "knight",
-            b: "bishop",
-            q: "queen",
-            k: "king"
-        };
-        const pieceType = pieceMapping[letter.toLowerCase()];
+        const pieceType: PieceType = letter.toLowerCase() as PieceType;
 
-        if (pieceType)
+        // Can't compare it to the type interface directly :(.
+        if (["p", "r", "n", "b", "q", "k"].includes(pieceType))
             return this.board[row].push(new Piece(pieceType, colour));
+
 
         // Check if number
         let blank = +letter;

@@ -5,11 +5,27 @@
 
 .tile0 {
     background-color: #AAA;
+    position: relative;
 }
 
 .tile1 {
     background-color: #777;
+    position: relative;
 }
+
+.highlightOrb {
+    width: calc(var(--tile-size) / 2);
+    height: calc(var(--tile-size) / 2);
+    background-color: #ac6dff;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+}
+
+
 
 /* Chess piece styles */
 .chessPiece {
@@ -28,26 +44,32 @@
     background-position-y: var(--tile-size);
 }
 
-.king {
+.king,
+.k {
     background-position-x: 0px;
 }
 
-.queen {
+.queen,
+.q {
     background-position-x: calc(var(--tile-size) * -1);
 }
 
-.bishop {
+.bishop,
+.b {
     background-position-x: calc(var(--tile-size) * -2);
 }
 
-.knight {
+.knight,
+.n {
     background-position-x: calc(var(--tile-size) * -3);
 }
 
-.rook {
+.rook,
+.r {
     background-position-x: calc(var(--tile-size) * -4);
 }
 
-.pawn {
+.pawn,
+.p {
     background-position-x: calc(var(--tile-size) * -5);
 }
