@@ -12,7 +12,7 @@ export class MovementEngine {
 
 
     // Move a piece
-    public movePiece(from: { row: number, column: number }, to: { row: number, column: number }): boolean {
+    public movePiece(from: Position, to: Position): boolean {
         const movedPiece = this.getPiece(from);
         const targetPiece = this.getPiece(to);
 
@@ -22,19 +22,81 @@ export class MovementEngine {
 
 
         // update game stats
-        this.game.nextToMove = movedPiece.colour == "white" ? "black" : "white";
+        this.game.nextToMove = movedPiece.colour === "white" ? "black" : "white";
         this.game.halfMoveClock = targetPiece || movedPiece.name === "p" ? 0 : this.game.halfMoveClock + 1;
-        this.game.fullMoveClock = targetPiece ? 0 : this.game.fullMoveClock + 1;
-
+        this.game.fullMoveClock = targetPiece ? 1 : this.game.fullMoveClock + (movedPiece.colour === "black" ? 1 : 0);
 
         // Move the piece
+        const takenPiece = this.game.board[to.row][to.column];
+        if (takenPiece?.name == "k") this.game.winner = movedPiece.colour;  // Temporary king capture = win
+
         this.game.board[to.row][to.column] = movedPiece;
         this.game.board[from.row][from.column] = undefined;
+
+        // Castle availability. Can we pretend this spaghetti bowl of pasta doesn't exist?
+        if (movedPiece.name === "k") {
+            if (movedPiece.colour === "black") {
+                this.game.blackCastleKingside = false;
+                this.game.blackCastleQueenside = false;
+            }
+            else {
+                this.game.whiteCastleKingside = false;
+                this.game.whiteCastleQueenside = false;
+            }
+        }
+        if (movedPiece.name === "r") {
+            this.game.blackCastleQueenside &&= !(from.row == 0 && from.column == 0);
+            this.game.blackCastleKingside &&= !(from.row == 0 && from.column == 7);
+            this.game.whiteCastleQueenside &&= !(from.row == 7 && from.column == 0);
+            this.game.whiteCastleKingside &&= !(from.row == 7 && from.column == 7);
+        }
+
+        // pawn bullshittery - needs redoing if chess becomes 4-way
+        if (movedPiece.name == "p") {
+            // Took an enpassant
+            if (this.game.enPassantTarget === this.positionToChessPosition(to))
+                this.game.board[from.row][to.column] = undefined;
+
+            // Moved 2 (setup for enpassant)
+            if (Math.abs(from.row - to.row) == 2)
+                this.game.enPassantTarget = this.positionToChessPosition({ row: (from.row + to.row) / 2, column: to.column }) ?? "-";
+            else this.game.enPassantTarget = "-";
+
+            // Reached end of board?
+            if (to.row == 0 || to.row == this.game.board.length) {
+                const pawn = this.game.board[to.row][to.column];
+                if (pawn) pawn.name = "q"; // Deafult to Queen for now.
+            }
+        }
+        else {
+            this.game.enPassantTarget = "-";
+        }
 
         return true;
     }
 
 
+    // Returns "e4", "d5" etc...
+    public positionToChessPosition(pos: Position): string | undefined {
+        const columnLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+
+        if (pos.row < 0 || pos.row > 7 || pos.column < 0 || pos.column > 7)
+            return undefined;
+
+        const columnLetter = columnLetters[pos.column];
+        const rowNumber = 8 - (pos.row);    // THE BOARD IS BACKWARDS OH FCK
+
+        return `${columnLetter}${rowNumber}`;
+    }
+
+    // Returns the position of "e4", "d5", etc...
+    public chessPositionToPosition(chessPos: string): Position | undefined {
+        const columnLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
+
+        return /^[a-h][1-8]$/.test(chessPos) ?
+            { row: 8 - (parseInt(chessPos[1])), column: columnLetters.indexOf(chessPos[0]) } :
+            undefined
+    }
 
     // Check if a location is a piece
     public isPiece(location: Position): boolean {
@@ -48,13 +110,13 @@ export class MovementEngine {
 
     // Check if a position is in check for a colour
     public isInCheck(location: Position, colour: PieceColour): boolean {
-
         for (let y = 0; y < this.game.board.length; y++) {
             for (let x = 0; x < this.game.board[y].length; x++) {
+
                 const piece = this.getPiece({ row: y, column: x });
-                // Can't be king, as otherwise recursion.
                 if (piece && piece.colour !== colour) {
                     const coveredSquares = this.getPieceMovementOptions({ row: y, column: x }, true);
+
                     if (coveredSquares.some(cell => cell.row == location.row && cell.column == location.column))
                         return true;
                 }
@@ -103,8 +165,12 @@ export class MovementEngine {
         }
 
         // Capture
-        if (checkCheck || (this.isPiece(takeLeft) && this.getPiece(takeLeft)?.colour !== pawn.colour)) validMoves.push(takeLeft);
-        if (checkCheck || (this.isPiece(takeRight) && this.getPiece(takeRight)?.colour !== pawn.colour)) validMoves.push(takeRight);
+        if (checkCheck
+            || (this.isPiece(takeLeft) && this.getPiece(takeLeft)?.colour !== pawn.colour)
+            || this.positionToChessPosition(takeLeft) === this.game.enPassantTarget) validMoves.push(takeLeft);
+        if (checkCheck
+            || (this.isPiece(takeRight) && this.getPiece(takeRight)?.colour !== pawn.colour)
+            || this.positionToChessPosition(takeRight) === this.game.enPassantTarget) validMoves.push(takeRight);
 
         return validMoves;
     }
@@ -192,6 +258,33 @@ export class MovementEngine {
                 validMoves.push(pos);
         });
 
+        // Castling availability
+        const castleQueenside: Position | null = (king.colour === "black" ? this.game.blackCastleQueenside : this.game.whiteCastleQueenside) ? { row: 0, column: -2 } : null;
+        const castleKingside: Position | null = (king.colour === "black" ? this.game.blackCastleKingside : this.game.whiteCastleKingside) ? { row: 0, column: 2 } : null;
+
+        if (castleQueenside) {
+            let castle: boolean = true;
+            for (let x = location.column - 1; x > 0; x--) {
+                const queryLocation: Position = { row: location.row, column: x };
+                if (this.isPiece(queryLocation) || this.isInCheck(queryLocation, king.colour)) {
+                    castle = false;
+                    break;
+                }
+            }
+            if (castle) validMoves.push(addPositions(location, castleQueenside));
+        }
+        if (castleKingside) {
+            let castle: boolean = true;
+            for (let x = location.column + 1; x < this.game.board[location.column].length; x++) {
+                const queryLocation: Position = { row: location.row, column: x };
+                if (this.isPiece(queryLocation) || this.isInCheck(queryLocation, king.colour)) {
+                    castle = false;
+                    break;
+                }
+            }
+            if (castle) validMoves.push(addPositions(location, castleKingside));
+        }
+
         return validMoves;
     }
 
@@ -206,7 +299,7 @@ export class MovementEngine {
 
 
     // Get all of the valid movement options in the given directions
-    private getLinearMovementOptions(location: Position, directions: Position[], pieceColour: string, ignoreKing: boolean): Position[] {
+    private getLinearMovementOptions(location: Position, directions: Position[], pieceColour: string, ignoreKing: boolean, checkCheck: boolean = false): Position[] {
         const validMoves: Position[] = [];
 
         directions.forEach(direction => {
@@ -219,7 +312,7 @@ export class MovementEngine {
                 const pieceAtNextPosition = this.getPiece(nextPosition);
 
                 // Friendly?
-                if (pieceAtNextPosition?.colour === pieceColour) break;
+                if (pieceAtNextPosition?.colour === pieceColour && !checkCheck) break;
                 validMoves.push(nextPosition);
 
                 // Enemy? (Exclude king if ignore king flag set)

@@ -6,20 +6,29 @@ import ChessBoard from "./board";
 import { useRef, useState } from "react";
 import Notice from "../notice";
 import { Position } from "@/classes/chess/helpers/position";
+import { PieceColour } from "@/classes/chess/piece";
 
 // FEN Notation: https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
 export default function ChessBoardPlayable() {
     const [currentBoardFEN, setCurrentBoardFEN] = useState<string>("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     const selectedTile = useRef<Position | null>(null);
     const [highlightedTiles, setHighlightedTiles] = useState<Position[] | null>(null);
+    const [winner, setWinner] = useState<PieceColour | undefined>(undefined);
 
     const gameRef = useRef<ChessGame>(new ChessGame(currentBoardFEN));
 
 
     const handleTileClick = (rowIndex: number, columnIndex: number) => {
+        if (winner) return;
+
         // First selection
         if (!selectedTile.current) {
-            selectedTile.current = { row: rowIndex, column: columnIndex };
+            const selectedPos: Position = { row: rowIndex, column: columnIndex };
+            const piece = gameRef.current.movementEngine.getPiece(selectedPos);
+
+            if (!piece || gameRef.current.nextToMove !== piece.colour) return;
+
+            selectedTile.current = selectedPos
             setHighlightedTiles(gameRef.current.movementEngine.getPieceMovementOptions(selectedTile.current));
             return;
         }
@@ -49,19 +58,68 @@ export default function ChessBoardPlayable() {
             setCurrentBoardFEN(gameRef.current.toFEN());
             selectedTile.current = null;
             setHighlightedTiles(null);
+            setWinner(gameRef.current.winner);
+
+            // Get move from API 
+            getMoveFromAPI(gameRef.current.toFEN()).then((aiFen) => {
+                console.log(aiFen);
+                if (aiFen) {
+                    gameRef.current = new ChessGame(aiFen);
+                    setCurrentBoardFEN(aiFen);
+                }
+            });
+
             return;
         }
 
-        // Reselection required
-        selectedTile.current = { row: rowIndex, column: columnIndex };
+        // Choose
+        const piece = gameRef.current.movementEngine.getPiece(currentTileSelected);
+
+        if (!piece || gameRef.current.nextToMove !== piece.colour) {
+            selectedTile.current = null;
+            setHighlightedTiles(null);
+            return;
+        }
+
+        selectedTile.current = currentTileSelected
         setHighlightedTiles(gameRef.current.movementEngine.getPieceMovementOptions(selectedTile.current));
         return;
     };
 
+    // This will need to be updated to our Chess AI whenever it gets made. 
+    // The AI just needs an API which takes in a FEN string, and outputs a FEN string of the next position... or something like that.
+    async function getMoveFromAPI(fen: string): Promise<string | null> {
+        const url = 'https://bad-chess-ai.hello-442.workers.dev/';
+        try {
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain',
+                    'Accept': 'text/plain',
+                },
+                body: fen
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error fetching data: ${response.statusText}`);
+            }
+
+            const data = await response.text();
+            return data;
+        } catch (error) {
+            console.error('Error:', error);
+            return null;
+        }
+    }
+
 
     return (
         <>
+            {winner && (
+                <div className="text-center text-blue-green text-4xl font-mono font-bold">{winner.toUpperCase()} WON!</div>
+            )}
             <ChessBoard fenString={currentBoardFEN} onTileClick={handleTileClick} highlightedTiles={highlightedTiles} />
+            <p className="text-center font-mono text-2xl font-bold text-wai-gray">{currentBoardFEN}</p>
         </>
     );
 } 

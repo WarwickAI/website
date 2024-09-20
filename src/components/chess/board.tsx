@@ -21,7 +21,6 @@ export default function ChessBoard(props: {
         );
     }
 
-
     const isTileSelected = (row: number, column: number) => {
         return props.highlightedTiles?.some(tile => tile.row === row && tile.column === column);
     };
@@ -33,7 +32,7 @@ export default function ChessBoard(props: {
                     {row.map((piece, columnIndex) => (
                         <div
                             className={`${boardStyle["tile" + ((rowIndex + columnIndex) % 2)]}`}
-                            style={{ '--tile-size': props.tileSize || '80px' } as React.CSSProperties}
+                            style={{ '--tile-size': props.tileSize || '40px' } as React.CSSProperties}
                             key={columnIndex}
                             onClick={() => props.onTileClick?.(rowIndex, columnIndex)}
                         >
