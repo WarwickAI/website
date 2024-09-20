@@ -1,13 +1,25 @@
 import { MovementEngine } from "./movement_engine";
-import { Piece, PieceType } from "./piece";
+import { Piece, PieceColour, PieceType } from "./piece";
 
+// TELL ME WHY I FIND A CHESS ENGINE (chess.js) IMMEDIATELY AFTER FINISHING MY CHESS ENGINE
+// RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+// LITTERALLY REINVENTING THE WHEEL
+//      AND WOOD
+//      AND THE MOTION OF "TURNING"
+//  I AM REINVENTING THE ATOM AT THIS RATE 
+// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
 export class ChessGame {
     public blackCastleKingside: boolean = false;
     public blackCastleQueenside: boolean = false;
     public whiteCastleKingside: boolean = false;
     public whiteCastleQueenside: boolean = false;
-    public nextToMove: string | undefined;
+    public nextToMove: PieceColour | undefined;
 
     public enPassantTarget: string | undefined;
     public halfMoveClock: number = NaN;
@@ -17,6 +29,8 @@ export class ChessGame {
 
     public board: (Piece | undefined)[][] = [[]];  // [Row][Column]
     public movementEngine: MovementEngine;
+
+    public winner: PieceColour | undefined;
 
 
     constructor(fenString: string) {
@@ -59,7 +73,7 @@ export class ChessGame {
                 FEN += blankCounter.toString();
                 blankCounter = 0;
             }
-            FEN += "/";
+            FEN += y < this.board.length - 1 ? "/" : "";
         }
 
         // Section 2.
@@ -68,10 +82,10 @@ export class ChessGame {
 
         // Section 3. (Ugly, I am sorry)
         FEN += " ";
-        FEN += this.blackCastleKingside ? "k" : "";
-        FEN += this.blackCastleQueenside ? "q" : "";
-        FEN += this.whiteCastleKingside ? "K" : "";
-        FEN += this.whiteCastleQueenside ? "Q" : "";
+        let castle = `${this.blackCastleKingside ? "k" : ""}${this.blackCastleQueenside ? "q" : ""}${this.whiteCastleKingside ? "K" : ""}${this.whiteCastleQueenside ? "Q" : ""}`
+        castle = castle.length == 0 ? "-" : castle;
+        FEN += castle;
+
 
         // Section 4
         FEN += " ";
