@@ -1,167 +1,94 @@
-import { MovementEngine } from "./movement_engine";
-import { Piece, PieceColour, PieceType } from "./piece";
-
-// TELL ME WHY I FIND A CHESS ENGINE (chess.js) IMMEDIATELY AFTER FINISHING MY CHESS ENGINE
-// RAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-// LITTERALLY REINVENTING THE WHEEL
-//      AND WOOD
-//      AND THE MOTION OF "TURNING"
-//  I AM REINVENTING THE ATOM AT THIS RATE 
-// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
-// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+import { Chess, Square, Piece, PieceSymbol, Color } from "chess.js"
+import { Position } from "./helpers/position";
 
 export class ChessGame {
-    public blackCastleKingside: boolean = false;
-    public blackCastleQueenside: boolean = false;
-    public whiteCastleKingside: boolean = false;
-    public whiteCastleQueenside: boolean = false;
-    public nextToMove: PieceColour | undefined;
+    private chess: Chess;
+    private isValidPosition: boolean;
 
-    public enPassantTarget: string | undefined;
-    public halfMoveClock: number = NaN;
-    public fullMoveClock: number = NaN;
+    constructor(fenString?: string) {
+        this.isValidPosition = true;
+        try {
+            this.chess = new Chess(fenString);
+        } catch (e) {
+            this.isValidPosition = false;
+            this.chess = new Chess();
+        }
+    }
 
-    public validPosition: boolean = true;
+    public isValidGameState(): boolean {
+        return this.isValidPosition;
+    }
 
-    public board: (Piece | undefined)[][] = [[]];  // [Row][Column]
-    public movementEngine: MovementEngine;
+    public board(): ({ square: Square; type: PieceSymbol; color: Color; } | null)[][] {
+        return this.chess.board();
+    }
 
-    public winner: PieceColour | undefined;
+    public getPiece(location: Position): Piece | undefined {
+        const chessPos = this.positionToChessPosition(location);
+        if (chessPos)
+            return this.chess.get(chessPos);
+    }
 
+    public nextToMove(): Color {
+        return this.chess.turn();
+    }
 
-    constructor(fenString: string) {
-        this.validPosition = this.digestFen(fenString);
-
-        this.movementEngine = new MovementEngine(this);
+    public getPieceMovementOptions(location: Position): Position[] {
+        const square = this.positionToChessPosition(location);
+        if (square) {
+            console.log(this.chess.moves({ square: square }));
+            return this.chess.moves({ square: square }).map((x) => { return this.chessPositionToPosition(x); }).filter((x): x is Position => x !== undefined);
+        }
+        return [];
     }
 
 
-    // To FEN
-    public toFEN(): string {
-        let FEN = "";
-
-        // Section 1: Board
-        for (let y = 0; y < this.board.length; y++) {
-            let blankCounter = 0;
-            for (let x = 0; x < this.board[y].length; x++) {
-                let piece: Piece | undefined = this.board[y][x];
-
-                // Blank space
-                if (piece === undefined) {
-                    blankCounter++;
-                    continue;
-                }
-
-                // Blank space has ended
-                if (blankCounter > 0) {
-                    FEN += blankCounter.toString();
-                    blankCounter = 0;
-                }
-
-                const pieceKey = piece.name;
-
-                // Add piece to FEN
-                FEN += piece.colour === "white" ? pieceKey.toUpperCase() : pieceKey.toLowerCase();
-            }
-
-            // Add any extra blanks
-            if (blankCounter > 0) {
-                FEN += blankCounter.toString();
-                blankCounter = 0;
-            }
-            FEN += y < this.board.length - 1 ? "/" : "";
-        }
-
-        // Section 2.
-        FEN += " ";
-        FEN += this.nextToMove === "black" ? "b" : "w";     // This is reversed to default to white's move
-
-        // Section 3. (Ugly, I am sorry)
-        FEN += " ";
-        let castle = `${this.blackCastleKingside ? "k" : ""}${this.blackCastleQueenside ? "q" : ""}${this.whiteCastleKingside ? "K" : ""}${this.whiteCastleQueenside ? "Q" : ""}`
-        castle = castle.length == 0 ? "-" : castle;
-        FEN += castle;
-
-
-        // Section 4
-        FEN += " ";
-        FEN += this.enPassantTarget === undefined ? "-" : this.enPassantTarget;
-
-        // Section 5 & 6
-        FEN += " ";
-        FEN += `${this.halfMoveClock} ${this.fullMoveClock}`;
-        return FEN;
-    }
-
-
-    // Digest the FEN string
-    private digestFen(fenString: string): boolean {
-        var fields = fenString.split(' ');
-        if (fields.length != 6) return false;
-
-        // Reset vars
-        this.board = [[]];
-
-        // Section 1: The board
-        var boardFen: string = fields[0];
-        var row = 0;
-        for (let i = 0; i < boardFen.length; i++) {
-            let letter = boardFen[i];
-
-            // New row
-            if (letter === '/') {
-                row++;
-                this.board.push([]);
-                continue;
-            }
-
-            // Otherwise...
-            this.digestBoardLetter(letter, row);
-        }
-
-        // Section 2: next to move
-        this.nextToMove = fields[1] === "w" ? "white" : "black";
-
-        // Section 3: Castle Availablilty
-        this.blackCastleKingside = fields[2].includes("k");
-        this.blackCastleQueenside = fields[2].includes("q");
-        this.whiteCastleKingside = fields[2].includes("K");
-        this.whiteCastleQueenside = fields[2].includes("Q");
-
-        // Section 4: Enpassant target square - remain as undefined if nothing
-        if (fields[3] !== "-")
-            this.enPassantTarget = fields[3];
-
-        // Section 5: halfmove clock
-        this.halfMoveClock = +fields[4];
-
-        // Section 6: fullmove Clock
-        this.fullMoveClock = +fields[5];
-
+    public movePiece(from: Position, to: Position): boolean {
+        this.chess.move({ from: this.positionToChessPosition(from) as string, to: this.positionToChessPosition(to) as string, promotion: "q" });
         return true;
     }
 
 
-    // Digest a single letter when creating the board
-    private digestBoardLetter(letter: string, row: number) {
-        const colour = letter.toUpperCase() === letter ? "white" : "black";
+    // Returns "e4", "d5" etc...
+    public positionToChessPosition(pos: Position): Square | undefined {
+        const columnLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 
-        const pieceType: PieceType = letter.toLowerCase() as PieceType;
+        if (pos.row < 0 || pos.row > 7 || pos.column < 0 || pos.column > 7)
+            return undefined;
 
-        // Can't compare it to the type interface directly :(.
-        if (["p", "r", "n", "b", "q", "k"].includes(pieceType))
-            return this.board[row].push(new Piece(pieceType, colour));
+        const columnLetter = columnLetters[pos.column];
+        const rowNumber = 8 - (pos.row);    // THE BOARD IS BACKWARDS OH FCK
 
+        return `${columnLetter}${rowNumber}` as Square;
+    }
 
-        // Check if number
-        let blank = +letter;
-        if (isNaN(blank)) return;
+    // Returns the position of "e4", "d5", etc...
+    public chessPositionToPosition(chessPos: string): Position | undefined {
+        const columnLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 
-        for (let i = 0; i < blank; i++)
-            this.board[row].push(undefined);
+        // Handle castling bullshit. 
+        if (chessPos === "O-O") return { row: 7, column: 6 };
+        else if (chessPos === "O-O-O") return { row: 7, column: 2 };
+
+        // Handle check bullshit.
+        if (chessPos.includes('+')) chessPos = chessPos.substring(0, chessPos.length - 1);
+
+        // Handles promotion bullshit.
+        if (chessPos.includes('=')) chessPos = chessPos.split('=')[0];
+
+        // Remove all the other bullshit.
+        chessPos = chessPos.slice(-2);
+
+        return /^[a-h][1-8]$/.test(chessPos) ?
+            { row: 8 - (parseInt(chessPos[1])), column: columnLetters.indexOf(chessPos[0]) } :
+            undefined
+    }
+
+    public toFEN(): string {
+        return this.chess.fen();
+    }
+
+    public winner(): Color | undefined {
+        return !this.chess.isCheckmate() ? undefined : this.chess.turn() === "w" ? "b" : "w";
     }
 }

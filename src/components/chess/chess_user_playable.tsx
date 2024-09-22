@@ -2,33 +2,33 @@
 "use client"
 
 import { ChessGame } from "@/classes/chess/chess_game";
+import { Color } from "chess.js";
 import ChessBoard from "./board";
 import { useRef, useState } from "react";
 import { Position } from "@/classes/chess/helpers/position";
-import { PieceColour } from "@/classes/chess/piece";
 
 // FEN Notation: https://en.wikipedia.org/wiki/Forsyth%E2%80%93Edwards_Notation
 export default function ChessBoardPlayable() {
     const [currentBoardFEN, setCurrentBoardFEN] = useState<string>("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     const selectedTile = useRef<Position | null>(null);
     const [highlightedTiles, setHighlightedTiles] = useState<Position[] | null>(null);
-    const [winner, setWinner] = useState<PieceColour | undefined>(undefined);
+    const [winner, setWinner] = useState<Color | undefined>(undefined);
 
     const gameRef = useRef<ChessGame>(new ChessGame(currentBoardFEN));
 
 
     const handleTileClick = (rowIndex: number, columnIndex: number) => {
-        if (winner) return;
+        if (winner || gameRef.current.nextToMove() === "b") return;
 
         // First selection
         if (!selectedTile.current) {
             const selectedPos: Position = { row: rowIndex, column: columnIndex };
-            const piece = gameRef.current.movementEngine.getPiece(selectedPos);
+            const piece = gameRef.current.getPiece(selectedPos);
 
-            if (!piece || gameRef.current.nextToMove !== piece.colour) return;
+            if (!piece || gameRef.current.nextToMove() !== piece.color) return;
 
             selectedTile.current = selectedPos
-            setHighlightedTiles(gameRef.current.movementEngine.getPieceMovementOptions(selectedTile.current));
+            setHighlightedTiles(gameRef.current.getPieceMovementOptions(selectedTile.current));
             return;
         }
 
@@ -46,7 +46,7 @@ export default function ChessBoardPlayable() {
         // Valid move?
         if (highlightedTiles?.some(t => t.row == currentTileSelected.row && t.column == currentTileSelected.column)) {
             // Move.
-            const moved = gameRef.current.movementEngine.movePiece(lastTileSelected, currentTileSelected)
+            const moved = gameRef.current.movePiece(lastTileSelected, currentTileSelected)
 
             if (!moved) {
                 selectedTile.current = null;
@@ -57,7 +57,7 @@ export default function ChessBoardPlayable() {
             setCurrentBoardFEN(gameRef.current.toFEN());
             selectedTile.current = null;
             setHighlightedTiles(null);
-            setWinner(gameRef.current.winner);
+            setWinner(gameRef.current.winner());
 
             // Get move from API 
             getMoveFromAPI(gameRef.current.toFEN()).then((aiFen) => {
@@ -72,16 +72,16 @@ export default function ChessBoardPlayable() {
         }
 
         // Choose
-        const piece = gameRef.current.movementEngine.getPiece(currentTileSelected);
+        const piece = gameRef.current.getPiece(currentTileSelected);
 
-        if (!piece || gameRef.current.nextToMove !== piece.colour) {
+        if (!piece || gameRef.current.nextToMove() !== piece.color) {
             selectedTile.current = null;
             setHighlightedTiles(null);
             return;
         }
 
         selectedTile.current = currentTileSelected
-        setHighlightedTiles(gameRef.current.movementEngine.getPieceMovementOptions(selectedTile.current));
+        setHighlightedTiles(gameRef.current.getPieceMovementOptions(selectedTile.current));
         return;
     };
 
