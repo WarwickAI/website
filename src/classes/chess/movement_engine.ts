@@ -275,7 +275,7 @@ export class MovementEngine {
         }
         if (castleKingside) {
             let castle: boolean = true;
-            for (let x = location.column + 1; x < this.game.board[location.column].length; x++) {
+            for (let x = location.column + 1; x <= this.game.board[location.column].length; x++) {
                 const queryLocation: Position = { row: location.row, column: x };
                 if (this.isPiece(queryLocation) || this.isInCheck(queryLocation, king.colour)) {
                     castle = false;

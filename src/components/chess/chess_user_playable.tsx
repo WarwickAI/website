@@ -4,7 +4,6 @@
 import { ChessGame } from "@/classes/chess/chess_game";
 import ChessBoard from "./board";
 import { useRef, useState } from "react";
-import Notice from "../notice";
 import { Position } from "@/classes/chess/helpers/position";
 import { PieceColour } from "@/classes/chess/piece";
 
