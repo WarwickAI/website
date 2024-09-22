@@ -88,7 +88,8 @@ export class ChessGame {
         return this.chess.fen();
     }
 
-    public winner(): Color | undefined {
-        return !this.chess.isCheckmate() ? undefined : this.chess.turn() === "w" ? "b" : "w";
+    public winner(): Color | "draw" | "something went wrong" | undefined {
+        if (this.chess.isDraw() || this.chess.isInsufficientMaterial()) return "draw";
+        return !this.chess.isCheckmate() ? !this.chess.isGameOver() ? undefined : "something went wrong" : this.chess.turn() === "w" ? "b" : "w";
     }
 }

@@ -12,7 +12,7 @@ export default function ChessBoardPlayable() {
     const [currentBoardFEN, setCurrentBoardFEN] = useState<string>("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1");
     const selectedTile = useRef<Position | null>(null);
     const [highlightedTiles, setHighlightedTiles] = useState<Position[] | null>(null);
-    const [winner, setWinner] = useState<Color | undefined>(undefined);
+    const [winner, setWinner] = useState<Color | "draw" | "something went wrong" | undefined>(undefined);
 
     const gameRef = useRef<ChessGame>(new ChessGame(currentBoardFEN));
 
@@ -85,6 +85,11 @@ export default function ChessBoardPlayable() {
         return;
     };
 
+    function getWinnerMessage(winner: Color | "draw" | "something went wrong") {
+        if (winner === "draw" || winner === "something went wrong") return `${winner.toUpperCase()} WON`;
+        return `${winner === "b" ? "BLACK" : "WHITE"} WON`;
+    }
+
     // This will need to be updated to our Chess AI whenever it gets made. 
     // The AI just needs an API which takes in a FEN string, and outputs a FEN string of the next position... or something like that.
     async function getMoveFromAPI(fen: string): Promise<string | null> {
@@ -115,7 +120,7 @@ export default function ChessBoardPlayable() {
     return (
         <>
             {winner && (
-                <div className="text-center text-blue-green text-4xl font-mono font-bold">{winner.toUpperCase()} WON!</div>
+                <div className="text-center text-blue-green text-4xl font-mono font-bold">{getWinnerMessage(winner)}</div>
             )}
             <ChessBoard fenString={currentBoardFEN} onTileClick={handleTileClick} highlightedTiles={highlightedTiles} />
             <p className="text-center font-mono text-2xl font-bold text-wai-gray">{currentBoardFEN}</p>
