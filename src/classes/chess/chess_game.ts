@@ -70,8 +70,8 @@ export class ChessGame {
         if (chessPos === "O-O") return { row: 7, column: 6 };
         else if (chessPos === "O-O-O") return { row: 7, column: 2 };
 
-        // Handle check bullshit.
-        if (chessPos.includes('+')) chessPos = chessPos.substring(0, chessPos.length - 1);
+        // Handle check or checkmate bullshit.
+        if (chessPos.includes('+') || chessPos.includes('#')) chessPos = chessPos.substring(0, chessPos.length - 1);
 
         // Handles promotion bullshit.
         if (chessPos.includes('=')) chessPos = chessPos.split('=')[0];
