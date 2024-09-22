@@ -15,7 +15,7 @@ export default function ChessBoard(props: {
 }) {
     let game = new ChessGame(props.fenString);
 
-    if (!game.validPosition) {
+    if (!game.isValidGameState()) {
         return (
             <Notice important={true} >Invalid game position</Notice>
         );
@@ -27,12 +27,12 @@ export default function ChessBoard(props: {
 
     return (
         <div className="grid place-content-center" >
-            {game.board.map((row, rowIndex) => (
+            {game.board().map((row, rowIndex) => (
                 <div className="flex" key={rowIndex}>
                     {row.map((piece, columnIndex) => (
                         <div
                             className={`${boardStyle["tile" + ((rowIndex + columnIndex) % 2)]}`}
-                            style={{ '--tile-size': props.tileSize || '80px' } as React.CSSProperties}
+                            style={{ '--tile-size': props.tileSize || '50px' } as React.CSSProperties}
                             key={columnIndex}
                             onClick={() => props.onTileClick?.(rowIndex, columnIndex)}
                         >
