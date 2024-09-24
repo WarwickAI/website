@@ -93,7 +93,8 @@ export default function ChessBoardPlayable() {
     // This will need to be updated to our Chess AI whenever it gets made. 
     // The AI just needs an API which takes in a FEN string, and outputs a FEN string of the next position... or something like that.
     async function getMoveFromAPI(fen: string): Promise<string | null> {
-        const url = 'https://bad-chess-ai.hello-442.workers.dev/';
+        // You will need to run the AI server locally!
+        const url = process.env.NODE_ENV === "development" ? "http://localhost:8787/" : 'https://bad-chess-ai.hello-442.workers.dev/';
         try {
             const response = await fetch(url, {
                 method: 'POST',
