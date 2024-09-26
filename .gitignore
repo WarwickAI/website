@@ -51,3 +51,5 @@ competition.py
 
 # Jake's utility files
 RebaseBranch.sh
+
+/data/*
