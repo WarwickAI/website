@@ -1,6 +1,8 @@
 import { Chess, Square, Piece, PieceSymbol, Color } from "chess.js"
 import { Position } from "./helpers/position";
 
+const locationRegex = /^[a-h][1-8]$/;
+
 export class ChessGame {
     private chess: Chess;
     private isValidPosition: boolean;
@@ -37,7 +39,13 @@ export class ChessGame {
         const square = this.positionToChessPosition(location);
         if (square) {
             console.log(this.chess.moves({ square: square }));
-            return this.chess.moves({ square: square }).map((x) => { return this.chessPositionToPosition(x); }).filter((x): x is Position => x !== undefined);
+            const moves = this.chess.moves({ square: square });
+            const positions: Position[] = [];
+            for (let i = 0; i < moves.length; i++) {
+              const pos = this.chessPositionToPosition(moves[i]);
+              if (pos) positions.push(pos);
+            }
+            return positions;
         }
         return [];
     }
@@ -66,7 +74,7 @@ export class ChessGame {
     public chessPositionToPosition(chessPos: string): Position | undefined {
         const columnLetters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'];
 
-        // Handle castling bullshit. 
+        // Handle castling bullshit.
         if (chessPos === "O-O") return { row: 7, column: 6 };
         else if (chessPos === "O-O-O") return { row: 7, column: 2 };
 
@@ -79,7 +87,7 @@ export class ChessGame {
         // Remove all the other bullshit.
         chessPos = chessPos.slice(-2);
 
-        return /^[a-h][1-8]$/.test(chessPos) ?
+        return locationRegex.test(chessPos) ?
             { row: 8 - (parseInt(chessPos[1])), column: columnLetters.indexOf(chessPos[0]) } :
             undefined
     }
