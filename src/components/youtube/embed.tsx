@@ -1,18 +1,20 @@
 // Youtube LoFi Girl Embed
+import moment from 'moment-timezone';
 
 export default function YoutubeEmbed() {
-  // Returns a youtube embed if it is Thursday 7:00-9:00pm, otherwise empty div.
-  const date = new Date();
-  const day = date.getDay();
-  const hour = date.getHours();
-  const minute = date.getMinutes();
-  if (day !== 4) {
+  // Tuesday or Thursday between 6pm and 8pm UK time
+  const ukTime = moment().tz('Europe/London');
+  const day = ukTime.day();
+  const hour = ukTime.hour();
+  const minute = ukTime.minute();
+
+  if (day !== 2 && day !== 4) {
     return <div></div>;
   }
-  if (hour < 19 || hour > 21) {
+  if (hour < 18 || hour > 20) {
     return <div></div>;
   }
-  if (hour === 21 && minute > 0) {
+  if (hour === 20 && minute > 0) {
     return <div></div>;
   }
 
