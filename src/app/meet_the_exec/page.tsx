@@ -20,7 +20,7 @@ export default function Home() {
     const [errored, setErrored] = useState(false);
 
     // Reduce requests (not by much lol)
-    const execDetailsCSV = process.env.NODE_ENV === "production" ? "/data/exec/2024-2025.csv" : "https://yjvdlwzbqpqorfitrwpj.supabase.co/storage/v1/object/public/MeetTheExec/2024-2025.csv";
+    const execDetailsCSV = process.env.NODE_ENV === "development" ? "/data/exec/2024-2025.csv" : "https://yjvdlwzbqpqorfitrwpj.supabase.co/storage/v1/object/public/MeetTheExec/2024-2025.csv";
 
     // Defaults
     const defaultUnknownImage = "https://upload.wikimedia.org/wikipedia/commons/b/bc/Unknown_person.jpg";
@@ -70,25 +70,25 @@ export default function Home() {
     }, []);
 
     return defaultPageWithScroll(
-        <div className="grid grid-cols-1 place-content-center gap-6 p-1 pb-8">
+        <div className="grid grid-cols-1 place-content-center place-self-center gap-6 p-1 pb-8 w-full lg:w-3/5 ">
             <h1 className="pt-16 text-center font-mono text-5xl font-bold text-wai-gray">Meet the Exec!</h1>
             {errored ? (
-                <div>
+              <div>
                   <p className="pt-16 text-center font-mono font-bold text-wai-gray">Failed to load data. Please let the exec know.</p>
                 </div>
             ) : execData.length > 0 ? (
-                execData.map((person, index) => (
-                    <PersonInfo
-                        key={index}
-                        picture={person.PictureURL || defaultUnknownImage}
-                        name={person.Name || "Unknown"}
-                        tag={person.Title || "Unknown"}
-                        tagColour={person.TitleColour || undefined}
-                        description={person.Description || defaultDescription}
-                    />
-                ))
+              execData.map((person, index) => (
+                <PersonInfo
+                key={index}
+                picture={person.PictureURL || defaultUnknownImage}
+                name={person.Name || "Unknown"}
+                tag={person.Title || "Unknown"}
+                tagColour={person.TitleColour || undefined}
+                description={person.Description || defaultDescription}
+                />
+              ))
             ) : (
-                <p>Loading...</p>
+              <p>Loading...</p>
             )}
 
             {/* <PersonInfo
