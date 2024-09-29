@@ -2,20 +2,8 @@
 import moment from 'moment-timezone';
 
 export default function YoutubeEmbed() {
-  // Tuesday or Thursday between 6pm and 8pm UK time
-  const ukTime = moment().tz('Europe/London');
-  const day = ukTime.day();
-  const hour = ukTime.hour();
-  const minute = ukTime.minute();
-
-  if (day !== 2 && day !== 4) {
-    return <div></div>;
-  }
-  if (hour < 18 || hour > 20) {
-    return <div></div>;
-  }
-  if (hour === 20 && minute > 0) {
-    return <div></div>;
+  if (!isCodenight()) {
+    return <></>;
   }
 
   return (
@@ -29,7 +17,28 @@ export default function YoutubeEmbed() {
         title="lofi hip hop radio 📚 - beats to relax/study to"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowFullScreen
-      ></iframe>
+        ></iframe>
     </div>
   );
+}
+
+function isCodenight() {
+  // Tuesday or Thursday between 6pm and 8pm UK time
+  const ukTime = moment().tz('Europe/London');
+  const day = ukTime.day();
+  if (day !== 2 && day !== 4) {
+    return false;
+  }
+
+  const hour = ukTime.hour();
+  if (hour < 18 || hour > 20) {
+    return false;
+  }
+
+  const minute = ukTime.minute();
+  if (hour === 20 && minute > 0) {
+    return false;
+  }
+
+  return true;
 }
