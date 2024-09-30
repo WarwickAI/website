@@ -11,31 +11,31 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.504.0",
-    "@googleapis/calendar": "^9.6.0",
-    "@tsparticles/engine": "^3.1.0",
+    "@aws-sdk/client-s3": "^3.658.1",
+    "@googleapis/calendar": "^9.7.9",
+    "@tsparticles/engine": "^3.5.0",
     "@tsparticles/react": "^3.0.0",
-    "@tsparticles/slim": "^3.1.0",
+    "@tsparticles/slim": "^3.5.0",
     "chess.js": "^1.0.0-beta.8",
     "googleapis": "^131.0.0",
     "moment-timezone": "^0.5.45",
-    "next": "^14.1.0",
+    "next": "^14.2.13",
     "papaparse": "^5.4.1",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "react-dropzone": "^14.2.3",
-    "zod": "^3.22.4"
+    "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@types/node": "^20.11.10",
+    "@types/node": "^20.16.10",
     "@types/papaparse": "^5.3.14",
-    "@types/react": "^18.2.48",
-    "@types/react-dom": "^18.2.18",
-    "autoprefixer": "^10.4.17",
-    "postcss": "^8.4.33",
-    "prettier": "^3.2.4",
-    "prettier-plugin-tailwindcss": "^0.5.11",
-    "tailwindcss": "^3.4.1",
-    "typescript": "^5.3.3"
+    "@types/react": "^18.3.10",
+    "@types/react-dom": "^18.3.0",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.47",
+    "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.5.14",
+    "tailwindcss": "^3.4.13",
+    "typescript": "^5.6.2"
   }
 }
