@@ -127,7 +127,7 @@ function generateList(
             <div className="col-span-1 inline-block h-3 w-3 place-self-center rounded-full bg-purple bg-opacity-95"></div>
 
             <div className="col-span-4 pr-4 my-auto group-hover:underline">
-              <p className="text-start">{event.title + "\n" }</p>
+              <p className="text-start">{event.title}</p>
             </div>
           </div>
         </Link>,
