@@ -9,9 +9,14 @@ const googleCalendar = google.calendar({ version: "v3", auth: apiKey });
 // Refresh events every 5 minutes minus 10 seconds to never force a user to wait.
 var lastUpdated = new Date();
 const rateLimitMinutes = 5;
+const refreshRate = 60000 * rateLimitMinutes - 10000;
+if (refreshRate <= 0) {
+  throw new Error("Rate limit is zero or negative.");
+}
+
 lastUpdated.setFullYear(1970); // Force a refresh on first load.
 var events: CalendarEvent[] = [];
-setInterval(forceLoadEvents, 60000 * rateLimitMinutes - 10000);
+setInterval(forceLoadEvents, refreshRate);
 
 export async function loadEvents(): Promise<CalendarEvent[]> {
   // Loads events from Google Calendar API with a cache/rate limit.
@@ -21,31 +26,37 @@ export async function loadEvents(): Promise<CalendarEvent[]> {
   if (diffMinutes < rateLimitMinutes) {
     // Cache hit.
     console.log("Returning cached events.");
-    return events;
+    return events; // not actually a promise
   }
 
-  const result = await forceLoadEvents();
-  return result;
+  if (events.length > 0) {
+    // Cache miss, but we have events. Return them an update in the background
+    // for next time.
+    forceLoadEvents();
+    return events;
+  }
+  return forceLoadEvents();
 }
 
 async function forceLoadEvents(): Promise<CalendarEvent[]> {
   console.log("Loading events from Google Calendar API.");
-  const response = await getEventsFromGoogle();
-  if (response.status !== 200) {
-    console.log("API returned status code: " + response.status);
-    events = [];
-    return events;
-  }
+  return getEventsFromGoogle().then(async (response) => {
+    const res = await response;
+    if (res.status !== 200) {
+      console.log("API returned status code: " + res.status);
+      events = [];
+      return events;
+    }
 
-  lastUpdated = new Date();
-  if (!response.data.items || response.data.items.length === 0) {
-    console.log("No upcoming events found.");
-    events = [];
-    return events;
-  }
-
-  events = convertToCalendarEvents(response.data.items);
-  return events;
+    lastUpdated = new Date();
+    const items = res.data.items;
+    if (!items || items.length === 0) {
+      console.log("No upcoming events found.");
+      events = [];
+      return events;
+    }
+    return convertToCalendarEvents(items);
+  });
 }
 
 async function getEventsFromGoogle(): Promise<
@@ -60,10 +71,11 @@ async function getEventsFromGoogle(): Promise<
     timeMax: timeMax.toISOString(),
     singleEvents: true,
     maxResults: 10,
+    fields: "items(start,end,summary,description,location,htmlLink,id)",
   });
 }
 
-function convertGoogleToFullCalendarEvent(
+function convertGoogleToCalendarEvent(
   googleCalendarEvent: calendar_v3.Schema$Event,
 ): CalendarEvent {
   // Converts a single event from the Google Calendar API to a FullCalendar API.
@@ -104,8 +116,9 @@ function convertToCalendarEvents(
   googleCalendarEvents: calendar_v3.Schema$Event[],
 ): CalendarEvent[] {
   // Converts a list of events.
-  const fullCalendarEvents = googleCalendarEvents.map((event) =>
-    convertGoogleToFullCalendarEvent(event),
-  );
+  const fullCalendarEvents = [];
+  for (const event of googleCalendarEvents) {
+    fullCalendarEvents.push(convertGoogleToCalendarEvent(event));
+  }
   return fullCalendarEvents;
 }
