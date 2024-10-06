@@ -186,7 +186,7 @@ export default async function Home() {
                     Courses
                 </h1>
                 <h2 className="text-center font-mono text-xl font-bold text-wai-gray">
-                    Subtitle
+                    Here are the FREE courses we are running! We hope to see you there!
                 </h2>
             </div>
 
@@ -211,13 +211,14 @@ export default async function Home() {
                         ))}
                     </div>
                 </div>
-
-                <ListCalendar
-                    events={events.map(x => x.event).flat()}
-                    enableLinks={false}
-                    enableLocation={true}
-                    currentTime={currentTime}
-                />
+                <div>
+                    <ListCalendar
+                        events={events.map(x => x.event).flat()}
+                        enableLinks={false}
+                        enableLocation={true}
+                        currentTime={currentTime}
+                    />
+                </div>
             </div>
             <BackButton />
         </div>,
