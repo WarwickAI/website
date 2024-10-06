@@ -90,6 +90,13 @@ export default async function Home() {
           />
           <Button
             enabled={true}
+            text="Courses"
+            href="/courses"
+            ariaLabel="See what courses we offer!"
+            extraClasses="m-2"
+          />
+          <Button
+            enabled={true}
             text="Competition"
             href="/competition"
             ariaLabel="Compete in our competition!"

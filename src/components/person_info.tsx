@@ -17,7 +17,7 @@ export default function PersonInfo(props: {
             <img src={props.picture} className="place-self-center w-3/5 min-w-36 max-w-52 md:2/5 aspect-square mb-4 lg:pb-0 lg:w-1/5 object-cover rounded-lg" />
             <div className="flex-1 pl-4 text-left">
                 <div className="text-lg sm:text-xl md:text-2xl mb-2">
-                    {props.name} | <span className="text-wai-gray" style={{color: colour}}>{props.tag}</span>
+                    {props.name} | <span className="text-wai-gray" style={{ color: colour }}>{props.tag}</span>
                 </div>
                 <div className="text-sm sm:text-base md:text-lg">{props.description}</div>
             </div>
