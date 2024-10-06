@@ -23,21 +23,21 @@ export default async function Home() {
                 id: "1",
                 title: "Intro to AI",
                 description: "A formal description of AI and introduction to types of AI. Includes a tour of commonly used machine learning techniques.",
-                start: "2024-10-07T17:00:00Z",
-                end: "2024-10-07T19:00:00Z",
+                start: "2024-10-14T17:00:00Z",
+                end: "2024-10-14T19:00:00Z",
                 location: "MB0.08",
             }, {
                 id: "2",
                 title: "Intro to AI",
                 description: "A formal description of AI and introduction to types of AI. Includes a tour of commonly used machine learning techniques.",
-                start: "2024-10-14T17:00:00Z",
-                end: "2024-10-14T19:00:00Z",
+                start: "2024-10-21T17:00:00Z",
+                end: "2024-10-21T19:00:00Z",
                 location: "MB0.08",
-            }
+            },
             ],
 
             pictureUrl: "https://cataas.com/cat",
-            simpleDate: "Term 1 Week 2-3"
+            simpleDate: "Term 1 Week 3-4"
         },
         {
             event: [{
