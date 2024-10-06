@@ -25,14 +25,14 @@ export default async function Home() {
                 description: "A formal description of AI and introduction to types of AI. Includes a tour of commonly used machine learning techniques.",
                 start: "2024-10-07T17:00:00Z",
                 end: "2024-10-07T19:00:00Z",
-                location: "MS.01",
+                location: "MB0.08",
             }, {
                 id: "2",
                 title: "Intro to AI",
                 description: "A formal description of AI and introduction to types of AI. Includes a tour of commonly used machine learning techniques.",
                 start: "2024-10-14T17:00:00Z",
                 end: "2024-10-14T19:00:00Z",
-                location: "MS.01",
+                location: "MB0.08",
             }
             ],
 
@@ -46,14 +46,14 @@ export default async function Home() {
                 description: "A short self-contained course on how to create AI art using ready-made diffusion models. No programming knowledge required.",
                 start: "2024-10-28T19:00:00Z",
                 end: "2024-10-28T12:00:00Z",
-                location: "MS.01",
+                location: "MB0.08",
             }, {
                 id: "4",
                 title: "Use AI to make art",
                 description: "A short self-contained course on how to create AI art using ready-made diffusion models. No programming knowledge required.",
                 start: "2024-11-04T19:00:00Z",
                 end: "2024-11-04T12:00:00Z",
-                location: "MS.01",
+                location: "MB0.08",
             }
             ],
             pictureUrl: "https://cataas.com/cat",
@@ -66,21 +66,21 @@ export default async function Home() {
                 description: "Learn how to prototype and build Neural Networks quickly to get started solving problems with AI. Neural Networks are immensely powerful and have been shown to be sufficient for the majority of problems.",
                 start: "2024-11-18T17:00:00Z",
                 end: "2024-11-18T19:00:00Z",
-                location: "MS.01",
+                location: "MB0.08",
             }, {
                 id: "6",
                 title: "Neural Network Quickstart",
                 description: "Learn how to prototype and build Neural Networks quickly to get started solving problems with AI. Neural Networks are immensely powerful and have been shown to be sufficient for the majority of problems.",
                 start: "2024-11-25T17:00:00Z",
                 end: "2024-11-25T19:00:00Z",
-                location: "MS.01",
+                location: "MB0.08",
             }, {
                 id: "7",
                 title: "Neural Network Quickstart",
                 description: "Learn how to prototype and build Neural Networks quickly to get started solving problems with AI. Neural Networks are immensely powerful and have been shown to be sufficient for the majority of problems.",
                 start: "2024-12-02T17:00:00Z",
                 end: "2024-12-02T19:00:00Z",
-                location: "MS.01",
+                location: "MB0.08",
             }
             ],
             pictureUrl: "https://cataas.com/cat",
