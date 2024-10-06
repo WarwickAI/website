@@ -49,17 +49,13 @@ export default function Home() {
                     throw new Error("Failed reading CSV");
                 }
 
-                // Randomise the order of everyone other than the president for each client. This is to keep things fair.
-                const president = exec[0];
-                const otherExec = exec.slice(1);
-
-                // Fisher-Yates shuffle
-                for (let i = otherExec.length - 1; i > 0; i--) {
-                    const j = Math.floor(Math.random() * (i + 1));
-                    [otherExec[i], otherExec[j]] = [otherExec[j], otherExec[i]];
+                // Shhhhh ;) Catification easter egg
+                for (let i = 0; i < exec.length; i++) {
+                    if (Math.random() <= 0.01)
+                        exec[i].PictureURL = "https://cataas.com/cat";
                 }
-                setExecData([president, ...otherExec]);
 
+                setExecData(exec);
             } catch (error) {
                 setErrored(true);
                 console.error("Error fetching CSV:", error);
@@ -73,22 +69,22 @@ export default function Home() {
         <div className="grid grid-cols-1 place-content-center place-self-center gap-6 p-1 pb-8 w-full lg:w-3/5 ">
             <h1 className="pt-16 text-center font-mono text-5xl font-bold text-wai-gray">Meet the Exec!</h1>
             {errored ? (
-              <div>
-                  <p className="pt-16 text-center font-mono font-bold text-wai-gray">Failed to load data. Please let the exec know.</p>
+                <div>
+                    <p className="pt-16 text-center font-mono font-bold text-wai-gray">Failed to load data. Please let the exec know.</p>
                 </div>
             ) : execData.length > 0 ? (
-              execData.map((person, index) => (
-                <PersonInfo
-                key={index}
-                picture={person.PictureURL || defaultUnknownImage}
-                name={person.Name || "Unknown"}
-                tag={person.Title || "Unknown"}
-                tagColour={person.TitleColour || undefined}
-                description={person.Description || defaultDescription}
-                />
-              ))
+                execData.map((person, index) => (
+                    <PersonInfo
+                        key={index}
+                        picture={person.PictureURL || defaultUnknownImage}
+                        name={person.Name || "Unknown"}
+                        tag={person.Title || "Unknown"}
+                        tagColour={person.TitleColour || undefined}
+                        description={person.Description || defaultDescription}
+                    />
+                ))
             ) : (
-              <p>Loading...</p>
+                <p>Loading...</p>
             )}
 
             {/* <PersonInfo
