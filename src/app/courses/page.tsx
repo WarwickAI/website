@@ -36,7 +36,7 @@ export default async function Home() {
             },
             ],
 
-            pictureUrl: "https://cataas.com/cat",
+            pictureUrl: "/images/courses/intro_to_ai.webp",
             simpleDate: "Term 1 Week 3-4"
         },
         {
@@ -56,7 +56,7 @@ export default async function Home() {
                 location: "MB0.08",
             }
             ],
-            pictureUrl: "https://cataas.com/cat",
+            pictureUrl: "/images/courses/ai_art.webp",
             simpleDate: "Term 1 Week 5-6"
         },
         {
@@ -83,7 +83,7 @@ export default async function Home() {
                 location: "MB0.08",
             }
             ],
-            pictureUrl: "https://cataas.com/cat",
+            pictureUrl: "/images/courses/neural_network.webp",
             simpleDate: "Term 1 Week 8-10"
         },
         {
@@ -104,7 +104,7 @@ export default async function Home() {
                 location: "TBD",
             },
             ],
-            pictureUrl: "https://cataas.com/cat",
+            pictureUrl: "/images/courses/practical_ai.webp",
             simpleDate: "Term 2 Week 2-3"
         },
         {
@@ -120,11 +120,11 @@ export default async function Home() {
                 title: "Machine Learning",
                 description: "Machine Learning and pattern recognition in all its glory. Covers numerous ML methods for prediction, feature extraction and feature reduction.",
                 start: "2025-02-03T17:00:00Z",
-                end: "2025-012-03T19:00:00Z",
+                end: "2025-02-03T19:00:00Z",
                 location: "TBD",
             },
             ],
-            pictureUrl: "https://cataas.com/cat",
+            pictureUrl: "/images/courses/machine_learning.webp",
             simpleDate: "Term 2 Week 4-5"
         },
         {
@@ -144,7 +144,7 @@ export default async function Home() {
                 location: "TBD",
             },
             ],
-            pictureUrl: "https://cataas.com/cat",
+            pictureUrl: "/images/courses/computer_vision.webp",
             simpleDate: "Term 2 Week 6-7"
         },
         {
@@ -171,7 +171,7 @@ export default async function Home() {
                 location: "TBD",
             },
             ],
-            pictureUrl: "https://cataas.com/cat",
+            pictureUrl: "/images/courses/reinforcement_learning.webp",
             simpleDate: "Term 2 Week 8-10"
         },
 
