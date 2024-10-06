@@ -1,5 +1,3 @@
-import React from 'react';
-
 export default function PersonInfo(props: {
     picture: string;
     name: string;
