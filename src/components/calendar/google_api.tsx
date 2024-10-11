@@ -32,10 +32,9 @@ export async function loadEvents(): Promise<CalendarEvent[]> {
   if (events.length > 0) {
     // Cache miss, but we have events. Return them an update in the background
     // for next time.
-    forceLoadEvents();
-    return events;
+    return forceLoadEvents().then((e) => events = e);
   }
-  return forceLoadEvents();
+  return forceLoadEvents().then((e) => events = e);
 }
 
 async function forceLoadEvents(): Promise<CalendarEvent[]> {
