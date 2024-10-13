@@ -21,14 +21,15 @@ export default async function Home() {
 
     console.log(fenData);
 
-    const submissionOpen = true;
+    const submissionOpen = false;
     if (!submissionOpen) {
         return defaultPage(
             <div>
+                <br />
                 <Notice>
                     Submissions are not currently open.
                 </Notice>
-                <ChessDemo title={randomFile.replaceAll('_', ' ').replace('.fen', '')} fenData={fenData} tileSize="5%" />
+                <ChessDemo title={randomFile.replaceAll('_', ' ').replace('.fen', '')} fenData={fenData} tileSize="3vw" />
                 <BackButton />
             </div>,
         );
