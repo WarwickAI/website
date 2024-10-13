@@ -17,7 +17,7 @@ export default function ChessBoard(props: {
 
     if (!game.isValidGameState()) {
         return (
-            <Notice important={true} >Invalid game position</Notice>
+            <Notice important={true} >Invalid game position "{props.fenString}"</Notice>
         );
     }
 

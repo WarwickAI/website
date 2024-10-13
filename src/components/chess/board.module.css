@@ -31,7 +31,7 @@
 .chessPiece {
     width: var(--tile-size);
     height: var(--tile-size);
-    background-image: url('/images/chess/Chess_Pieces_Sprite.png');
+    background-image: url('/images/competition/chess/Chess_Pieces_Sprite.png');
     background-size: 600%;
 }
 
