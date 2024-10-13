@@ -64,9 +64,9 @@ export default async function Home() {
             <ChessDemo title={randomFile.replaceAll('_', ' ').replace('.fen', '')} fenData={fenData} tileSize="5vh" />
 
             <Button
-                href="/competition/leaderboard"
+                href="/competition/chess/leaderboard"
                 text="Leaderboard"
-                enabled={true}
+                enabled={false}
                 extraClasses="mb-4"
             />
         </>,

@@ -21,13 +21,13 @@ export default function Home() {
         name: "Chess Competition",
         urlName: "chess",
         imageUrl: "/images/competition/chess/Chess_Competition.webp",
-        description: "",
+        description: "This is a chess competition! This description is WIP",
         active: true
     }, {
         name: "Pacman Competition",
         urlName: "pacman",
         imageUrl: "/images/competition/pacman/Pacman_Competition.webp",
-        description: "",
+        description: "This is a PvP pacman competition! This description is WIP",
         active: false
     }];
 
@@ -35,7 +35,7 @@ export default function Home() {
         <div>
             <div>
                 <h1 className="pt-16 text-center font-mono text-5xl font-bold text-wai-gray">
-                    Competition
+                    Competitions
                 </h1>
                 <h2 className="text-center font-mono text-xl font-bold text-wai-gray">
                     See our competitions below!

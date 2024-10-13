@@ -12,7 +12,7 @@ export default function ClickableInfoBox(props: {
     extraClasses?: string;
 }) {
     // Litterally a person info but clickonable
-    const baseClassNames = `w-full shadow-sm whitespace-pre-line shadow-wai-gray bg-pure-white text-xl sm:text-xl md:text-2xl font-mono font-bold text-center text-wai-gray border-4 rounded-lg border-wai-gray p-2 md:p-4 justify-self-center`;
+    const baseClassNames = `w-full shadow-sm whitespace-pre-line shadow-wai-gray bg-pure-white text-xl sm:text-xl md:text-2xl font-mono font-bold text-center text-wai-gray border-4 rounded-lg border-wai-gray p-2 md:p-4 justify-self-center max-w-4xl mx-auto`;
     const cardClassNames = `${baseClassNames} ${props.extraClasses || ""}` + "grid grid-cols-1 md:flex md:flex-row md:items-center hover:shadow-purple hover:border-purple hover:text-purple";
     const colour = props.tagColour || "#9372BE";
 
