@@ -13,6 +13,10 @@ export default function Home() {
   if (!submissionOpen) {
     return defaultPage(
       <div>
+        <h1 className="pt-16 text-center font-mono text-5xl font-bold text-wai-gray">
+          Pac-Man AI Competition
+        </h1>
+        <Pacman />
         <Notice>
           Submissions are not currently open.
         </Notice>
