@@ -19,9 +19,7 @@ export default async function Home() {
     const filePath = path.join(chessDir, randomFile);
     const fenData = (await promises.readFile(filePath, 'utf8')).trim();
 
-    console.log(fenData);
-
-    const submissionOpen = false;
+    const submissionOpen = true;
     if (!submissionOpen) {
         return defaultPage(
             <div>
