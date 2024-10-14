@@ -97,6 +97,13 @@ export default async function Home() {
           />
           <Button
             enabled={true}
+            text="AI Safety"
+            href="/ai_safety"
+            ariaLabel="See our ai safety events!"
+            extraClasses="m-2"
+          />
+          <Button
+            enabled={true}
             text="Competition"
             href="/competition"
             ariaLabel="Compete in our competition!"
