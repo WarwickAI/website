@@ -1,23 +1,11 @@
-import BackButton from "@/components/back_button";
-import ListCalendar, { CalendarEvent } from "@/components/calendar/list_calendar";
-import CourseInfo from "@/components/course_info";
 import defaultPage from "@/components/default";
-
-// A bodge-job interface for the courses
-interface CourseEvent {
-    event: CalendarEvent[];
-    pictureUrl: string;
-    simpleDate: string;
-}
+import { Event } from "@/classes/event"
+import EventsDualPage from "@/components/events_dual_page";
 
 export default async function Home() {
-
-    // Calendar of the course events
-    const currentTime = Date.now();
-
     // Creating this list has negatively harmed my mental health. Why oh why do I have to do this.
     // This has made me drastically reconsider how fun a data entry job would be. It went from "not fun" to "i'd rather lick cactuses for a living"
-    const events: CourseEvent[] = [
+    const events: Event[] = [
         {
             event: [{
                 id: "1",
@@ -177,51 +165,14 @@ export default async function Home() {
 
     ];
 
-
-    // The page, in 2 halfs.
     return defaultPage(
-        <div>
-            <div>
-                <h1 className="pt-16 text-center font-mono text-5xl font-bold text-wai-gray">
-                    Courses
-                </h1>
-                <h2 className="text-center font-mono text-xl font-bold text-wai-gray">
-                    Here are the FREE courses we are running! We hope to see you there!
-                </h2>
-            </div>
-
-            <div className="grid grid-cols-1 place-content-center gap-16 p-3 pb-12 lg:grid-cols-[60%_40%] lg:p-4 max-w-screen-xl mx-auto">
-                <div className="m-auto grid h-fit  grid-cols-1 rounded-lg border-4 border-wai-gray bg-pure-white p-2 shadow-sm shadow-wai-gray md:p-4">
-                    <div className="font-mono text-sm text-wai-gray md:text-base">
-                        {events && events.map((event, index) => (
-                            <>
-                                <CourseInfo
-                                    picture={event.pictureUrl}
-                                    name={event.event[0].title}
-                                    description={event.event[0].description || ""}
-                                    date={event.simpleDate}
-                                />
-                                {/* The cute lil' bar :) */}
-                                {index < events.length - 1 && (
-                                    <div className="my-4 w-full flex justify-center">
-                                        <div className="h-1 w-11/12 md:w-10/12 rounded-full bg-wai-gray opacity-30"></div>
-                                    </div>
-                                )}
-                            </>
-                        ))}
-                    </div>
-                </div>
-                <div>
-                    <ListCalendar
-                        events={events.map(x => x.event).flat()}
-                        enableLinks={false}
-                        enableLocation={true}
-                        currentTime={currentTime}
-                    />
-                </div>
-            </div>
-            <BackButton />
-        </div>,
+        <>
+            <EventsDualPage
+                pageTitle={"Courses"}
+                pageSubtitle={"Here are the FREE courses we are running! We hope to see you there!"}
+                events={events}
+            />
+        </>,
     );
 }
 

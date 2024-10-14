@@ -22,7 +22,7 @@ export default function Home() {
         urlName: "chess",
         imageUrl: "/images/competition/chess/Chess_Competition.webp",
         description: "This is a chess competition! This description is WIP",
-        active: true
+        active: false
     }, {
         name: "Pacman Competition",
         urlName: "pacman",
