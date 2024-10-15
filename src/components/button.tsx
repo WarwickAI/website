@@ -7,11 +7,15 @@ export default function Button(props: {
   extraClasses?: string;
   ariaLabel?: string;
 }) {
-  const classNames = `shadow-sm whitespace-pre-line shadow-wai-gray bg-pure-white text-xl font-mono font-bold text-center text-wai-gray border-4 rounded-lg border-wai-gray p-4 justify-self-center`;
+  const className =
+    "whitespace-pre-line box text-xl font-bold text-center justify-self-center";
 
   if (props.enabled) {
-    const enabledClassNames = "hover:shadow-purple hover:border-purple hover:text-purple";
-    const allClassNames = `${classNames} ${enabledClassNames} ${props.extraClasses || ""}`;
+    const enabledClassNames =
+      "hover:shadow-purple hover:border-purple hover:text-purple";
+    const allClassNames = `${className} ${enabledClassNames} ${
+      props.extraClasses || ""
+    }`;
     return (
       <Link
         href={props.href}
@@ -22,7 +26,7 @@ export default function Button(props: {
       </Link>
     );
   } else {
-    const allClassNames = `${classNames} ${props.extraClasses || ""}`;
+    const allClassNames = `${className} ${props.extraClasses || ""}`;
     return <p className={allClassNames}>{props.text}</p>;
   }
 }

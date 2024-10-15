@@ -13,7 +13,7 @@ export default function Footer() {
         >
           {WaiLogo}
         </Link>
-        <p className="col-span-2 grid place-content-center text-center font-mono text-lg font-bold text-lavender">
+        <p className="col-span-2 grid place-content-center text-center text-lg font-bold text-lavender">
           &copy; 2024 Warwick Artificial Intelligence
         </p>
       </div>

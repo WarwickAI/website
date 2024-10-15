@@ -23,7 +23,7 @@ export default function ListCalendar(props: {
   // The list is displayed in a single column.
   if (props.events.length === 0) {
     return (
-      <div className="h-full w-full rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-center font-mono text-wai-gray shadow-lg">
+      <div className="box h-full w-full text-center">
         <p className="text-lg">
           Join our discord to find out more about upcoming events.
         </p>
@@ -117,7 +117,7 @@ function generateList(
           aria-label={event.title}
         >
           <div
-            className={`group grid grid-cols-9 pb-2 pt-2 hover:bg-purple hover:bg-opacity-50  ${border} ${currentEventStyle}`}
+            className={`group grid grid-cols-9 pb-2 pt-2 hover:bg-purple hover:bg-opacity-50 ${border} ${currentEventStyle}`}
           >
             <div className="col-span-4 pl-4 text-start">
               <p>{`${startTimeString} - ${endTimeString}`}</p>
@@ -126,7 +126,7 @@ function generateList(
 
             <div className="col-span-1 inline-block h-3 w-3 place-self-center rounded-full bg-purple bg-opacity-95"></div>
 
-            <div className="col-span-4 pr-4 my-auto group-hover:underline">
+            <div className="col-span-4 my-auto pr-4 group-hover:underline">
               <p className="text-start">{event.title}</p>
             </div>
           </div>
@@ -148,7 +148,7 @@ function generateList(
 
             <div className="col-span-1 inline-block h-3 w-3 place-self-center rounded-full bg-purple bg-opacity-95"></div>
 
-            <div className="col-span-4 pr-4 my-auto">
+            <div className="col-span-4 my-auto pr-4">
               <p className="text-start">{event.title}</p>
             </div>
           </div>
@@ -157,7 +157,7 @@ function generateList(
     }
   }
   return (
-    <div className="h-full w-full overflow-hidden rounded-lg border border-wai-gray border-opacity-25 bg-pure-white text-center font-mono text-sm text-wai-gray shadow-lg md:text-base">
+    <div className="h-full w-full overflow-hidden rounded-lg border border-wai-gray border-opacity-25 bg-pure-white text-center text-sm shadow-lg md:text-base">
       {elements}
     </div>
   );

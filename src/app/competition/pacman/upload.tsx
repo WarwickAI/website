@@ -28,7 +28,7 @@ const submissionSchema = z.object({
   file: z.instanceof(File),
 });
 
-export async function handleSubmission(prevState: any, formData: FormData) {
+export async function handleSubmission(_prevState: any, formData: FormData) {
   // Reject if the date is before the competition start date.
   const competitionStartDate = new Date("2024-02-19T12:00:00Z");
   if (Date.now() < competitionStartDate.getTime()) {

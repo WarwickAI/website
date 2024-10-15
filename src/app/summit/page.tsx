@@ -6,8 +6,6 @@ import ListCalendar, {
   CalendarEvent,
 } from "@/components/calendar/list_calendar";
 import defaultPage from "@/components/default";
-import Notice from "@/components/notice";
-import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
@@ -19,7 +17,9 @@ export default function Home() {
         <Button
           enabled={true}
           href="https://www.warwicksu.com/venues-events/events/57846/25060/"
-          text={"Summit details for academic year 2024/2025 are not currently available\n\nClick here to see what we did in 2024!"}
+          text={
+            "Summit details for academic year 2024/2025 are not currently available\n\nClick here to see what we did in 2024!"
+          }
         />
         <BackButton />
       </div>,
@@ -136,10 +136,10 @@ export default function Home() {
   return defaultPage(
     <div>
       <div>
-        <h1 className="pt-16 text-center font-mono text-5xl font-bold text-wai-gray">
+        <h1 className="pt-16 text-center text-5xl font-bold">
           WAI Summit 2024
         </h1>
-        <h2 className="text-center font-mono text-xl font-bold text-wai-gray">
+        <h2 className="text-center text-xl font-bold">
           17th and 18th February
         </h2>
         <div className="flex justify-center p-4">
@@ -154,8 +154,8 @@ export default function Home() {
       </div>
 
       <div className="grid grid-cols-1 place-content-center gap-12 p-3 pb-12 lg:grid-cols-2 lg:gap-12 lg:p-4">
-        <div className="m-auto grid h-fit max-w-lg grid-cols-1 gap-8 rounded-lg border-4 border-wai-gray bg-pure-white p-2 shadow-sm shadow-wai-gray md:p-4">
-          <p className="font-mono text-sm text-wai-gray md:text-base">
+        <div className="m-auto grid h-fit max-w-lg grid-cols-1 gap-8 box-no-padding p-2 md:p-4">
+          <p className="text-sm md:text-base">
             Welcome to the exciting world of Artificial Intelligence, where
             innovation meets possibility! Join us on a journey into the
             incredible advancements that AI has brought, from self-driving cars

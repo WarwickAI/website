@@ -4,7 +4,7 @@
 // table.
 
 import Button from "@/components/button";
-import defaultPage, { defaultPageNoSplash, defaultPageWithScroll } from "@/components/default";
+import defaultPage, { defaultPageWithScroll } from "@/components/default";
 import { Pacman } from "@/components/pacman";
 import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
@@ -75,16 +75,16 @@ export default async function Home() {
   if (leaderboard.length === 0) {
     return defaultPage(
       <div>
-        <h1 className="pt-16 text-center font-mono text-5xl font-bold text-wai-gray">
+        <h1 className="pt-16 text-center text-5xl font-bold">
           Pac-Man AI Competition Leaderboard
         </h1>
 
         <div className="justify-self-center">
-          <p className="max-w-3xl pb-4 text-center font-mono text-lg text-wai-gray md:text-xl">
+          <p className="max-w-3xl pb-4 text-center text-lg md:text-xl">
             No games have been played yet. The leaderboard will be updated some
             time after two people have submitted their agents.
           </p>
-          <p className="max-w-3xl pb-4 text-center font-mono text-lg text-wai-gray md:text-xl">
+          <p className="max-w-3xl pb-4 text-center text-lg md:text-xl">
             Please check back later!
           </p>
         </div>
@@ -105,7 +105,7 @@ export default async function Home() {
   const thirdStyle = "md:text-2xl font-bold text-lavender";
   return defaultPageWithScroll(
     <>
-      <h1 className="h-fit pt-[10vh] text-center font-mono text-5xl font-bold text-wai-gray">
+      <h1 className="h-fit pt-[10vh] text-center text-5xl font-bold">
         Pac-Man AI Competition Leaderboard
       </h1>
 
@@ -114,8 +114,8 @@ export default async function Home() {
       </div>
 
       <div className="grid justify-items-center overflow-x-auto pb-16">
-        <div className="rounded-lg border-4 border-wai-gray bg-pure-white shadow-sm shadow-wai-gray">
-          <table className="h-fit w-fit max-w-3xl p-4 text-center font-mono font-bold text-wai-gray md:text-xl">
+        <div className="box">
+          <table className="h-fit w-fit max-w-3xl p-4 text-center font-bold md:text-xl">
             <thead>
               <tr className="border-b-2">
                 <th className="w-fit text-nowrap pl-2 pr-2">Player ID</th>
@@ -129,7 +129,7 @@ export default async function Home() {
                 <th className="w-fit text-nowrap pl-2 pr-2">Overall Score</th>
               </tr>
             </thead>
-            <tbody className="w-fit text-center text-nowrap">
+            <tbody className="w-fit text-nowrap text-center">
               {leaderboard.map((row, index) => {
                 const first = index === 0;
                 const second = index === 1;

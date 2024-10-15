@@ -19,11 +19,26 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(to bottom,
+  background: linear-gradient(
+      to bottom,
       transparent,
-      rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb));
 }
 
 #content * {
   z-index: 1;
+}
+
+.box-no-padding {
+  @apply rounded-lg border-4 border-wai-gray bg-pure-white shadow-sm shadow-wai-gray;
+}
+
+.box {
+  @apply box-no-padding p-4;
+}
+
+body * {
+  @apply font-mono text-wai-gray;
 }

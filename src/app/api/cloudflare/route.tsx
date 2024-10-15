@@ -7,7 +7,7 @@ const WAI_KV_CLEAR_API_TOKEN =
 var newSubmissionsExist: boolean = false;
 
 export const dynamic = "force-dynamic"; // defaults to auto
-export async function GET(request: Request) {
+export async function GET(_request: Request) {
   // Returns the value of the flag.
   return new Response(newSubmissionsExist.toString(), { status: 200 });
 }

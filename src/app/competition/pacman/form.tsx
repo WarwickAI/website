@@ -58,9 +58,9 @@ export default function CompetitionSubmission() {
     <form
       ref={formRef}
       action={handleNewSubmission}
-      className="max-w-3xl justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray mb-16"
+      className="box mb-16 max-w-3xl justify-self-center text-center text-xl font-bold"
     >
-      <div className="justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray">
+      <div className="box justify-self-center text-center text-xl font-bold">
         <label htmlFor="studentId">Student ID (digits only)</label>
         <br></br>
         <input
@@ -73,7 +73,7 @@ export default function CompetitionSubmission() {
           required
         />
       </div>
-      <div className="justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray">
+      <div className="box justify-self-center text-center text-xl font-bold">
         <label htmlFor="studentEmail">
           University of Warwick Email Address
         </label>
@@ -88,7 +88,7 @@ export default function CompetitionSubmission() {
         />
       </div>
 
-      <div className="justify-self-center rounded-lg border-4 border-dashed border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray hover:bg-purple">
+      <div className="box justify-self-center border-dashed text-center text-xl font-bold hover:bg-purple">
         <label htmlFor="file">Submission</label>
         <div {...getRootProps({ className: "dropzone" })}>
           <input {...getInputProps({ id: "file" })} />
@@ -135,7 +135,7 @@ function SubmitButton() {
       value={status.pending ? "Submitting..." : "Submit"}
       disabled={status.pending}
       aria-disabled={status.pending}
-      className="m-2 w-1/2 justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray hover:bg-purple"
+      className="box m-2 w-1/2 justify-self-center text-center text-xl font-bold hover:bg-purple"
     />
   );
 }

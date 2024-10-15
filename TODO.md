@@ -1,4 +1,5 @@
-# Jake:
+# Jake
+
 - [x] take down competition page
 - [x] take down summit page
 - [ ] about us

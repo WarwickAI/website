@@ -5,7 +5,7 @@ const svgIconClass = "fill-wai-gray group-hover:fill-purple";
 function roundedIcon(icon: JSX.Element, link: string, ariaLabel: string) {
   return (
     <Link href={link} className="group" aria-label={ariaLabel}>
-      <div className="grid h-11 w-11 grid-cols-1 place-content-center rounded-lg border-4 border-wai-gray bg-pure-white p-2 shadow-sm shadow-wai-gray group-hover:border-purple sm:h-12 sm:w-12">
+      <div className="grid h-11 w-11 grid-cols-1 place-content-center rounded-lg box-no-padding p-2 group-hover:border-purple sm:h-12 sm:w-12">
         {icon}
       </div>
     </Link>

@@ -2,10 +2,10 @@
 import BackButton from "@/components/back_button";
 import Button from "@/components/button";
 import defaultPage, { defaultPageWithScroll } from "@/components/default";
+import Notice from "@/components/notice";
 import { Pacman } from "@/components/pacman";
 import Link from "next/link";
 import CompetitionSubmission from "./form";
-import Notice from "@/components/notice";
 
 export default function Home() {
   const submissionOpen = false;
@@ -13,24 +13,21 @@ export default function Home() {
   if (!submissionOpen) {
     return defaultPage(
       <div>
-        <Notice>
-          Submissions are not currently open.
-        </Notice>
+        <Notice>Submissions are not currently open.</Notice>
         <BackButton />
       </div>,
     );
   }
 
-
-  // TODO: Replace this 
+  // TODO: Replace this
   return defaultPageWithScroll(
     // Centered splash
     <>
-      <h1 className="pt-16 text-center font-mono text-5xl font-bold text-wai-gray">
+      <h1 className="pt-16 text-center text-5xl font-bold">
         Pac-Man AI Competition
       </h1>
       <div className="justify-self-center">
-        <p className="max-w-3xl pb-4 text-center font-mono text-lg text-wai-gray md:text-xl">
+        <p className="max-w-3xl pb-4 text-center text-lg md:text-xl">
           We are excited to announce that we are hosting our first ever
           competition!
           <br />
@@ -46,7 +43,7 @@ export default function Home() {
         </p>
       </div>
       <Pacman />
-      <div className="w-full max-w-3xl justify-self-center rounded-lg border-4 border-blue-green bg-pure-white p-4 font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray md:w-fit">
+      <div className="w-full max-w-3xl justify-self-center rounded-lg border-4 border-blue-green bg-pure-white p-4 text-xl font-bold shadow-sm shadow-wai-gray md:w-fit">
         Submissions are now open! The competition will end on midnight, 24th
         April 2024. With results being announced on codenight the day after.
       </div>
@@ -61,7 +58,7 @@ export default function Home() {
 
     // Content
     <div className="grid grid-cols-1 place-content-center gap-12 p-1 pb-8">
-      <div className="w-full max-w-3xl justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray md:w-fit">
+      <div className="box w-full max-w-3xl justify-self-center text-xl font-bold md:w-fit">
         <h2 className="pb-4">Instructions:</h2>
 
         <p className="pb-4">
