@@ -1,7 +1,6 @@
+import { EventSimple, ParseSimpleEvents } from "@/classes/event";
 import defaultPage from "@/components/default";
-import { Event } from "@/classes/event";
 import EventsDualPage from "@/components/events_dual_page";
-import { EventSimple, ParseSimpleEvents } from "@/classes/event_simple";
 
 
 export default async function Home() {
