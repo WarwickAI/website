@@ -76,23 +76,16 @@ export default async function Home() {
         >
           <Button
             enabled={true}
-            text="Meet the Exec!"
-            href="/meet_the_exec"
-            ariaLabel="Meet the exec!"
-            extraClasses="m-2"
-          />
-          <Button
-            enabled={true}
-            text="Summit Details"
-            href="/summit"
-            ariaLabel="Find out more about the summit!"
-            extraClasses="m-2"
-          />
-          <Button
-            enabled={true}
             text="Courses"
             href="/courses"
             ariaLabel="See what courses we offer!"
+            extraClasses="m-2"
+          />
+          <Button
+            enabled={true}
+            text="Projects"
+            href="https://projects.warwick.ai/"
+            ariaLabel="Join in on the projects!"
             extraClasses="m-2"
           />
           <Button
@@ -107,6 +100,19 @@ export default async function Home() {
             text="Competition"
             href="/competition"
             ariaLabel="Compete in our competition!"
+            extraClasses="m-2"
+          /><Button
+            enabled={true}
+            text="Meet the Exec!"
+            href="/meet_the_exec"
+            ariaLabel="Meet the exec!"
+            extraClasses="m-2"
+          />
+          <Button
+            enabled={true}
+            text="Summit Details"
+            href="/summit"
+            ariaLabel="Find out more about the summit!"
             extraClasses="m-2"
           />
         </div>
