@@ -1,9 +1,17 @@
 import { EventSimple, ParseSimpleEvents } from "@/classes/event";
+import comingSoon from "@/components/coming_soon";
 import defaultPage from "@/components/default";
 import EventsDualPage from "@/components/events_dual_page";
 
 
 export default async function Home() {
+    const pageEnabled: boolean = false;
+
+    if (!pageEnabled) {
+        return comingSoon();
+    }
+
+
     // Calendar of the course... IDK if this is an even worse way of doing it but like... No more redundant data! :D
     const events_simple: EventSimple[] = [
         {
