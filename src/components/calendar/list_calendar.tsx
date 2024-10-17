@@ -164,7 +164,7 @@ function generateList(
     }
   }
   return (
-    <div className="h-full w-full overflow-scroll rounded-lg border border-wai-gray border-opacity-25 bg-pure-white text-center font-mono text-sm text-wai-gray shadow-lg md:h-3/5 md:text-base">
+    <div className="h-full w-full overflow-y-scroll rounded-lg border border-wai-gray border-opacity-25 bg-pure-white text-center font-mono text-sm text-wai-gray shadow-lg md:h-3/5 md:text-base">
       {elements}
     </div>
   );
