@@ -17,6 +17,7 @@ export default function ListCalendar(props: {
   enableLocation: boolean;
   enableLinks: boolean;
   currentTime?: number;
+  scrollable?: boolean;
 }) {
   // A calendar that displays events as a list grouped by day.
   //
@@ -37,6 +38,7 @@ export default function ListCalendar(props: {
     props.enableLocation,
     props.enableLinks,
     props.currentTime,
+    props.scrollable,
   );
 }
 
@@ -52,10 +54,15 @@ function generateList(
   enableLocation: boolean,
   enableLinks: boolean,
   currentTime?: number,
+  scrollable?: boolean,
 ): JSX.Element {
   // Generate a 1 column table of events, grouped by day.
   let lastDate = "";
   const elements: JSX.Element[] = [];
+  if (scrollable === undefined) {
+    // Just to be explicit.
+    scrollable = false;
+  }
 
   for (let i = 0; i < events.length; i++) {
     const event = events[i];
@@ -117,7 +124,7 @@ function generateList(
           aria-label={event.title}
         >
           <div
-            className={`group grid grid-cols-9 pb-2 pt-2 hover:bg-purple hover:bg-opacity-50  ${border} ${currentEventStyle}`}
+            className={`group grid grid-cols-9 pb-2 pt-2 hover:bg-purple hover:bg-opacity-50 ${border} ${currentEventStyle}`}
           >
             <div className="col-span-4 pl-4 text-start">
               <p>{`${startTimeString} - ${endTimeString}`}</p>
@@ -126,7 +133,7 @@ function generateList(
 
             <div className="col-span-1 inline-block h-3 w-3 place-self-center rounded-full bg-purple bg-opacity-95"></div>
 
-            <div className="col-span-4 pr-4 my-auto group-hover:underline">
+            <div className="col-span-4 my-auto pr-4 group-hover:underline">
               <p className="text-start">{event.title}</p>
             </div>
           </div>
@@ -148,7 +155,7 @@ function generateList(
 
             <div className="col-span-1 inline-block h-3 w-3 place-self-center rounded-full bg-purple bg-opacity-95"></div>
 
-            <div className="col-span-4 pr-4 my-auto">
+            <div className="col-span-4 my-auto pr-4">
               <p className="text-start">{event.title}</p>
             </div>
           </div>
@@ -157,7 +164,7 @@ function generateList(
     }
   }
   return (
-    <div className="h-full w-full overflow-hidden rounded-lg border border-wai-gray border-opacity-25 bg-pure-white text-center font-mono text-sm text-wai-gray shadow-lg md:text-base">
+    <div className="h-full w-full overflow-scroll rounded-lg border border-wai-gray border-opacity-25 bg-pure-white text-center font-mono text-sm text-wai-gray shadow-lg md:h-3/5 md:text-base">
       {elements}
     </div>
   );
