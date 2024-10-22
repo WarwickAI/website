@@ -7,10 +7,12 @@ export default function Button(props: {
   extraClasses?: string;
   ariaLabel?: string;
 }) {
-  const classNames = `shadow-sm whitespace-pre-line shadow-wai-gray bg-pure-white text-xl font-mono font-bold text-center text-wai-gray border-4 rounded-lg border-wai-gray p-4 justify-self-center`;
+  const classNames =
+    "shadow-sm whitespace-pre-line shadow-wai-gray bg-pure-white text-xl font-mono font-bold text-center text-wai-gray border-4 rounded-lg border-wai-gray p-4 justify-self-center";
 
   if (props.enabled) {
-    const enabledClassNames = "hover:shadow-purple hover:border-purple hover:text-purple";
+    const enabledClassNames =
+      "hover:shadow-purple hover:border-purple hover:text-purple";
     const allClassNames = `${classNames} ${enabledClassNames} ${props.extraClasses || ""}`;
     return (
       <Link

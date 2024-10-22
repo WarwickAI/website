@@ -19,7 +19,9 @@ export default function Home() {
         <Button
           enabled={true}
           href="https://www.warwicksu.com/venues-events/events/57846/25060/"
-          text={"Summit details for academic year 2024/2025 are not currently available\n\nClick here to see what we did in 2024!"}
+          text={
+            "Summit details for academic year 2024/2025 are not currently available\n\nClick here to see what we did in 2024!"
+          }
         />
         <BackButton />
       </div>,

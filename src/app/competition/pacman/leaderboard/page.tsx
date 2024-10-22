@@ -4,7 +4,7 @@
 // table.
 
 import Button from "@/components/button";
-import defaultPage, { defaultPageNoSplash, defaultPageWithScroll } from "@/components/default";
+import defaultPage, { defaultPageWithScroll } from "@/components/default";
 import { Pacman } from "@/components/pacman";
 import { GetObjectCommand, S3Client } from "@aws-sdk/client-s3";
 
@@ -129,7 +129,7 @@ export default async function Home() {
                 <th className="w-fit text-nowrap pl-2 pr-2">Overall Score</th>
               </tr>
             </thead>
-            <tbody className="w-fit text-center text-nowrap">
+            <tbody className="w-fit text-nowrap text-center">
               {leaderboard.map((row, index) => {
                 const first = index === 0;
                 const second = index === 1;
