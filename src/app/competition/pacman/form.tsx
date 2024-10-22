@@ -43,7 +43,7 @@ export default function CompetitionSubmission() {
       }
       formData.set("file", acceptedFiles[0]);
       formRef.current?.reset();
-      acceptedFiles.splice(0, acceptedFiles.length);
+      acceptedFiles.slice(0, acceptedFiles.length);
       return formAction(formData);
     } catch (e) {
       setLocalError(
