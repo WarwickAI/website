@@ -11,11 +11,11 @@ export default function BackButton(props: { extraClasses?: string }) {
   return (
     <button
       onClick={() => {
-      if (window.history.length > 1) {
-        router.back();
-      } else {
-        router.push('/');
-      }
+        if (window.history.length > 1) {
+          router.back();
+        } else {
+          router.push("/");
+        }
       }}
       className={allClassNames}
     >

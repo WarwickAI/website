@@ -7,8 +7,13 @@ export default function Home() {
     return defaultPage(
       <>
         <PersonInfo picture={""} name={"Jakub"} tag={""} description={"TBD"} />
-        <PersonInfo picture={""} name={"Jake Turrell"} tag={""} description={"TBD"} />
-      </>
+        <PersonInfo
+          picture={""}
+          name={"Jake Turrell"}
+          tag={""}
+          description={"TBD"}
+        />
+      </>,
     );
   }
 }

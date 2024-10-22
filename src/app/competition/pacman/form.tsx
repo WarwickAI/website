@@ -58,7 +58,7 @@ export default function CompetitionSubmission() {
     <form
       ref={formRef}
       action={handleNewSubmission}
-      className="max-w-3xl justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray mb-16"
+      className="mb-16 max-w-3xl justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray"
     >
       <div className="justify-self-center rounded-lg border-4 border-wai-gray bg-pure-white p-4 text-center font-mono text-xl font-bold text-wai-gray shadow-sm shadow-wai-gray">
         <label htmlFor="studentId">Student ID (digits only)</label>

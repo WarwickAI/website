@@ -17,16 +17,13 @@ export default function Home() {
           Pac-Man AI Competition
         </h1>
         <Pacman />
-        <Notice>
-          Submissions are not currently open.
-        </Notice>
+        <Notice>Submissions are not currently open.</Notice>
         <BackButton />
       </div>,
     );
   }
 
-
-  // TODO: Replace this 
+  // TODO: Replace this
   return defaultPageWithScroll(
     // Centered splash
     <>

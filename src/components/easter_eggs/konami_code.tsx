@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
 import { useEffect, useState } from "react";
-import { redirect } from "next/navigation"
+import { redirect } from "next/navigation";
 
 const KonamiCodeListener: React.FC = () => {
   const [keySequence, setKeySequence] = useState<string[]>([]);
@@ -23,7 +23,9 @@ const KonamiCodeListener: React.FC = () => {
     ];
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      setKeySequence((prevSequence) => [...prevSequence, event.key].slice(-konamiCode.length));
+      setKeySequence((prevSequence) =>
+        [...prevSequence, event.key].slice(-konamiCode.length),
+      );
     };
 
     // Konami Code check
@@ -32,7 +34,9 @@ const KonamiCodeListener: React.FC = () => {
       setKeySequence([]);
 
       // I hide this from you :)
-      redirect(atob('aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1kUXc0dzlXZ1hjUQ=='))
+      redirect(
+        atob("aHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1kUXc0dzlXZ1hjUQ=="),
+      );
     }
 
     // Add event listener

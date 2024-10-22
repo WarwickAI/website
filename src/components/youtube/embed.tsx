@@ -1,5 +1,5 @@
 // Youtube LoFi Girl Embed
-import moment from 'moment-timezone';
+import moment from "moment-timezone";
 
 export default function YoutubeEmbed() {
   if (!isCodenight()) {
@@ -17,14 +17,14 @@ export default function YoutubeEmbed() {
         title="lofi hip hop radio 📚 - beats to relax/study to"
         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
         allowFullScreen
-        ></iframe>
+      ></iframe>
     </div>
   );
 }
 
 function isCodenight() {
   // Tuesday or Thursday between 6pm and 8pm UK time
-  const ukTime = moment().tz('Europe/London');
+  const ukTime = moment().tz("Europe/London");
   const day = ukTime.day();
   if (day !== 2 && day !== 4) {
     return false;
