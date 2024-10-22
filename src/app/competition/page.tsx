@@ -4,17 +4,23 @@ import ClickableInfoBox from "@/components/clickable_info_box";
 import defaultPage from "@/components/default";
 
 
+enum CompetitionState {
+    Active, Completed, Coming_Soon
+}
+
+
 interface CompetitionEvent {
     name: string;
     urlName: string;    // The competition name
     imageUrl: string;
     description: string;
-    active: boolean;
+    active: CompetitionState;
 }
 
 export default function Home() {
     const activeColour = "#4EA75D";
     const unactiveColour = "#A74E5D";
+    const comingSoonColour = undefined;     // Defaults to WAI Purple when undefined
 
     // The competitions
     const competitions: CompetitionEvent[] = [{
@@ -22,13 +28,13 @@ export default function Home() {
         urlName: "chess",
         imageUrl: "/images/competition/chess/Chess_Competition.webp",
         description: "This is a chess competition! This description is WIP",
-        active: false
+        active: CompetitionState.Coming_Soon
     }, {
         name: "Pacman Competition",
         urlName: "pacman",
         imageUrl: "/images/competition/pacman/Pacman_Competition.webp",
         description: "This is a PvP pacman competition! This description is WIP",
-        active: false
+        active: CompetitionState.Completed
     }];
 
     return defaultPage(
@@ -46,8 +52,12 @@ export default function Home() {
                 <ClickableInfoBox
                     picture={comp.imageUrl}
                     name={comp.name}
-                    tag={comp.active ? "Competition In Progress!" : "Competition Has Ended."}
-                    tagColour={comp.active ? activeColour : unactiveColour}
+                    tag={
+                        comp.active == CompetitionState.Active ? "Competition In Progress!" :
+                            comp.active == CompetitionState.Completed ? "Competition Has Ended." : "Competition Coming Soon!"}
+                    tagColour={
+                        comp.active == CompetitionState.Active ? activeColour :
+                            comp.active == CompetitionState.Completed ? unactiveColour : comingSoonColour}
                     clickLocation={`/competition/${comp.urlName}`}
                     description={comp.description}
                 />
