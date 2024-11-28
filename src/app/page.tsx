@@ -14,6 +14,7 @@ import {
 } from "@/components/icons";
 import YoutubeEmbed from "@/components/youtube/embed";
 import "./globals.css";
+import TwitchEmbed from "@/components/twtich/embed";
 
 export const dynamic = "force-dynamic"; // defaults to auto
 
@@ -111,6 +112,7 @@ export default async function Home() {
           extraClasses="m-2"
         />
       </div>
+      <TwitchEmbed channel="warwickai" />
       <YoutubeEmbed />
     </div>,
   );

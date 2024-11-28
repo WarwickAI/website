@@ -8,7 +8,7 @@ import CompetitionSubmission from "./form";
 import Notice from "@/components/notice";
 
 export default function Home() {
-  const submissionOpen = false;
+  const submissionOpen = true;
 
   if (!submissionOpen) {
     return defaultPage(

@@ -6,6 +6,7 @@ import Notice from "@/components/notice";
 import ChessDemo from "@/components/chess/chess_demo";
 import path from "path";
 import { promises } from "fs";
+import CompetitionSubmission from "@/components/competition_upload/form";
 
 export default async function Home() {
   // Get the chess stuff
@@ -17,7 +18,7 @@ export default async function Home() {
   const filePath = path.join(chessDir, randomFile);
   const fenData = (await promises.readFile(filePath, "utf8")).trim();
 
-  const submissionOpen = false;
+  const submissionOpen = true;
   if (!submissionOpen) {
     return defaultPage(
       <div>
@@ -115,6 +116,7 @@ export default async function Home() {
           />
         </div>
       </div>
+      <CompetitionSubmission />
     </div>,
   );
 }
