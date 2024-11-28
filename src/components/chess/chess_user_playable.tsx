@@ -122,7 +122,7 @@ export default function ChessBoardPlayable() {
     const url =
       process.env.NODE_ENV === "development"
         ? "http://localhost:8787/"
-        : "https://bad-chess-ai.hello-442.workers.dev/";
+        : "https://bad-chess-ai.hello-442.workers.dev/";  // This API has been taken down since. This is no longer possible, sorry!
     try {
       const response = await fetch(url, {
         method: "POST",
