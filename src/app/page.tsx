@@ -104,6 +104,13 @@ export default async function Home() {
           ariaLabel="Find out more about the summit!"
           extraClasses="m-2"
         />
+        <Button
+          enabled={true}
+          text="Democracy"
+          href="/democracy"
+          ariaLabel="Get involved in the societies democracy!"
+          extraClasses="m-2"
+        />
       </div>
       <TwitchEmbed channel="warwickai" />
       <YoutubeEmbed />
