@@ -7,8 +7,7 @@ export default function RainbowText(props: {
   colors?: string[];
   animationDuration?: string;
 }) {
-  const baseClassNames = `text-xl font-mono font-bold text-center whitespace-pre-line text-wai-gray p-4`;
-  const allClassNames = `${baseClassNames} ${props.extraClasses || ""} ${style.shine}`;
+  const allClassNames = `${props.extraClasses || ""} ${style.shine}`;
 
 
   // I HAD THIS STUFF ANIMATED AND THEN I TRIED TO TIDY IT AND IT BROKE SO I UNDID THE DELETES AND IT HASN'T WORKED AGAIN
