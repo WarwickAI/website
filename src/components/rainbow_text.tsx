@@ -9,11 +9,6 @@ export default function RainbowText(props: {
 }) {
   const allClassNames = `${props.extraClasses || ""} animate-shine`;
 
-
-  // I HAD THIS STUFF ANIMATED AND THEN I TRIED TO TIDY IT AND IT BROKE SO I UNDID THE DELETES AND IT HASN'T WORKED AGAIN
-  // I SPENT SO LONG ON THIS
-  // GAAAAH I RAN OUT OF TIME
-  // YOU GET PRETTY TEXT, JUST NOT PERFECT TEXT.
   const gradientColour = props.colors?.join(", ") || `purple, orange, purple`;
   const gradientStyle = {
     background: `linear-gradient(90deg, ${gradientColour})`,
