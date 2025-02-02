@@ -36,7 +36,7 @@ export default function Home() {
     // Saturday
     {
       id: "1",
-      title: "TBC",
+      title: "Image Generation Workshop, WAI",
       start: "2025-02-08T10:30:00Z",
       end: "2025-02-08T11:20:00Z",
       location: "FAB0.03",
@@ -50,14 +50,14 @@ export default function Home() {
     },
     {
       id: "3",
-      title: "The Explosive Growth of AI, Ollie Jaffe, OpenAI",
+      title: "Why We Shouldn't Expect Explosive Growth from AI, Ollie Jaffe, OpenAI",
       start: "2025-02-08T12:30:00Z",
       end: "2025-02-08T13:20:00Z",
       location: "FAB0.03",
     },
     {
       id: "4",
-      title: "TBC",
+      title: "AI Safety Discussion Panel, WAI",
       start: "2025-02-08T14:00:00Z",
       end: "2025-02-08T14:50:00Z",
       location: "FAB0.03",
@@ -71,7 +71,7 @@ export default function Home() {
     },
     {
       id: "6",
-      title: "TBC",
+      title: "Project Presentations, WAI",
       start: "2025-02-08T16:00:00Z",
       end: "2025-02-08T16:50:00Z",
       location: "FAB0.03",
@@ -86,14 +86,14 @@ export default function Home() {
     // Sunday
     {
       id: "8",
-      title: "TBC",
+      title: "DCS Contribution, Long Tran-Thanh, DCS",
       start: "2025-02-09T10:30:00Z",
       end: "2025-02-09T11:20:00Z",
       location: "FAB0.03",
     },
     {
       id: "9",
-      title: "TBC",
+      title: "How AI Transforms Business, Connor Mattinson, TRUSS",
       start: "2025-02-09T11:30:00Z",
       end: "2025-02-09T12:20:00Z",
       location: "FAB0.03",
@@ -107,7 +107,7 @@ export default function Home() {
     },
     {
       id: "11",
-      title: "TBC",
+      title: "Founding a Startup in an AI Boom, TRUSS",
       start: "2025-02-09T14:00:00Z",
       end: "2025-02-09T14:50:00Z",
       location: "FAB0.03",
@@ -121,7 +121,7 @@ export default function Home() {
     },
     {
       id: "13",
-      title: "TBC",
+      title: "Cybersecurity in an Artificially Intelligent World, WAI",
       start: "2025-02-09T16:00:00Z",
       end: "2025-02-09T16:50:00Z",
       location: "FAB0.03",
@@ -129,18 +129,20 @@ export default function Home() {
   ];
 
 
+
   return defaultPage(
     <div>
-      <div>
-        <RainbowText extraClasses="pt-16 text-center font-mono text-5xl font-bold">
+      <div className="pt-6">
+        <RainbowText extraClasses="text-center font-mono text-6xl font-bold">
           WAI Summit 2025
         </RainbowText>
-        <h2 className="text-center font-mono text-xl font-bold text-wai-gray">
+        <h2 className="text-center font-mono text-2xl font-bold text-wai-gray">
           8th, 9th February 2025
         </h2>
       </div>
-      <div className="grid grid-cols-1 place-content-center gap-12 p-3 pb-12 lg:grid-cols-2 lg:gap-12 lg:p-4">
-        <div className="m-auto grid h-fit max-w-lg grid-cols-1 gap-8 rounded-lg border-4 border-wai-gray bg-pure-white p-2 shadow-sm shadow-wai-gray md:p-4">
+
+      <div className="grid grid-cols-1 place-content-start gap-4 p-1 pb-8 lg:grid-cols-2 lg:gap-4 lg:p-2">
+        <div className="m-auto flex flex-col max-w-2xl rounded-lg border-4 border-wai-gray bg-pure-white p-3 shadow-sm shadow-wai-gray md:p-4 mt-0">
           <p className="font-mono text-sm text-wai-gray md:text-base">
             Artificial Intelligence is one of the biggest technological advances
             in recent years, underpinning development such as self-driving cars,
@@ -173,17 +175,19 @@ export default function Home() {
             text="Summit Tickets"
             href="https://www.warwicksu.com/venues-events/events/57846/26607/"
             ariaLabel="Buy summit tickets!"
-            extraClasses="h-fit m-4"
+            extraClasses="h-fit m-2"
           />
         </div>
 
-        <ListCalendar
-          events={events}
-          enableLinks={false}
-          enableLocation={true}
-          currentTime={currentTime}
-        />
+        <div className="m-auto flex flex-col max-w-2xl h-full">
+          <ListCalendar
+            events={events}
+            enableLinks={false}
+            enableLocation={true}
+            currentTime={currentTime}
+          />
+        </div>
       </div>
-    </div>,
+    </div >
   );
 }
