@@ -31,6 +31,14 @@ To run locally with hot reloading:
 
 1. `npm run dev`
 
+To test a build (as would be built by Vercel):
+
+1. `npm run build`
+
 ## Deploying
 
-TODO(czarlinski): Deploy the website to `warwick.ai`.
+Main website is the Main branch of GitHub. Make a pull request to it for the automatic deployment pipeline to kick in.
+
+- Have another branch, push to it, then make a pull request on GitHub to main. 
+  - This will require a reviewer (can be bypassed for small patches + hotfixes)
+
