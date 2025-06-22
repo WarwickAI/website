@@ -1,0 +1,46 @@
+---
+import { Button } from '@/components/ui/button'
+import { Login } from '@/components/Login.astro'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { Icon } from 'astro-icon/components'
+---
+
+<Popover>
+  <PopoverTrigger asChild>
+    <Button
+      variant="ghost"
+      size="icon"
+      title="Account information"
+      className="-me-2 size-8"
+    >
+      <Icon name="lucide:user" class="absolute size-4" />
+      <span class="sr-only">Account information</span>
+    </Button>
+  </PopoverTrigger>
+  <PopoverContent></PopoverContent>
+</Popover>
+
+<!-- <Popover> -->
+<!--   <PopoverTrigger asChild> -->
+<!--     <Button -->
+<!--       variant="ghost" -->
+<!--       size="icon" -->
+<!--       title="Account information" -->
+<!--       className="-me-2 size-8" -->
+<!--     > -->
+<!--       <Icon -->
+<!--         name="lucide:user" -->
+<!--         class="absolute size-4 scale-0 rotate-90 transition-all dark:scale-100 dark:rotate-0" -->
+<!--       /> -->
+<!--       <span class="sr-only">Account information</span> -->
+<!--     </Button> -->
+<!--   </PopoverTrigger> -->
+<!--   <PopoverContent client:only className="w-80"> -->
+<!--     <div>a</div> -->
+<!--   </PopoverContent> -->
+<!-- </Popover> -->
+
