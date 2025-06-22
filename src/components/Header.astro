@@ -1,9 +1,11 @@
 ---
-import AccountIcon from '@/components/AccountIcon.astro'
+import IconPopover from '@/components/IconPopover'
 import Link from '@/components/Link.astro'
+import Login from '@/components/Login'
 import ThemeToggle from '@/components/ThemeToggle.astro'
 import MobileMenu from '@/components/ui/mobile-menu'
 import { NAV_LINKS, SITE } from '@/consts'
+import { Icon } from 'astro-icon/components'
 import { Image } from 'astro:assets'
 import logo from '../../public/static/logo.svg'
 ---
@@ -33,7 +35,10 @@ import logo from '../../public/static/logo.svg'
       </nav>
       <MobileMenu client:load transition:persist />
       <ThemeToggle transition:persist />
-      <AccountIcon server:load transition:persist />
+      <IconPopover title="Account information" client:load transition:persist>
+        <Icon slot="icon" name="lucide:user" class="absolute size-4" />
+        <Login server:load />
+      </IconPopover>
     </div>
   </div>
 </header>
