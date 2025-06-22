@@ -25,7 +25,6 @@ export default function Login() {
           await signIn.social(
             {
               provider: 'github',
-              callbackURL: '/dashboard',
             },
             {
               onRequest: (ctx) => {
