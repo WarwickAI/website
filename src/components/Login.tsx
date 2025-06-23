@@ -55,22 +55,7 @@ export default function Login() {
         variant="outline"
         className={cn('w-full gap-2')}
         disabled={loading}
-        onClick={async () => {
-          await signIn.social(
-            {
-              provider: 'github',
-              callbackURL: '/dashboard',
-            },
-            {
-              onRequest: (ctx) => {
-                setLoading(true)
-              },
-              onResponse: (ctx) => {
-                setLoading(false)
-              },
-            },
-          )
-        }}
+        onClick={async () => {}}
       >
         <svg
           version="1.1"
