@@ -1,6 +1,0 @@
----
-import Login from '@/components/Login'
-const isAuthed = Astro.locals.user != null
----
-
-{isAuthed ? <slot client:load /> : <Login client:load />}

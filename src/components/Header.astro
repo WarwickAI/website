@@ -1,6 +1,6 @@
 ---
 import AccountAvatar from '@/components/AccountAvatar.astro'
-import AuthWall from '@/components/AuthWall.astro'
+import AuthWall from '@/components/AuthWall'
 import IconPopover from '@/components/IconPopover'
 import Link from '@/components/Link.astro'
 import ThemeToggle from '@/components/ThemeToggle.astro'
@@ -37,8 +37,11 @@ import logo from '../../public/static/logo.svg'
       <ThemeToggle transition:persist />
       <IconPopover title="Account information" client:load transition:persist>
         <AccountAvatar server:defer slot="icon" class="absolute size-4" />
-        <AuthWall>
-          <p>yo</p>
+        <AuthWall client:load>
+          <div class="text-muted-foreground text-sm">
+            MyWAI is coming soon - keep an eye out here for projects
+            leaderboards!
+          </div>
         </AuthWall>
       </IconPopover>
     </div>
