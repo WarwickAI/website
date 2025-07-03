@@ -20,8 +20,9 @@ const authors = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/authors' }),
   schema: z.object({
     name: z.string(),
+    exec: z.boolean(),
     pronouns: z.string().optional(),
-    avatar: z.string().url().or(z.string().startsWith('/')),
+    avatar: z.string().url().or(z.string().startsWith('/')).optional(),
     bio: z.string().optional(),
     mail: z.string().email().optional(),
     website: z.string().url().optional(),

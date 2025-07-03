@@ -1,5 +1,6 @@
 ---
 name: 'Finlay Sanders'
+exec: true
 pronouns: 'Head of Projects'
 avatar: '/exec/finlay-sanders.png'
 bio: |

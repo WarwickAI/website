@@ -1,5 +1,6 @@
 ---
 name: 'Cathal Lee'
+exec: true
 pronouns: 'Summit Coordinator'
 avatar: '/exec/cathal-lee.jpg'
 bio: 'blah blah blah'

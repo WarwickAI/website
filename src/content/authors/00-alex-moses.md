@@ -1,5 +1,6 @@
 ---
 name: 'Alex Moses'
+exec: true
 pronouns: 'President'
 avatar: '/exec/alex-moses.JPG'
 bio: 'blah blah blah'

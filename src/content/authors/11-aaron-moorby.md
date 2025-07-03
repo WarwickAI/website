@@ -1,8 +1,8 @@
 ---
-name: 'Wei Jian Poh'
+name: 'Aaron Moorby'
 exec: true
-pronouns: 'Projects Officer'
-avatar: '/exec/wei-jian-poh.jpg'
+pronouns: 'Marketing Officer'
+avatar: '/exec/aaron-moorby.jpeg'
 bio: 'blah blah blah'
 website: 'https://enscribe.dev'
 twitter: 'https://twitter.com/enscry'

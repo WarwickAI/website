@@ -1,5 +1,6 @@
 ---
 name: 'Gargi Nisal'
+exec: true
 pronouns: 'Social Secretary'
 avatar: '/exec/gargi-nisal.jpeg'
 bio: |

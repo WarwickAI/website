@@ -28,7 +28,12 @@ const authorPosts = await getPostsByAuthor(author.id)
   <Breadcrumbs
     items={[
       { href: '/authors', label: 'Authors', icon: 'lucide:users' },
-      { label: author.data.name, icon: 'lucide:user' },
+      ...(author.data.exec
+        ? [
+            { href: '/authors/exec', label: 'Exec', icon: 'lucide:sparkles' },
+            { label: author.data.name, icon: 'lucide:user' },
+          ]
+        : [{ label: author.data.name, icon: 'lucide:user' }]),
     ]}
   />
 

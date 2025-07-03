@@ -11,7 +11,7 @@ export default function AuthWall({
   login = <Login />,
   loading,
   ...props
-}: AuthDisplayProps) {
+}: AuthWallProps) {
   const { data: session, isPending } = useSession()
 
   if (isPending) return <>{loading}</>

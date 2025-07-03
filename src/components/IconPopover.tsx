@@ -7,7 +7,7 @@ import {
 import { cn } from '@/lib/utils'
 
 interface IconPopoverProps extends React.ComponentProps<'div'> {
-  icon: React.ReactNode
+  icon?: React.ReactNode
 }
 
 export default function IconPopover(props: IconPopoverProps) {
