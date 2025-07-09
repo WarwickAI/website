@@ -1,6 +1,7 @@
 ---
 import Link from '@/components/Link.astro'
 import AvatarComponent from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
 import { cn } from '@/lib/utils'
 import type { SocialLink } from '@/types'
 import type { CollectionEntry } from 'astro:content'
@@ -25,7 +26,7 @@ const socialLinks: SocialLink[] = [
 ---
 
 <div
-  class="has-[a:hover]:bg-secondary/50 overflow-hidden rounded-xl border p-4 transition-colors duration-300 ease-in-out"
+  class="has-[a:hover]:bg-secondary/50 relative overflow-hidden rounded-xl border p-4 transition-colors duration-300 ease-in-out"
 >
   <div class="flex flex-wrap gap-4">
     <Link
@@ -50,7 +51,9 @@ const socialLinks: SocialLink[] = [
           <h3 class="text-lg font-medium">{name}</h3>
           {
             pronouns && (
-              <span class="text-muted-foreground text-sm">({pronouns})</span>
+              <Badge className="text-foreground bg-accent text-xs sm:absolute sm:top-4 sm:right-4">
+                {pronouns}
+              </Badge>
             )
           }
         </div>

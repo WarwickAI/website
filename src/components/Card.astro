@@ -1,0 +1,18 @@
+---
+const { class: className = '', ...rest } = Astro.props
+const hasHeader = Astro.slots.has('header')
+---
+
+<div class={`rounded-lg border ${className}`} {...rest}>
+  {
+    hasHeader && (
+      <div class="flex flex-col space-y-1.5 p-6">
+        <slot name="header" />
+      </div>
+    )
+  }
+
+  <div class={'p-6 text-muted-foreground text-sm' + (hasHeader ? ' pt-0' : '')}>
+    <slot />
+  </div>
+</div>
