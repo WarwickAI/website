@@ -1,7 +1,7 @@
 {
-  "name": "astro-erudite",
+  "name": "wai-website",
   "type": "module",
-  "version": "1.6.2",
+  "version": "2.0.0",
   "private": true,
   "scripts": {
     "dev": "astro dev",

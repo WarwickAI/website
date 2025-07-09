@@ -4,78 +4,78 @@ const hasHeader = Astro.slots.has('header')
 
 const colorSchemes = {
   blue: {
-    cardStyle: "border-blue-500 bg-blue-50 dark:bg-blue-950",
-    textColor: "text-blue-700 dark:text-blue-300"
+    cardStyle: 'border-blue-500 bg-blue-50 dark:bg-blue-950',
+    textColor: 'text-blue-700 dark:text-blue-300',
   },
   green: {
-    cardStyle: "border-green-500 bg-green-50 dark:bg-green-950",
-    textColor: "text-green-700 dark:text-green-300"
+    cardStyle: 'border-green-500 bg-green-50 dark:bg-green-950',
+    textColor: 'text-green-700 dark:text-green-300',
   },
   yellow: {
-    cardStyle: "border-yellow-500 bg-yellow-50 dark:bg-yellow-950",
-    textColor: "text-yellow-700 dark:text-yellow-300"
+    cardStyle: 'border-yellow-500 bg-yellow-50 dark:bg-yellow-950',
+    textColor: 'text-yellow-700 dark:text-yellow-300',
   },
   amber: {
-    cardStyle: "border-amber-500 bg-amber-50 dark:bg-amber-950",
-    textColor: "text-amber-700 dark:text-amber-300"
+    cardStyle: 'border-amber-500 bg-amber-50 dark:bg-amber-950',
+    textColor: 'text-amber-700 dark:text-amber-300',
   },
   red: {
-    cardStyle: "border-red-500 bg-red-50 dark:bg-red-950",
-    textColor: "text-red-700 dark:text-red-300"
+    cardStyle: 'border-red-500 bg-red-50 dark:bg-red-950',
+    textColor: 'text-red-700 dark:text-red-300',
   },
   purple: {
-    cardStyle: "border-purple-500 bg-purple-50 dark:bg-purple-950",
-    textColor: "text-purple-700 dark:text-purple-300"
+    cardStyle: 'border-purple-500 bg-purple-50 dark:bg-purple-950',
+    textColor: 'text-purple-700 dark:text-purple-300',
   },
   violet: {
-    cardStyle: "border-violet-600 bg-violet-50 dark:bg-violet-950",
-    textColor: "text-violet-700 dark:text-violet-300"
+    cardStyle: 'border-violet-600 bg-violet-50 dark:bg-violet-950',
+    textColor: 'text-violet-700 dark:text-violet-300',
   },
   pink: {
-    cardStyle: "border-pink-500 bg-pink-50 dark:bg-pink-950",
-    textColor: "text-pink-700 dark:text-pink-300"
+    cardStyle: 'border-pink-500 bg-pink-50 dark:bg-pink-950',
+    textColor: 'text-pink-700 dark:text-pink-300',
   },
   indigo: {
-    cardStyle: "border-indigo-500 bg-indigo-50 dark:bg-indigo-950",
-    textColor: "text-indigo-700 dark:text-indigo-300"
+    cardStyle: 'border-indigo-500 bg-indigo-50 dark:bg-indigo-950',
+    textColor: 'text-indigo-700 dark:text-indigo-300',
   },
   orange: {
-    cardStyle: "border-orange-600 bg-orange-50 dark:bg-orange-950",
-    textColor: "text-orange-700 dark:text-orange-300"
+    cardStyle: 'border-orange-600 bg-orange-50 dark:bg-orange-950',
+    textColor: 'text-orange-700 dark:text-orange-300',
   },
   teal: {
-    cardStyle: "border-teal-500 bg-teal-50 dark:bg-teal-950",
-    textColor: "text-teal-700 dark:text-teal-300"
+    cardStyle: 'border-teal-500 bg-teal-50 dark:bg-teal-950',
+    textColor: 'text-teal-700 dark:text-teal-300',
   },
   cyan: {
-    cardStyle: "border-cyan-500 bg-cyan-50 dark:bg-cyan-950",
-    textColor: "text-cyan-700 dark:text-cyan-300"
+    cardStyle: 'border-cyan-500 bg-cyan-50 dark:bg-cyan-950',
+    textColor: 'text-cyan-700 dark:text-cyan-300',
   },
   sky: {
-    cardStyle: "border-sky-500 bg-sky-50 dark:bg-sky-950",
-    textColor: "text-sky-700 dark:text-sky-300"
+    cardStyle: 'border-sky-500 bg-sky-50 dark:bg-sky-950',
+    textColor: 'text-sky-700 dark:text-sky-300',
   },
   gray: {
-    cardStyle: "border-gray-500 bg-gray-50 dark:bg-gray-950",
-    textColor: "text-gray-700 dark:text-gray-300"
+    cardStyle: 'border-gray-500 bg-gray-50 dark:bg-gray-950',
+    textColor: 'text-gray-700 dark:text-gray-300',
   },
   slate: {
-    cardStyle: "border-slate-500 bg-slate-50 dark:bg-slate-950",
-    textColor: "text-slate-700 dark:text-slate-300"
+    cardStyle: 'border-slate-500 bg-slate-50 dark:bg-slate-950',
+    textColor: 'text-slate-700 dark:text-slate-300',
   },
   emerald: {
-    cardStyle: "border-emerald-500 bg-emerald-50 dark:bg-emerald-950",
-    textColor: "text-emerald-700 dark:text-emerald-300"
+    cardStyle: 'border-emerald-500 bg-emerald-50 dark:bg-emerald-950',
+    textColor: 'text-emerald-700 dark:text-emerald-300',
   },
   lime: {
-    cardStyle: "border-lime-500 bg-lime-50 dark:bg-lime-950",
-    textColor: "text-lime-700 dark:text-lime-300"
+    cardStyle: 'border-lime-500 bg-lime-50 dark:bg-lime-950',
+    textColor: 'text-lime-700 dark:text-lime-300',
   },
-};
+}
 
-const colorConfig = color ? colorSchemes[color] : null;
-const cardColor = colorConfig ? colorConfig.cardStyle : "";
-const headerColor = colorConfig ? colorConfig.textColor : "";
+const colorConfig = color ? colorSchemes[color] : null
+const cardColor = colorConfig ? colorConfig.cardStyle : ''
+const headerColor = colorConfig ? colorConfig.textColor : ''
 ---
 
 <div class={`rounded-lg border ${cardColor} ${className}`} {...rest}>
