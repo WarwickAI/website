@@ -4,11 +4,11 @@ export const SITE: Site = {
   title: 'Warwick AI',
   description:
     'astro-erudite is a opinionated, unstyled blogging template—built with Astro, Tailwind, and shadcn/ui.',
-  href: 'https://astro-erudite.vercel.app',
+  href: 'https://warwick.ai',
   author: 'jktrn',
   locale: 'en-GB',
   featuredPostCount: 2,
-  postsPerPage: 3,
+  postsPerPage: 5,
 }
 
 export const NAV_LINKS: SocialLink[] = [
@@ -28,16 +28,28 @@ export const NAV_LINKS: SocialLink[] = [
 
 export const SOCIAL_LINKS: SocialLink[] = [
   {
-    href: 'https://github.com/jktrn',
+    href: 'mailto:hello@warwick.ai',
+    label: 'Email',
+  },
+  {
+    href: 'https://discord.gg/YshvNtPUZm',
+    label: 'Discord',
+  },
+  {
+    href: 'https://instagram.com/warwick_ai',
+    label: 'Instagram',
+  },
+  {
+    href: 'https://linkedin.com/company/warwick-ai',
+    label: 'LinkedIn',
+  },
+  {
+    href: 'https://github.com/WarwickAI',
     label: 'GitHub',
   },
   {
-    href: 'https://twitter.com/enscry',
-    label: 'Twitter',
-  },
-  {
-    href: 'mailto:jason@enscribe.dev',
-    label: 'Email',
+    href: 'https://www.warwicksu.com/societies-sports/societies/warwickai/',
+    label: 'WarwickSU',
   },
   {
     href: '/rss.xml',
@@ -49,7 +61,9 @@ export const ICON_MAP: IconMap = {
   Website: 'lucide:globe',
   GitHub: 'lucide:github',
   LinkedIn: 'lucide:linkedin',
-  Twitter: 'lucide:twitter',
+  Instagram: 'lucide:instagram',
   Email: 'lucide:mail',
+  Discord: 'discord',
+  WarwickSU: 'warwick-su',
   RSS: 'lucide:rss',
 }

@@ -78,16 +78,16 @@ const cardColor = colorConfig ? colorConfig.cardStyle : ''
 const headerColor = colorConfig ? colorConfig.textColor : ''
 ---
 
-<div class={`rounded-lg border ${cardColor} ${className}`} {...rest}>
+<div class={`p-6 rounded-lg border ${cardColor} ${className}`} {...rest}>
   {
     hasHeader && (
-      <div class={`flex flex-col space-y-1.5 p-6 ${headerColor}`}>
+      <div class={`flex flex-col space-y-1.5 ${headerColor}`}>
         <slot name="header" />
       </div>
     )
   }
 
-  <div class={'p-6 text-muted-foreground text-sm' + (hasHeader ? ' pt-0' : '')}>
+  <div class={'text-muted-foreground text-sm' + (hasHeader ? ' pt-3' : '')}>
     <slot />
   </div>
 </div>

@@ -32,6 +32,7 @@
     "astro": "^5.7.13",
     "astro-expressive-code": "^0.40.2",
     "astro-icon": "^1.1.5",
+    "astro-masonry": "^1.2.2",
     "better-auth": "^1.2.9",
     "better-sqlite3": "^11.10.0",
     "class-variance-authority": "^0.7.1",
