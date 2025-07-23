@@ -16,9 +16,10 @@ import Link from './Link.astro'
 
 interface Props {
   entry: CollectionEntry<'blog'>
+  masonryCard: boolean
 }
 
-const { entry } = Astro.props
+const { entry, masonryCard } = Astro.props
 const formattedDate = formatDate(entry.data.date)
 const readTime = await getCombinedReadingTime(entry.id)
 const authors = await parseAuthors(entry.data.authors ?? [])
@@ -30,7 +31,7 @@ const subpostCount = !isSubpost(entry.id) ? await getSubpostCount(entry.id) : 0
 >
   <Link
     href={`/${entry.collection}/${entry.id}`}
-    class="flex flex-col gap-4 sm:flex-row"
+    class={masonryCard ? "flex flex-col gap-4" : "flex flex-col gap-4 sm:flex-row"}
   >
     {
       entry.data.image && (

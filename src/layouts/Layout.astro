@@ -5,15 +5,16 @@ import '@/styles/typography.css'
 import Footer from '@/components/Footer.astro'
 import Head from '@/components/Head.astro'
 import Header from '@/components/Header.astro'
-import Particles from '@/components/Particles.astro'
+import ParticlesBackground from '@/components/ParticlesBackground.astro'
 import { SITE } from '@/consts'
 import { cn } from '@/lib/utils'
 
 interface Props {
   class?: string
+  particles?: boolean
 }
 
-const { class: className } = Astro.props
+const { class: className, particles } = Astro.props
 ---
 
 <!doctype html>
@@ -22,6 +23,13 @@ const { class: className } = Astro.props
     <slot name="head" />
   </Head>
   <body>
+    {
+      particles && (
+        <div class="hidden md:inline">
+          <ParticlesBackground />
+        </div>
+      )
+    }
     <div class="flex h-fit min-h-screen flex-col gap-y-6 font-sans">
       <div
         class="bg-background/50 sticky top-0 z-50 divide-y backdrop-blur-sm xl:divide-none"
@@ -30,7 +38,6 @@ const { class: className } = Astro.props
         <slot name="subposts-navigation" />
         <slot name="table-of-contents" />
       </div>
-      <Particles />
       <main class="grow">
         <div class={cn('mx-auto flex grow flex-col gap-y-4 px-4', className)}>
           <slot />
