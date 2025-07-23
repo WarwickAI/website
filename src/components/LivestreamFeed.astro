@@ -1,0 +1,16 @@
+---
+interface Props {
+  channel: string
+  width: number
+  height: number
+}
+
+const { channel, width, height, ...rest } = Astro.props
+---
+
+<iframe
+  src={`https://player.twitch.tv/?channel=${channel}&parent=${process.env.NODE_ENV === 'development' ? 'localhost' : 'warwick.ai'}`}
+  height={height}
+  width={width}
+  allowfullscreen={true}
+  loading="lazy"></iframe>

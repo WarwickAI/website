@@ -33,6 +33,7 @@
     "astro-expressive-code": "^0.40.2",
     "astro-icon": "^1.1.5",
     "astro-masonry": "^1.2.2",
+    "astro-particles": "^2.10.0",
     "better-auth": "^1.2.9",
     "better-sqlite3": "^11.10.0",
     "class-variance-authority": "^0.7.1",
@@ -50,6 +51,7 @@
     "remark-math": "^6.0.0",
     "tailwind-merge": "^3.3.0",
     "tailwindcss": "^4.1.7",
+    "tsparticles": "^2.12.0",
     "typescript": "^5.8.3"
   },
   "devDependencies": {

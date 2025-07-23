@@ -1,0 +1,81 @@
+---
+import Particles from 'astro-particles'
+import type { ISourceOptions } from 'tsparticles-engine'
+
+const options: ISourceOptions = {
+  autoPlay: true,
+  detectRetina: true,
+  fpsLimit: 90,
+  fullScreen: {
+    zIndex: -1,
+  },
+  interactivity: {
+    detectsOn: 'window',
+    events: {
+      onClick: {
+        enable: true,
+        mode: 'repulse',
+      },
+      resize: {
+        enable: true,
+      },
+    },
+    modes: {
+      repulse: {
+        distance: 200,
+        duration: 0.4,
+      },
+    },
+  },
+  particles: {
+    color: {
+      value: '#6D60C1',
+    },
+    links: {
+      color: {
+        value: '#6D60C1',
+      },
+      distance: 300,
+      enable: true,
+      opacity: 0.2,
+      width: 1,
+    },
+    move: {
+      direction: 'none',
+      enable: true,
+      outModes: 'out',
+      random: true,
+      speed: 1,
+      straight: false,
+    },
+    number: {
+      density: {
+        enable: true,
+      },
+      value: 40,
+    },
+    opacity: {
+      value: 0.5,
+    },
+    shape: {
+      type: 'circle',
+    },
+    size: {
+      value: {
+        max: 3,
+        min: 1,
+      },
+    },
+  },
+  pauseOnBlur: true,
+  pauseOnOutsideViewport: true,
+}
+---
+
+<script>
+  import { loadFull } from 'tsparticles'
+  import { type Engine } from 'tsparticles-engine'
+  window.particlesInit = async (engine: Engine) => await loadFull(engine)
+</script>
+
+<Particles id="tsparticles" options={options} init="particlesInit" />
