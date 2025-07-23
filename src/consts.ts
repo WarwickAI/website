@@ -2,10 +2,9 @@ import type { IconMap, SocialLink, Site } from '@/types'
 
 export const SITE: Site = {
   title: 'Warwick AI',
-  description:
-    'astro-erudite is a opinionated, unstyled blogging template—built with Astro, Tailwind, and shadcn/ui.',
+  description: 'Your gateway into AI at the University of Warwick!',
   href: 'https://warwick.ai',
-  author: 'jktrn',
+  author: 'Warwick AI Exec',
   locale: 'en-GB',
   featuredPostCount: 2,
   postsPerPage: 5,
@@ -20,10 +19,10 @@ export const NAV_LINKS: SocialLink[] = [
     href: '/authors/exec',
     label: 'meet our exec',
   },
-  {
-    href: '/about',
-    label: 'about',
-  },
+  // {
+  //   href: '/about',
+  //   label: 'about',
+  // },
 ]
 
 export const SOCIAL_LINKS: SocialLink[] = [

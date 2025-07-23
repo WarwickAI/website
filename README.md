@@ -1,5 +1,3 @@
-![Showcase Card](/public/static/twitter-card.png)
-
 <div align="center">
 
 ## Warwick AI Website
@@ -8,10 +6,13 @@
 
 </div>
 
-astro-erudite is an opinionated, unstyled static blogging template built with [Astro](https://astro.build/), [Tailwind](https://tailwindcss.com/), and [shadcn/ui](https://ui.shadcn.com/). Extraordinarily loosely based off the [Astro Micro](https://astro-micro.vercel.app/) theme by [trevortylerlee](https://github.com/trevortylerlee).
+This is the repo for the Warwick AI website, built to share info about the society to our members, and allow us
+to write and maintain educational and projects material.
+
+The website is based on the astro-erudite template - which is an opinionated, unstyled static blogging template built with [Astro](https://astro.build/)
 
 > [!NOTE]
-> To learn more about why this template exists, read [The State of Static Blogs in 2024](https://astro-erudite.vercel.app/blog/the-state-of-static-blogs), where I share my take on what constitutes a great blogging template and my goals while developing this one.
+> This website is still being worked on! Please let us know if you spot any issues.
 
 ---
 
@@ -31,7 +32,7 @@ astro-erudite is an opinionated, unstyled static blogging template built with [A
 
 ## Technology Stack
 
-This is a list of the various technologies used to build this template:
+This is a list of the various technologies used to build this site:
 
 | Category   | Technology Name                                                                            |
 | ---------- | ------------------------------------------------------------------------------------------ |
@@ -45,28 +46,26 @@ This is a list of the various technologies used to build this template:
 
 ## Getting Started
 
-1. Hit &ldquo;Use this template&rdquo;, the big green button on the top right, to create a new repository in your own GitHub account with this template.
-
-2. Clone the repository:
+1. Clone the repository:
 
    ```bash
-   git clone https://github.com/[YOUR_USERNAME]/[YOUR_REPO_NAME].git
-   cd [YOUR_REPO_NAME]
+   git clone https://github.com/warwickai/website.git
+   cd website
    ```
 
-3. Install dependencies:
+2. Install dependencies:
 
    ```bash
    npm install
    ```
 
-4. Start the development server:
+3. Start the development server:
 
    ```bash
    npm run dev
    ```
 
-5. Open your browser and visit `http://localhost:1234` to get started. The following commands are also available:
+4. Open your browser and visit `http://localhost:1234` to get started. The following commands are also available:
 
    | Command            | Description                                                     |
    | ------------------ | --------------------------------------------------------------- |
@@ -80,13 +79,13 @@ This is a list of the various technologies used to build this template:
 
 ### Site Configuration
 
-Edit the `src/consts.ts` file to update your site's metadata, navigation links, and social links:
+Site config such as metadata, navbar and social links can be edited in `src/consts.ts`.
 
 ```ts
 export const SITE: Site = {
-  title: 'astro-erudite',
+  title: 'WAI',
   description: // ...
-  href: 'https://astro-erudite.vercel.app',
+  href: 'https://warwick.ai',
   featuredPostCount: 2,
   postsPerPage: 3,
 }
@@ -101,7 +100,7 @@ export const NAV_LINKS: SocialLink[] = [
 
 export const SOCIAL_LINKS: SocialLink[] = [
   {
-    href: 'https://github.com/jktrn',
+    href: 'https://github.com/warwickai',
     label: 'GitHub',
   },
   // ...
@@ -144,7 +143,7 @@ Favicons are generated using [RealFaviconGenerator](https://realfavicongenerator
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="shortcut icon" href="/favicon.ico" />
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-<meta name="apple-mobile-web-app-title" content="astro-erudite" />
+<meta name="apple-mobile-web-app-title" content="Warwick AI" />
 <link rel="manifest" href="/site.webmanifest" />
 ```
 
@@ -185,14 +184,13 @@ Add author information in `src/content/authors/` as Markdown files. A file named
 
 ```yml
 ---
-name: 'enscribe'
+name: 'benji'
 pronouns: 'he/him'
-avatar: 'https://gravatar.com/avatar/9bfdc4ec972793cf05cb91efce5f4aaaec2a0da1bf4ec34dad0913f1d845faf6.webp?size=256'
-bio: 'd(-_-)b'
-website: 'https://enscribe.dev'
-twitter: 'https://twitter.com/enscry'
-github: 'https://github.com/jktrn'
-mail: 'jason@enscribe.dev'
+avatar: '/path/to/images/fish.png'
+bio: 'I am the WAI pet fish!'
+website: 'https://warwick.ai'
+github: 'https://github.com/warwickai'
+mail: 'benji@warwick.ai'
 ---
 ```
 
@@ -245,9 +243,5 @@ The project schema is defined as follows:
 ## License
 
 This project is open source and available under the [MIT License](LICENSE).
-
----
-
-Built with &hearts; by [enscribe](https://enscribe.dev)!
 
 [License]: https://img.shields.io/github/license/stmio/wai-website?color=0a0a0a&logo=github&logoColor=fff&style=for-the-badge
