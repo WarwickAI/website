@@ -73,7 +73,9 @@ const colorSchemes = {
   },
 }
 
-const colorConfig = color ? colorSchemes[color] : null
+const colorConfig = color
+  ? colorSchemes[color as keyof typeof colorSchemes]
+  : null
 const cardColor = colorConfig ? colorConfig.cardStyle : ''
 const headerColor = colorConfig ? colorConfig.textColor : ''
 ---

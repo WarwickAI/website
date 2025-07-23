@@ -49,67 +49,84 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
           src="/gallery/018-summit-24.jpg"
           alt=""
           inferSize={true}
-          width="6px"
-          height="6px"
+          width="1600"
+          height="900"
           loading="lazy"
           class="w-full"
         />
       </Card>
-      <Card color="pink">
-        <div slot="header" class="flex flex-row items-center gap-3">
-          <Icon name="lucide:instagram" class="size-8" />
-          <h3 class="text-xl leading-none font-medium">
-            Follow us on Instagram
-          </h3>
-        </div>
+      <Link href="https://instagram.com/warwick_ai" external>
+        <Card color="pink">
+          <div slot="header" class="flex flex-row items-center gap-3">
+            <Icon name="lucide:instagram" class="size-8" />
+            <h3 class="text-xl leading-none font-medium">
+              Follow us on Instagram
+            </h3>
+          </div>
 
-        <p>
-          We post all news and events on our Instagram so is an easy way to stay
-          up-to-date with the society!
-        </p>
-      </Card>
-      <Card color="indigo">
-        <div slot="header" class="flex flex-row items-center gap-3">
-          <Icon name="discord" class="size-8" />
-          <h3 class="text-xl leading-none font-medium">
-            Chat with us on Discord
-          </h3>
-        </div>
-
-        <p>
-          We use Discord to chat outisde of events. It's also great for asking
-          questions and help with projects!
-        </p>
-      </Card>
-      <Card color="green">
-        <div slot="header" class="flex flex-row items-center gap-3">
-          <!-- <Icon name="warwick-su-wordmark" class="size-8" /> -->
-          <h3 class="text-xl leading-none font-medium">
-            Become a society member
-          </h3>
-        </div>
-
-        <div class="flex flex-col gap-2">
           <p>
-            Are you a student at Warwick with an interest in AI? There are many
-            benefits to becoming a member through the Student's Union:
+            We post all news and events on our Instagram so is an easy way to
+            stay up-to-date with the society!
           </p>
+        </Card>
+      </Link>
+      <Link href="https://discord.gg/YshvNtPUZm" external>
+        <Card color="indigo">
+          <div slot="header" class="flex flex-row items-center gap-3">
+            <Icon name="discord" class="size-8" />
+            <h3 class="text-xl leading-none font-medium">
+              Chat with us on Discord
+            </h3>
+          </div>
 
-          <ul class="list-inside list-['✓'] *:before:pr-1">
-            <li>Completley free for Warwick students</li>
-            <li>Be the first to know about new projects</li>
-            <li>Friendly community with great socials</li>
-            <li>Be part of the only society with a pet fish 🐠</li>
-            <li>Priority access to tickets at our AI summit</li>
-            <li>Utilise our compute resources for projects</li>
-          </ul>
-        </div>
-      </Card>
+          <p>
+            We use Discord to chat outisde of events. It's also great for asking
+            questions and help with projects!
+          </p>
+        </Card>
+      </Link>
+      <Link
+        href="https://www.warwicksu.com/societies-sports/societies/warwickai/"
+        external
+      >
+        <Card color="green">
+          <div slot="header" class="flex flex-row items-center gap-3">
+            <Icon name="warwick-su-wordmark" class="size-8" />
+            <h3 class="text-xl leading-none font-medium">
+              Become a society member
+            </h3>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <p>
+              Are you a student at Warwick with an interest in AI? There are
+              many benefits to becoming a member through the Student's Union:
+            </p>
+
+            <ul class="list-inside list-['✓'] *:before:pr-1">
+              <li>Completley free for Warwick students</li>
+              <li>Be the first to know about new projects</li>
+              <li>Friendly community with great socials</li>
+              <li>Be part of the only society with a pet fish 🐠</li>
+              <li>Priority access to tickets at our AI summit</li>
+              <li>Utilise our compute resources for projects</li>
+            </ul>
+          </div>
+        </Card>
+      </Link>
       <Card color="red">
         <Fragment slot="header">
           <Link href="/summit">
-            <img src="/summit.png" class="mx-auto w-30 dark:hidden" />
-            <img src="/summit-dark.png" class="mx-auto w-30 not-dark:hidden" />
+            <img
+              src="/summit.png"
+              alt="WAI Summit Icon"
+              class="mx-auto w-30 dark:hidden"
+            />
+            <img
+              src="/summit-dark.png"
+              alt="WAI Summit Icon"
+              class="mx-auto w-30 not-dark:hidden"
+            />
 
             <h3 class="pt-2 text-center text-2xl leading-none font-medium">
               Warwick AI Summit
@@ -148,8 +165,8 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
           src="/gallery/011-summit-25.JPG"
           alt=""
           inferSize={true}
-          width="6px"
-          height="6px"
+          width="1600"
+          height="900"
           loading="lazy"
           class="w-full"
         />
@@ -159,8 +176,8 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
           src="/gallery/013-summit-25.JPG"
           alt=""
           inferSize={true}
-          width="6px"
-          height="6px"
+          width="1600"
+          height="900"
           loading="lazy"
           class="w-full"
         />
@@ -207,11 +224,9 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
         <h1 slot="header">Current project leaderboard here</h1>
       </Card>
       <Card class="overflow-hidden p-0!">
-        <LivestreamFeed channel="warwickai" width="100%" height="300px" />
+        <LivestreamFeed channel="warwickai" width="100%" height="300" />
       </Card>
-      {
-        blog.map((post) => <BlogCard entry={post} masonryCard />)
-      }
+      {blog.map((post) => <BlogCard entry={post} masonryCard />)}
     </Masonry>
     <div class="flex justify-center">
       <Link

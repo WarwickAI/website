@@ -16,7 +16,7 @@ import Link from './Link.astro'
 
 interface Props {
   entry: CollectionEntry<'blog'>
-  masonryCard: boolean
+  masonryCard?: boolean
 }
 
 const { entry, masonryCard } = Astro.props
@@ -31,7 +31,9 @@ const subpostCount = !isSubpost(entry.id) ? await getSubpostCount(entry.id) : 0
 >
   <Link
     href={`/${entry.collection}/${entry.id}`}
-    class={masonryCard ? "flex flex-col gap-4" : "flex flex-col gap-4 sm:flex-row"}
+    class={masonryCard
+      ? 'flex flex-col gap-4'
+      : 'flex flex-col gap-4 sm:flex-row'}
   >
     {
       entry.data.image && (

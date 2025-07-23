@@ -18,6 +18,7 @@ const options: ISourceOptions = {
       },
       resize: {
         enable: true,
+        delay: 0.1,
       },
     },
     modes: {
@@ -75,6 +76,13 @@ const options: ISourceOptions = {
 <script>
   import { loadFull } from 'tsparticles'
   import { type Engine } from 'tsparticles-engine'
+
+  declare global {
+    interface Window {
+      particlesInit: (engine: Engine) => Promise<void>
+    }
+  }
+
   window.particlesInit = async (engine: Engine) => await loadFull(engine)
 </script>
 
