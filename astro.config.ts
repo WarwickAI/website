@@ -20,11 +20,14 @@ import { pluginLineNumbers } from '@expressive-code/plugin-line-numbers'
 
 import tailwindcss from '@tailwindcss/vite'
 
+import vercel from '@astrojs/vercel'
+
 export default defineConfig({
   site: 'https://warwick.ai',
-  adapter: node({
-    mode: 'standalone',
-  }),
+  adapter: vercel(),
+  // adapter: node({
+  //   mode: 'standalone',
+  // }),
   integrations: [
     expressiveCode({
       themes: ['github-light', 'github-dark'],
@@ -36,9 +39,9 @@ export default defineConfig({
         collapseStyle: 'collapsible-auto',
         overridesByLang: {
           'ansi,bat,bash,batch,cmd,console,powershell,ps,ps1,psd1,psm1,sh,shell,shellscript,shellsession,text,zsh':
-            {
-              showLineNumbers: false,
-            },
+          {
+            showLineNumbers: false,
+          },
         },
       },
       styleOverrides: {
@@ -75,6 +78,7 @@ export default defineConfig({
     icon(),
   ],
   vite: {
+    // @ts-expect-error
     plugins: [tailwindcss()],
   },
   server: {
@@ -112,4 +116,3 @@ export default defineConfig({
     remarkPlugins: [remarkMath, remarkEmoji],
   },
 })
-
