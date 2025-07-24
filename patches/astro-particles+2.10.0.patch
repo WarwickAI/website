@@ -1,0 +1,13 @@
+diff --git a/node_modules/astro-particles/src/Particles.astro b/node_modules/astro-particles/src/Particles.astro
+index be54bdb..85fc26a 100644
+--- a/node_modules/astro-particles/src/Particles.astro
++++ b/node_modules/astro-particles/src/Particles.astro
+@@ -13,7 +13,7 @@ const { id, init, loaded, options, url } = Astro.props as IParticlesProps;
+ ---
+ <astro-particles data-id={id} data-options={JSON.stringify(options)} data-url={url} data-init={init}
+                  data-loaded={loaded}>
+-    <canvas></canvas>
++    <canvas id={id}></canvas>
+ </astro-particles>
+ 
+ <script>

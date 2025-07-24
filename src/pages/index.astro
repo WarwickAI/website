@@ -1,0 +1,247 @@
+---
+import BlogCard from '@/components/BlogCard.astro'
+import Card from '@/components/Card.astro'
+import Link from '@/components/Link.astro'
+import LivestreamFeed from '@/components/LivestreamFeed.astro'
+import PageHead from '@/components/PageHead.astro'
+import { buttonVariants } from '@/components/ui/button'
+import WHACK from '@/components/WHACK.astro'
+import { SITE } from '@/consts'
+import Layout from '@/layouts/Layout.astro'
+import { getRecentPosts } from '@/lib/data-utils'
+import { Icon } from 'astro-icon/components'
+import { Masonry } from 'astro-masonry'
+import { Image } from 'astro:assets'
+
+const blog = await getRecentPosts(SITE.featuredPostCount)
+---
+
+<Layout class="max-w-3xl" particles>
+  <PageHead slot="head" title="" />
+  <section>
+    <Card color="purple">
+      <Fragment slot="header">
+        <h3 class="text-center text-3xl leading-none font-medium">
+          Warwick Artificial Intelligence
+        </h3>
+        <p class="text-muted-foreground pb-3 text-center text-sm font-medium">
+          Your gateway into AI at the University of Warwick!
+        </p>
+      </Fragment>
+
+      <p>
+        Welcome to Warwick AI Society! We are a student-run society that
+        provides students with the opportunity to learn and use various emerging
+        technologies in the field of Artificial Intelligence! We welcome
+        students from any background and no prior experience in AI is required
+        to get hands-on with our projects. We also run many social events
+        throughout term, and meet weekly for 'codenight'.
+      </p>
+    </Card>
+  </section>
+  <section class="bg-background/75 flex flex-col gap-y-4">
+    <Masonry
+      breakpointCols={{
+        default: 2,
+        700: 1,
+      }}
+      class="flex gap-4"
+      columnClass="*:mb-4 *:last:mb-0"
+    >
+      <Card class="overflow-hidden p-0!">
+        <Image
+          src="/gallery/018-summit-24.jpg"
+          alt=""
+          inferSize={true}
+          width="1600"
+          height="900"
+          loading="lazy"
+          class="w-full"
+        />
+      </Card>
+      <Link href="https://instagram.com/warwick_ai" external>
+        <Card color="pink">
+          <div slot="header" class="flex flex-row items-center gap-3">
+            <Icon name="lucide:instagram" class="size-8" />
+            <h3 class="text-xl leading-none font-medium">
+              Follow us on Instagram
+            </h3>
+          </div>
+
+          <p>
+            We post all news and events on our Instagram so is an easy way to
+            stay up-to-date with the society!
+          </p>
+        </Card>
+      </Link>
+      <Link href="https://discord.gg/YshvNtPUZm" external>
+        <Card color="indigo">
+          <div slot="header" class="flex flex-row items-center gap-3">
+            <Icon name="discord" class="size-8" />
+            <h3 class="text-xl leading-none font-medium">
+              Chat with us on Discord
+            </h3>
+          </div>
+
+          <p>
+            We use Discord to chat outisde of events. It's also great for asking
+            questions and help with projects!
+          </p>
+        </Card>
+      </Link>
+      <Card class="overflow-hidden p-0!">
+        <Image
+          src="/gallery/011-summit-25.JPG"
+          alt=""
+          inferSize={true}
+          width="1600"
+          height="900"
+          loading="lazy"
+          class="w-full"
+        />
+      </Card>
+      <Card color="red">
+        <Fragment slot="header">
+          <Link href="/summit">
+            <img
+              src="/summit.png"
+              alt="WAI Summit Icon"
+              class="mx-auto w-30 dark:hidden"
+            />
+            <img
+              src="/summit-dark.png"
+              alt="WAI Summit Icon"
+              class="mx-auto w-30 not-dark:hidden"
+            />
+
+            <h3 class="pt-2 text-center text-2xl leading-none font-medium">
+              Warwick AI Summit
+            </h3>
+          </Link>
+
+          <p class="text-muted-foreground text-center text-sm font-medium">
+            February 2026, The <Link
+              href="https://campus.warwick.ac.uk/search/623c8864421e6f5928c0c8b3"
+              external
+              underline>Oculus</Link
+            > Building
+          </p>
+        </Fragment>
+
+        <div class="flex flex-col gap-2">
+          <p>
+            Join us for our annual AI summit, showcasing the best of AI research
+            and projects at Warwick &mdash; from both students and staff. There
+            will be opportunities to get hands-on with workshops, and learn from
+            industry guests.
+          </p>
+          <p>
+            Our summit is open to everyone! This includes Warwick students and
+            staff (from all faculties), sixth form students, and members of the
+            public. Lunch will be provided for all guests.
+          </p>
+          <p>
+            Tickets will become available at the end of the year. Follow us on
+            Instagram to stay in the loop!
+          </p>
+        </div>
+      </Card>
+      <Link
+        href="https://www.warwicksu.com/societies-sports/societies/warwickai/"
+        external
+      >
+        <Card color="green">
+          <div slot="header" class="flex flex-row items-center gap-3">
+            <Icon name="warwick-su-wordmark" class="size-8" />
+            <h3 class="text-xl leading-none font-medium">
+              Become a society member
+            </h3>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <p>
+              Are you a student at Warwick with an interest in AI? There are
+              many benefits to becoming a member through the Student's Union:
+            </p>
+
+            <ul class="list-inside list-['✓'] *:before:pr-1">
+              <li>Completley free for Warwick students</li>
+              <li>Be the first to know about new projects</li>
+              <li>Friendly community with great socials</li>
+              <li>Be part of the only society with a pet fish 🐠</li>
+              <li>Priority access to tickets at our AI summit</li>
+              <li>Utilise our compute resources for projects</li>
+            </ul>
+          </div>
+        </Card>
+      </Link>
+      <Card class="overflow-hidden p-0!">
+        <Image
+          src="/gallery/013-summit-25.JPG"
+          alt=""
+          inferSize={true}
+          width="1600"
+          height="900"
+          loading="lazy"
+          class="w-full"
+        />
+      </Card>
+      <Card color="violet">
+        <Fragment slot="header">
+          <WHACK />
+          <p class="text-muted-foreground text-center text-sm font-medium">
+            18&ndash;19 October 2025, <Link
+              href="https://campus.warwick.ac.uk/search/623c8864421e6f5928c0c8b3"
+              external
+              underline>Oculus</Link
+            > and <Link
+              href="https://campus.warwick.ac.uk/search/623c8927421e6f5928c0ef6e"
+              external
+              underline>Junction Halls</Link
+            >
+          </p>
+        </Fragment>
+
+        <div class="flex flex-col gap-2">
+          <p>
+            Each year, WAI co-organises Warwick's flagship on-campus hackathon,
+            WHACK, along with UWCS and CodeSoc &mdash; and we're back for 2025!
+          </p>
+          <p>
+            Following a huge success last year, we are now opening our doors to <em
+              >ALL</em
+            > university students nationwide! Join us with a team of (up to) four
+            and submit a project to one of many categories set by top industy names
+            to win from the prize pot of over <strong>£4,000</strong>! And of
+            course, we will be providing free food to hackers all weekend long.
+          </p>
+          <p>
+            Keep an eye out for tickets. More information is available on the <Link
+              href="https://warwickhack.co.uk"
+              external
+              underline>WHACK website</Link
+            >.
+          </p>
+        </div>
+      </Card>
+      <Card class="h-72 text-center">
+        <h1 slot="header">Project leaderboard coming soon!</h1>
+      </Card>
+      <Card class="overflow-hidden p-0!">
+        <LivestreamFeed channel="warwickai" width="100%" height="300" />
+      </Card>
+      {blog.map((post) => <BlogCard entry={post} masonryCard />)}
+    </Masonry>
+    <div class="flex justify-center">
+      <Link
+        href="/blog"
+        class={buttonVariants({ variant: 'ghost' }) + ' group'}
+      >
+        See all posts <span
+          class="ml-1.5 transition-transform group-hover:translate-x-1"
+          >&rarr;</span
+        >
+      </Link>
+    </div>
+  </section>
+</Layout>

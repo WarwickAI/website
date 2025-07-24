@@ -1,0 +1,35 @@
+---
+import Link from '@/components/Link.astro'
+---
+
+<h3 class="whack">
+  <Link href="https://warwickhack.co.uk" external>&lt;WHACK&gt;</Link>
+</h3>
+
+<style>
+  .whack {
+    font-size: 56px;
+    font-family: 'Oswald', sans-serif;
+    font-optical-sizing: auto;
+    line-height: 1.2;
+    font-weight: bold;
+    background-image: linear-gradient(to right, #3a7dff, #9966cc, #ff2492);
+    background-clip: text;
+    color: transparent;
+    user-select: none;
+    text-align: center;
+  }
+
+  @font-face {
+    font-family: 'Oswald';
+    font-style: normal;
+    font-weight: 200 700;
+    font-display: swap;
+    src: url(https://fonts.gstatic.com/s/oswald/v56/TK3iWkUHHAIjg752GT8Gl-1PKw.woff2)
+      format('woff2');
+    unicode-range:
+      U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC,
+      U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+      U+2212, U+2215, U+FEFF, U+FFFD;
+  }
+</style>

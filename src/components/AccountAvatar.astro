@@ -1,0 +1,22 @@
+---
+import AvatarComponent from '@/components/ui/avatar'
+import { Icon } from 'astro-icon/components'
+
+const isAuthed = Astro.locals.user != null
+const avatar =
+  Astro.locals.user?.image != null ? Astro.locals.user.image : undefined
+---
+
+{
+  isAuthed ? (
+    // TODO: change fallback
+    <AvatarComponent
+      client:load
+      src={avatar}
+      className="size-5 rounded-full"
+      fallback="User"
+    />
+  ) : (
+    <Icon name="lucide:user" class="absolute size-4" />
+  )
+}

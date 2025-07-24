@@ -1,0 +1,18 @@
+---
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import PageHead from '@/components/PageHead.astro'
+import Layout from '@/layouts/Layout.astro'
+---
+
+<Layout class="max-w-3xl">
+  <PageHead slot="head" title="Summit" />
+  <Breadcrumbs items={[{ label: 'Summit', icon: 'lucide:mountain-snow' }]} />
+
+  <section>
+    <div class="min-w-full">
+      <div class="prose mb-8">
+        <p class="mt-0">More info about summit coming soon!</p>
+      </div>
+    </div>
+  </section>
+</Layout>

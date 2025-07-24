@@ -1,55 +1,12 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
-/node_modules
-/.pnp
-.pnp.js
-
-# testing
-/coverage
-
-# next.js
-/.next/
-/out/
-
-# bun
-bun.lockb
-
-# production
-/build
-
-# misc
-.DS_Store
-*.pem
-
-# VSCode Config
-/.vscode
-
-# debug
+dist/
+.astro/
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-
-# local env files
-.env*.local
-
-# vercel
-.vercel
-
-# typescript
-*.tsbuildinfo
-next-env.d.ts
-
-# Local test files
-test.sh
-example.json
-
-competition.py
-
-# Exec data (hosted elsewhere)
-/public/data/*
-
-# Jake's utility files
-RebaseBranch.sh
-
-/data/*
+pnpm-debug.log*
+.env
+.env.production
+.DS_Store
+better-auth_migrations/
+*.db
