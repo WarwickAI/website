@@ -1,6 +1,9 @@
 import { defineConfig } from 'astro/config'
 
+import tailwindcss from '@tailwindcss/vite'
 import node from '@astrojs/node'
+import vercel from '@astrojs/vercel'
+import db from '@astrojs/db'
 import mdx from '@astrojs/mdx'
 import react from '@astrojs/react'
 import sitemap from '@astrojs/sitemap'
@@ -17,10 +20,6 @@ import rehypeDocument from 'rehype-document'
 
 import { pluginCollapsibleSections } from '@expressive-code/plugin-collapsible-sections'
 import { pluginLineNumbers } from '@expressive-code/plugin-line-numbers'
-
-import tailwindcss from '@tailwindcss/vite'
-
-import vercel from '@astrojs/vercel'
 
 export default defineConfig({
   site: 'https://warwick.ai',
@@ -39,9 +38,9 @@ export default defineConfig({
         collapseStyle: 'collapsible-auto',
         overridesByLang: {
           'ansi,bat,bash,batch,cmd,console,powershell,ps,ps1,psd1,psm1,sh,shell,shellscript,shellsession,text,zsh':
-          {
-            showLineNumbers: false,
-          },
+            {
+              showLineNumbers: false,
+            },
         },
       },
       styleOverrides: {
@@ -76,6 +75,7 @@ export default defineConfig({
     react(),
     sitemap(),
     icon(),
+    db()
   ],
   vite: {
     // @ts-expect-error
