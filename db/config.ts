@@ -83,7 +83,7 @@ const Submission = defineTable({
   indexes: [
     { on: ["projectId", "score"] },
     { on: ["commitHash"], unique: true },
-    { on: ["projectId", "submittedAt"] },
+    { on: ["submissionRepo"] },
   ],
 });
 
@@ -92,13 +92,15 @@ const Contribution = defineTable({
     id: column.text({ primaryKey: true }),
     submissionId: column.text({ references: () => Submission.columns.id }),
     userId: column.text({ references: () => User.columns.id, optional: true }), // NULL until user auths on WAI website
+    githubUserId: column.number(), // GitHub's numeric ID
     commitCount: column.number({ default: 1 }),
     detectedAt: column.date({ default: NOW }),
     linkedAt: column.date({ optional: true }), // when userID was added
   },
   indexes: [
-    { on: ["submissionId", "userId"], unique: true },
+    { on: ["submissionId", "githubUserId"], unique: true },
     { on: ["userId"] },
+    { on: ["githubUserId"] },
     { on: ["submissionId"] },
   ],
 });
