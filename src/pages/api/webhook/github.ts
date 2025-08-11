@@ -3,13 +3,21 @@ import type {
   WebhookEventName,
   InstallationCreatedEvent,
   InstallationDeletedEvent,
-  InstallationSuspendEvent,
-  InstallationUnsuspendEvent,
   WorkflowRunCompletedEvent,
-  WorkflowRunRequestedEvent,
-  WorkflowRunInProgressEvent
 } from "@octokit/webhooks-types";
+import {
+  db,
+  eq,
+  gt,
+  and,
+  isNull,
+  Account,
+  Project,
+  Submission,
+  Contribution,
+} from "astro:db";
 import { App } from "octokit";
+import { randomUUID } from "crypto";
 
 export const prerender = false;
 
@@ -23,63 +31,112 @@ const gh = new App({
 
 gh.webhooks.on("installation.created", async ({ payload }) => {
   const installPayload = payload as InstallationCreatedEvent;
-
-  console.log(`${installPayload.installation.account.login} has installed the app on ${(new Array(installPayload.repositories)).toString()}`);
-
-  // Update db here
+  console.log(`${installPayload.installation.account.login} has installed the app`);
 });
 
 gh.webhooks.on("installation.deleted", async ({ payload }) => {
   const uninstallPayload = payload as InstallationDeletedEvent;
-
   console.log(`${uninstallPayload.installation.account.login} has uninstalled`)
-
-  // update db here
-});
-
-gh.webhooks.on("installation.suspend", async ({ payload }) => {
-  const suspendPayload = payload as InstallationSuspendEvent;
-
-  console.log(`${suspendPayload.installation.account.login} has suspended`)
-
-  // update db here
-});
-
-gh.webhooks.on("installation.unsuspend", async ({ payload }) => {
-  const unsuspendPayload = payload as InstallationUnsuspendEvent;
-
-  console.log(`${unsuspendPayload.installation.account.login} has unsuspended`)
-
-  // update db here
-});
-
-gh.webhooks.on("workflow_run.requested", async ({ payload }) => {
-  const workflowPayload = payload as WorkflowRunRequestedEvent;
-  console.log(`${workflowPayload.repository.full_name} has scheduled a workflow run`)
-});
-
-gh.webhooks.on("workflow_run.in_progress", async ({ payload }) => {
-  const workflowPayload = payload as WorkflowRunInProgressEvent;
-  console.log(`${workflowPayload.repository.full_name}'s workflow is in progress`)
 });
 
 gh.webhooks.on("workflow_run.completed", async ({ payload }) => {
   const workflowPayload = payload as WorkflowRunCompletedEvent;
-  console.log(`${workflowPayload.repository.full_name}'s workflow has finished`)
+  const workflow = workflowPayload.workflow_run;
+  const repository = workflowPayload.repository;
 
-  switch (workflowPayload.workflow_run.conclusion) {
-    case 'success':
-      console.log(`  Workflow succeeded`);
-      break;
-    case 'failure':
-      console.log(`  Workflow failed`);
-      break;
-    case 'cancelled':
-      console.log(`  Workflow was cancelled`);
-      break;
+  if (workflow.conclusion !== "success"
+    || workflow.name !== "Warwick AI Competition Submission"
+  ) return;
+
+  try {
+    if (!repository.fork) return;
+
+    // Get installation-specific octokit instance
+    const installationId = workflowPayload.installation?.id;
+    if (!installationId) {
+      console.error("No installation ID found in webhook payload");
+      return;
+    }
+
+    const octokit = await gh.getInstallationOctokit(installationId);
+
+    const parent = (await octokit.rest.repos.get({
+      owner: repository.owner.login,
+      repo: repository.name
+    })).data.parent;
+    if (!parent) return;
+
+    const project = await db.select()
+      .from(Project)
+      .where(eq(Project.templateRepo, parent.full_name))
+      .get();
+    if (!project) return;
+
+    const existing = await db.select()
+      .from(Submission)
+      .where(eq(Submission.commitHash, workflow.head_sha))
+      .get();
+    if (existing) return;
+
+    const score = Math.round(Math.random() * 100); // TODO: implement
+    const submissionId = randomUUID();
+
+    await db.insert(Submission).values({
+      id: submissionId,
+      projectId: project.id,
+      score: score,
+      submissionRepo: repository.full_name,
+      commitHash: workflow.head_sha,
+      submittedAt: new Date(workflow.created_at),
+    });
+
+    try {
+      const contributors = await octokit.rest.repos.listContributors({
+        owner: repository.owner.login,
+        repo: repository.name
+      });
+
+      for (const contributor of contributors.data) {
+        if (!contributor.id) continue;
+
+        // Check if user is authed on WAI site with GitHub
+        const account = await db.select()
+          .from(Account)
+          .where(and(
+            eq(Account.providerId, "github"),
+            eq(Account.accountId, contributor.id.toString())
+          ))
+          .get();
+
+        await db.insert(Contribution).values({
+          id: randomUUID(),
+          submissionId: submissionId,
+          userId: account?.userId || null,
+          githubUserId: contributor.id,
+          commitCount: contributor.contributions,
+          detectedAt: new Date(),
+          linkedAt: account ? new Date() : null,
+        });
+      }
+    } catch (error) {
+      console.error("Error fetching contributors:", error);
+
+      // Fallback: credit repo owner
+      await db.insert(Contribution).values({
+        id: randomUUID(),
+        submissionId: submissionId,
+        userId: null,
+        githubUserId: repository.owner.id,
+        commitCount: 1,
+        detectedAt: new Date(),
+        linkedAt: null,
+      });
+    }
+
+    // TODO: commit comment here
+  } catch (error) {
+    console.error("Error processing submission:", error);
   }
-
-  // update db
 });
 
 gh.webhooks.on("ping", async ({ id }) => {
