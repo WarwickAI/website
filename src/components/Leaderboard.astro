@@ -1,0 +1,23 @@
+---
+import { db, desc, eq, Project, Submission } from 'astro:db'
+
+const { project: projectId, ...rest } = Astro.props
+const currentUser = Astro.locals.user
+
+const project = await db
+  .select()
+  .from(Project)
+  .where(eq(Project.id, projectId))
+  .get()
+
+const submissions = await db
+  .select({
+    id: Submission.id,
+    score: Submission.score,
+    repo: Submission.submissionRepo,
+    submittedAt: Submission.submittedAt,
+  })
+  .from(Submission)
+  .where(eq(Submission.projectId, projectId))
+  .orderBy(desc(Submission.score))
+---
