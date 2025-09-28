@@ -1,6 +1,6 @@
 ---
 title: 'Welcome to WAI 2025!'
-description: 'We're super excited to welcome you to Warwick this week! Here's what we have going on at WAI.'
+description: "We're super excited to welcome you to Warwick this week! Here's what we have going on at WAI."
 date: 2025-09-28
 authors: ['01-sam-turner', '02-finlay-sanders', '11-aaron-moorby']
 ---
