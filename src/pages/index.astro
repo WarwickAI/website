@@ -3,6 +3,7 @@ import BlogCard from '@/components/BlogCard.astro'
 import Card from '@/components/Card.astro'
 import Link from '@/components/Link.astro'
 import LivestreamFeed from '@/components/LivestreamFeed.astro'
+import Leaderboard from '@/components/Leaderboard.astro'
 import PageHead from '@/components/PageHead.astro'
 import { buttonVariants } from '@/components/ui/button'
 import WHACK from '@/components/WHACK.astro'
@@ -224,8 +225,11 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
           </p>
         </div>
       </Card>
-      <Card class="h-72 text-center">
-        <h1 slot="header">Project leaderboard coming soon!</h1>
+      <Card>
+        <h3 slot="header" class="text-2xl leading-none font-medium">
+          Snake Competition
+        </h3>
+        <Leaderboard server:defer project="0fea5f9d-5a60-434a-b363-9dc6ff5cdc60" />
       </Card>
       <Card class="overflow-hidden p-0!">
         <LivestreamFeed channel="warwickai" width="100%" height="300" />

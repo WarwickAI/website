@@ -1,7 +1,28 @@
 ---
-import { db, desc, eq, Project, Submission } from 'astro:db'
+import Link from '@/components/Link.astro'
+import { Badge } from '@/components/ui/badge'
+import { buttonVariants } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
+import { formatDate, cn } from '@/lib/utils'
+import { Icon } from 'astro-icon/components'
+import { db, desc, eq, Project, Submission, Contribution, User } from 'astro:db'
 
-const { project: projectId, ...rest } = Astro.props
+export const prerender = false;
+
+interface Props {
+  project: string
+  className?: string
+  title?: string
+  limit?: number
+}
+
+const {
+  project: projectId,
+  className,
+  title,
+  limit
+} = Astro.props
 const currentUser = Astro.locals.user
 
 const project = await db
@@ -9,8 +30,9 @@ const project = await db
   .from(Project)
   .where(eq(Project.id, projectId))
   .get()
+if (!project) return
 
-const submissions = await db
+const submissionsRaw = await db
   .select({
     id: Submission.id,
     score: Submission.score,
@@ -19,5 +41,181 @@ const submissions = await db
   })
   .from(Submission)
   .where(eq(Submission.projectId, projectId))
-  .orderBy(desc(Submission.score))
+  .orderBy(desc(Submission.score), desc(Submission.submittedAt))
+
+// Fetch contributions with linked users
+const contributions = await db
+  .select({
+    submissionId: Contribution.submissionId,
+    userId: Contribution.userId,
+    githubUserId: Contribution.githubUserId,
+    userName: User.name,
+    userImage: User.image,
+  })
+  .from(Contribution)
+  .leftJoin(User, eq(Contribution.userId, User.id))
+
+// Group contributions by submission
+const contributionsBySubmission: Record<string, any[]> = {}
+for (const contrib of contributions) {
+  if (!contributionsBySubmission[contrib.submissionId]) {
+    contributionsBySubmission[contrib.submissionId] = []
+  }
+  contributionsBySubmission[contrib.submissionId].push(contrib)
+}
+
+// Attach contributors to submissions
+const allSubmissions = submissionsRaw.map((sub) => {
+  const contribs = contributionsBySubmission[sub.id] || []
+  const linkedContribs = contribs.filter((c) => c.userId)
+  const unlinkedCount = contribs.length - linkedContribs.length
+
+  return {
+    ...sub,
+    contributors: linkedContribs,
+    unlinkedCount,
+  }
+})
+
+const totalSubmissions = allSubmissions.length
+const submissions = limit ? allSubmissions.slice(0, limit) : allSubmissions
+const hasMore = limit ? totalSubmissions > limit : false
+
+const userSubmissionIndex = allSubmissions.findIndex((sub) =>
+  sub.contributors.some((c) => c.userId === currentUser?.id)
+)
+
+const userSubmission = userSubmissionIndex >= 0 ? allSubmissions[userSubmissionIndex] : null
+const userRank = userSubmissionIndex >= 0 ? userSubmissionIndex + 1 : null
+
+const getRankVariant = (rank: number) => {
+  if (rank === 1) return 'default'
+  if (rank === 2) return 'secondary'
+  return 'outline'
+}
+
+const getRankIcon = (rank: number) => {
+  if (rank === 1) return 'lucide:trophy'
+  if (rank === 2) return 'lucide:medal'
+  if (rank === 3) return 'lucide:award'
+  return 'lucide:hash'
+}
+
+const formatScore = (score: number | null) => {
+  if (score === null) return 'Pending'
+  return score.toFixed(2)
+}
+
+const timeAgo = (date: Date) => {
+  const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000)
+  if (seconds < 60) return 'just now'
+  const minutes = Math.floor(seconds / 60)
+  if (minutes < 60) return `${minutes}m ago`
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24) return `${hours}h ago`
+  const days = Math.floor(hours / 24)
+  if (days < 7) return `${days}d ago`
+  return formatDate(date)
+}
 ---
+
+<div class={cn('flex flex-col gap-4', className)}>
+  <div class="flex flex-col gap-1 text-xs sm:text-sm">
+    <div class="flex items-center gap-2">
+      <Icon name="lucide:users" class="size-3 sm:size-4 text-muted-foreground" />
+      <span class="text-muted-foreground">{totalSubmissions} submission{totalSubmissions !== 1 ? 's' : ''}</span>
+    </div>
+    {project.endDate && (
+      <div class="flex items-center gap-2 hidden sm:flex">
+        <Icon name="lucide:calendar-clock" class="size-4 text-muted-foreground" />
+        <span class="text-muted-foreground">Deadline: {formatDate(new Date(project.endDate))}</span>
+      </div>
+    )}
+    {userSubmission && (
+      <div class="flex items-center gap-2 hidden sm:flex">
+      <Icon name={getRankIcon(userRank!)} class="size-4 text-muted-foreground" />
+        <span class="text-muted-foreground">Your score: {formatScore(userSubmission.score)}</span>
+      </div>
+    )}
+  </div>
+  <Separator className="my-1" />
+
+  <div class="flex flex-col gap-2">
+    {submissions.length > 0 ? (
+      submissions.map((submission, index) => {
+        const rank = index + 1
+        const isCurrentUser = submission.contributors.some((c) => c.userId === currentUser?.id)
+
+        return (
+          <div
+            class={cn(
+              'group relative overflow-hidden border transition-all duration-300 rounded-xl',
+              isCurrentUser && 'ring-2 ring-primary/50',
+              rank <= 3 ? 'hover:bg-secondary/50' : 'hover:bg-secondary/30'
+            )}
+          >
+            <div class="relative p-2 sm:p-3 lg:p-4">
+              <div class="flex items-center gap-3 lg:gap-4">
+                <div class="flex-shrink-0">
+                  <Badge variant={getRankVariant(rank)} className="min-w-[2rem] sm:min-w-[2.5rem] lg:min-w-[3rem] justify-center">
+                    <Icon name={getRankIcon(rank)} class="mr-1 size-3 hidden sm:inline-block" />
+                    {rank}
+                  </Badge>
+                </div>
+
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    {submission.contributors.map((c) => (
+                      <div class="flex items-center gap-1">
+                        {c.userImage ? (
+                          <img src={c.userImage} alt={c.userName || 'User'} class="size-6 rounded-full" />
+                        ) : (
+                          <div class="flex size-6 items-center justify-center rounded-full bg-muted">
+                            <Icon name="lucide:user" class="size-3" />
+                          </div>
+                        )}
+                        <span class="text-xs sm:text-sm font-medium">{c.userName || 'Anonymous'}</span>
+                        {isCurrentUser && c.userId === currentUser?.id && (
+                          <Badge variant="outline" className="ml-1 text-[10px] sm:text-xs">You</Badge>
+                        )}
+                      </div>
+                    ))}
+                    {submission.unlinkedCount > 0 && (
+                      <span class="text-xs text-muted-foreground">+{submission.unlinkedCount} more, sign in to claim</span>
+                    )}
+                  </div>
+                  <p class="text-[10px] sm:text-xs text-muted-foreground">{timeAgo(new Date(submission.submittedAt))}</p>
+                </div>
+
+                <div class="flex items-center gap-3 lg:gap-4">
+                  <div class="text-right">
+                    <p class="font-semibold text-sm sm:text-base lg:text-lg">{formatScore(submission.score)}</p>
+                    <p class="text-[10px] sm:text-xs text-muted-foreground">points</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )
+      })
+    ) : (
+      <Card className="text-center p-6 sm:p-8">
+        <Icon name="lucide:trophy" class="mx-auto mb-2 text-muted-foreground/30 size-8 sm:size-12" />
+        <p class="text-muted-foreground text-sm">No submissions yet</p>
+        <p class="text-muted-foreground text-xs mt-1 hidden sm:block">Be the first to submit!</p>
+      </Card>
+    )}
+  </div>
+
+  {hasMore && (
+    <div class="flex justify-center">
+      <Link
+        href={`/projects/${projectId}/leaderboard`}
+        class={cn(buttonVariants({ variant: 'outline' }), 'group')}
+      >
+        View all {totalSubmissions} submissions
+        <Icon name="lucide:arrow-right" class="ml-2 size-4 transition-transform group-hover:translate-x-1" />
+      </Link>
+    </div>
+  )}
+</div>
