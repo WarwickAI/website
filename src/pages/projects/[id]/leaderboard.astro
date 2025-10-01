@@ -1,0 +1,34 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import PageHead from '@/components/PageHead.astro'
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import LeaderboardTable from '@/components/Leaderboard.astro'
+import { db, Project } from 'astro:db'
+
+export async function getStaticPaths() {
+  const projects = await db.select().from(Project)
+  return projects.map((project) => ({
+    params: { id: project.id },
+    props: { project },
+  }))
+}
+
+const { project } = Astro.props
+---
+
+<Layout class="max-w-3xl" particles>
+  <PageHead
+    slot="head"
+    title={`${project.name} Leaderboard`}
+    description={`Leaderboard for ${project.name}`}
+  />
+  <Breadcrumbs
+    items={[
+      { href: '/projects', label: 'Projects', icon: 'lucide:folder' },
+      { href: `/projects/${project.id}`, label: project.name, icon: 'lucide:layout-dashboard' },
+      { label: 'Leaderboard', icon: 'lucide:trophy' },
+    ]}
+  />
+
+  <LeaderboardTable server:defer project={project.id} className="mt-6 bg-background/75" />
+</Layout>

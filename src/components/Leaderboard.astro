@@ -1,0 +1,271 @@
+---
+import Link from '@/components/Link.astro'
+import AvatarComponent from '@/components/ui/avatar'
+import { buttonVariants } from '@/components/ui/button'
+import { formatDate, cn } from '@/lib/utils'
+import { Icon } from 'astro-icon/components'
+import { db, desc, eq, Project, Submission, Contribution, User } from 'astro:db'
+
+export const prerender = false;
+
+interface Props {
+  project: string
+  className?: string
+  limit?: number
+}
+
+const {
+  project: projectId,
+  className,
+  limit
+} = Astro.props
+const currentUser = Astro.locals.user
+
+const project = await db
+  .select()
+  .from(Project)
+  .where(eq(Project.id, projectId))
+  .get()
+if (!project) return
+
+const submissionsRaw = await db
+  .select({
+    id: Submission.id,
+    score: Submission.score,
+    repo: Submission.submissionRepo,
+    submittedAt: Submission.submittedAt,
+  })
+  .from(Submission)
+  .where(eq(Submission.projectId, projectId))
+  .orderBy(desc(Submission.score), desc(Submission.submittedAt))
+
+const contributions = await db
+  .select({
+    submissionId: Contribution.submissionId,
+    userId: Contribution.userId,
+    githubUserId: Contribution.githubUserId,
+    userName: User.name,
+    userImage: User.image,
+  })
+  .from(Contribution)
+  .leftJoin(User, eq(Contribution.userId, User.id))
+
+const contributionsBySubmission: Record<string, any[]> = {}
+for (const contrib of contributions) {
+  if (!contributionsBySubmission[contrib.submissionId]) {
+    contributionsBySubmission[contrib.submissionId] = []
+  }
+  contributionsBySubmission[contrib.submissionId].push(contrib)
+}
+
+const allSubmissions = submissionsRaw.map((sub) => {
+  const contribs = contributionsBySubmission[sub.id] || []
+  const linkedContribs = contribs.filter((c) => c.userId)
+  const unlinkedCount = contribs.length - linkedContribs.length
+
+  return {
+    ...sub,
+    contributors: linkedContribs,
+    unlinkedCount,
+  }
+})
+
+const totalSubmissions = allSubmissions.length
+const submissions = limit ? allSubmissions.slice(0, limit) : allSubmissions
+const hasMore = limit ? totalSubmissions > limit : false
+
+const userSubmissionIndex = allSubmissions.findIndex((sub) =>
+  sub.contributors.some((c) => c.userId === currentUser?.id)
+)
+
+const userSubmission = userSubmissionIndex >= 0 ? allSubmissions[userSubmissionIndex] : null
+const userRank = userSubmissionIndex >= 0 ? userSubmissionIndex + 1 : null
+
+const getRankStyles = (rank: number) => {
+  if (rank === 1) return 'bg-gradient-to-r from-amber-500 to-yellow-500 text-white border-0 shadow-sm'
+  if (rank === 2) return 'bg-gradient-to-r from-slate-400 to-slate-500 text-white border-0 shadow-sm'
+  if (rank === 3) return 'bg-gradient-to-r from-amber-700 to-orange-800 text-white border-0 shadow-sm'
+  return 'bg-muted/50 text-muted-foreground border-border'
+}
+
+const getRankColor = (rank: number) => {
+  if (rank === 1) return 'text-amber-600 dark:text-amber-400'
+  if (rank === 2) return 'text-slate-600 dark:text-slate-400'
+  if (rank === 3) return 'text-orange-700 dark:text-orange-600'
+  return 'text-muted-foreground'
+}
+
+const getRankIcon = (rank: number) => {
+  if (rank === 1) return 'lucide:trophy'
+  if (rank === 2) return 'lucide:medal'
+  if (rank === 3) return 'lucide:award'
+  return 'lucide:hash'
+}
+
+const formatScore = (score: number | null) => {
+  if (score === null) return 'Pending'
+  return score.toFixed(2)
+}
+
+const timeAgo = (date: Date) => {
+  const seconds = Math.floor((new Date().getTime() - date.getTime()) / 1000)
+  if (seconds < 60) return 'just now'
+  const minutes = Math.floor(seconds / 60)
+  if (minutes < 60) return `${minutes}m ago`
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24) return `${hours}h ago`
+  const days = Math.floor(hours / 24)
+  if (days < 7) return `${days}d ago`
+  return formatDate(date)
+}
+---
+
+<div class={cn('flex flex-col gap-4', className)}>
+  <div class="flex flex-col gap-1 text-xs sm:text-sm text-muted-foreground">
+    <div class="flex items-center gap-2">
+      <Icon name="lucide:users" class="size-3 sm:size-4" />
+      <span>{totalSubmissions} submission{totalSubmissions !== 1 ? 's' : ''}</span>
+    </div>
+    {project.endDate && (
+      <div class="flex items-center gap-2 hidden sm:flex">
+        <Icon name="lucide:calendar-clock" class="size-4" />
+        <span>Deadline: {formatDate(new Date(project.endDate))}</span>
+      </div>
+    )}
+    {userSubmission && (
+      <div class="flex items-center gap-2 hidden sm:flex">
+        <Icon name="lucide:trophy" class="size-4" />
+        <span>Your rank: #{userRank} ({formatScore(userSubmission.score)} pts)</span>
+      </div>
+    )}
+  </div>
+
+  {submissions.length > 0 ? (
+    <div class="flex flex-col">
+      {submissions.map((submission, index) => {
+        const rank = index + 1
+
+      const rowBackground =
+        rank === 1
+          ? 'bg-gradient-to-r from-amber-400/10 via-amber-400/20 to-amber-400/10'
+          : rank === 2
+            ? 'bg-gradient-to-r from-slate-400/10 via-slate-400/20 to-slate-400/10'
+            : rank === 3
+              ? 'bg-gradient-to-r from-orange-500/10 via-orange-500/20 to-orange-500/10'
+              : 'hover:bg-muted/20'
+
+        return (
+          <>
+            <div class={cn(
+              'group transition-colors duration-200 py-4 sm:py-5 px-2 sm:px-3 rounded-md',
+              rowBackground
+            )}>
+              <div class="flex items-start gap-3">
+                <div class="flex-shrink-0">
+                  <div class={cn(
+                    'flex items-center justify-center w-10 py-1 rounded-md border font-semibold text-base px-2 gap-1',
+                    getRankStyles(rank)
+                  )}>
+                    <Icon 
+                      name={getRankIcon(rank)} 
+                      class={cn(
+                        'size-4',
+                        rank <= 3 ? 'text-white' : 'text-muted-foreground'
+                      )}
+                    />
+                    <span>{rank}</span>
+                  </div>
+                </div>
+
+                <div class="flex-1 min-w-0 flex flex-col gap-1">
+                  <div class="flex -space-x-2">
+                    {submission.contributors.slice(0, 5).map((c) => (
+                      <AvatarComponent
+                        client:load
+                        src={c.userImage}
+                        alt={c.userName || 'User'}
+                        fallback={c.userName?.[0] || 'U'}
+                        className="size-8 rounded-full border-2 border-background"
+                      />
+                    ))}
+                    {submission.contributors.length > 5 && (
+                      <div class="flex size-8 items-center justify-center rounded-full bg-muted border-2 border-background text-xs font-medium">
+                        +{submission.contributors.length - 5}
+                      </div>
+                    )}
+                    {submission.unlinkedCount > 0 && (
+                      <div class="flex size-8 items-center justify-center rounded-full bg-muted/50 border-2 border-background border-dashed text-xs text-muted-foreground">
+                        +{submission.unlinkedCount}
+                      </div>
+                    )}
+                  </div>
+
+                  <p class="text-xs sm:text-sm text-muted-foreground truncate">
+                    {submission.contributors.map((c, idx) => {
+                      const name = c.userName || 'Anonymous'
+                      return <span>{idx > 0 && ", "}{name}</span>
+                    })}
+                    {submission.unlinkedCount > 0 && (
+                      <>
+                        {submission.contributors.length > 0 && ', '}
+                        <span class="italic text-muted-foreground">
+                          {submission.unlinkedCount} unclaimed
+                        </span>
+                      </>
+                    )}
+                  </p>
+
+                  <p class="text-[11px] sm:text-xs text-muted-foreground">
+                    {timeAgo(new Date(submission.submittedAt))}
+                  </p>
+                </div>
+
+                <div class="text-right flex-shrink-0">
+                  <p class={cn(
+                    'font-bold text-lg sm:text-xl',
+                    rank <= 3 ? getRankColor(rank) : 'text-foreground'
+                  )}>
+                    {formatScore(submission.score)}
+                  </p>
+                  <p class="text-[10px] sm:text-xs text-muted-foreground">pts</p>
+                </div>
+              </div>
+            </div>
+            {index < submissions.length - 1 && (
+              <div class="mx-auto max-w-2xl">
+                <div class="h-px bg-gradient-to-r from-transparent via-border/50 to-transparent" />
+              </div>
+            )}
+          </>
+        )
+      })}
+    </div>
+  ) : (
+    <div class="py-10 sm:py-14 text-center">
+      <Icon name="lucide:trophy" class="mx-auto mb-3 text-muted-foreground/20 size-14 sm:size-20" />
+      {project.startDate && new Date(project.startDate) > new Date() ? (
+        <>
+          <p class="text-muted-foreground text-base">Competition coming soon!</p>
+          <p class="text-muted-foreground text-sm mt-1">Submissions will open on {formatDate(new Date(project.startDate))}</p>
+        </>
+      ) : (
+        <>
+          <p class="text-muted-foreground text-base">No submissions yet</p>
+          <p class="text-muted-foreground text-sm mt-1">Be the first to submit!</p>
+        </>
+      )}
+    </div>
+  )}
+
+  {hasMore && (
+    <div class="flex justify-center mt-4">
+      <Link
+        href={`/projects/${projectId}/leaderboard`}
+        class={cn(buttonVariants({ variant: 'outline' }), 'group')}
+      >
+        View all {totalSubmissions} submissions
+        <Icon name="lucide:arrow-right" class="ml-2 size-4 transition-transform group-hover:translate-x-1" />
+      </Link>
+    </div>
+  )}
+</div>
