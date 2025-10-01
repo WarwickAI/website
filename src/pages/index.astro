@@ -225,11 +225,11 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
           </p>
         </div>
       </Card>
-      <Card>
+      <Card color="teal">
         <h3 slot="header" class="text-2xl leading-none font-medium">
-          Snake Competition
+          🐍 Snake Competition
         </h3>
-        <Leaderboard server:defer project="0fea5f9d-5a60-434a-b363-9dc6ff5cdc60" />
+        <Leaderboard server:defer limit={3} project="snake" />
       </Card>
       <Card class="overflow-hidden p-0!">
         <LivestreamFeed channel="warwickai" width="100%" height="300" />
