@@ -1,5 +1,5 @@
 ---
-import AccountAvatar from '@/components/AccountAvatar.astro'
+import AccountAvatar from '@/components/AccountAvatar'
 import AuthWall from '@/components/AuthWall'
 import IconPopover from '@/components/IconPopover'
 import UserInfo from '@/components/UserInfo'
@@ -35,7 +35,7 @@ import logo from '../../public/static/logo.svg'
       <MobileMenu client:load transition:persist />
       <ThemeToggle transition:persist />
       <IconPopover title="Account information" client:load transition:persist>
-        <AccountAvatar server:defer slot="icon" class="absolute size-4" />
+        <AccountAvatar client:load slot="icon" />
         <AuthWall client:load>
           <UserInfo client:load />
         </AuthWall>
