@@ -243,8 +243,17 @@ const timeAgo = (date: Date) => {
   ) : (
     <div class="py-10 sm:py-14 text-center">
       <Icon name="lucide:trophy" class="mx-auto mb-3 text-muted-foreground/20 size-14 sm:size-20" />
-      <p class="text-muted-foreground text-base">No submissions yet</p>
-      <p class="text-muted-foreground text-sm mt-1">Be the first to submit!</p>
+      {project.startDate && new Date(project.startDate) > new Date() ? (
+        <>
+          <p class="text-muted-foreground text-base">Competition coming soon!</p>
+          <p class="text-muted-foreground text-sm mt-1">Submissions will open on {formatDate(new Date(project.startDate))}</p>
+        </>
+      ) : (
+        <>
+          <p class="text-muted-foreground text-base">No submissions yet</p>
+          <p class="text-muted-foreground text-sm mt-1">Be the first to submit!</p>
+        </>
+      )}
     </div>
   )}
 
