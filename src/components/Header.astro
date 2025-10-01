@@ -2,6 +2,7 @@
 import AccountAvatar from '@/components/AccountAvatar.astro'
 import AuthWall from '@/components/AuthWall'
 import IconPopover from '@/components/IconPopover'
+import UserInfo from '@/components/UserInfo'
 import Link from '@/components/Link.astro'
 import ThemeToggle from '@/components/ThemeToggle.astro'
 import MobileMenu from '@/components/ui/mobile-menu'
@@ -36,10 +37,7 @@ import logo from '../../public/static/logo.svg'
       <IconPopover title="Account information" client:load transition:persist>
         <AccountAvatar server:defer slot="icon" class="absolute size-4" />
         <AuthWall client:load>
-          <div class="text-muted-foreground text-sm">
-            Coming soon - keep an eye out here for projects and competitions
-            leaderboards!
-          </div>
+          <UserInfo client:load />
         </AuthWall>
       </IconPopover>
     </div>
