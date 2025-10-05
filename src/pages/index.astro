@@ -4,6 +4,7 @@ import Card from '@/components/Card.astro'
 import Link from '@/components/Link.astro'
 import LivestreamFeed from '@/components/LivestreamFeed.astro'
 import Leaderboard from '@/components/Leaderboard.astro'
+import Calendar from '@/components/EventCalendar.astro'
 import PageHead from '@/components/PageHead.astro'
 import { buttonVariants } from '@/components/ui/button'
 import WHACK from '@/components/WHACK.astro'
@@ -233,6 +234,9 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
       </Card>
       <Card class="overflow-hidden p-0!">
         <LivestreamFeed channel="warwickai" width="100%" height="300" />
+      </Card>
+      <Card>
+        <Calendar enableLocation={true} enableLinks={true} />
       </Card>
       {blog.map((post) => <BlogCard entry={post} masonryCard />)}
     </Masonry>
