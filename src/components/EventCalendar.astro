@@ -1,0 +1,194 @@
+---
+import Link from '@/components/Link.astro'
+import { cn } from '@/lib/utils'
+import { Icon } from 'astro-icon/components'
+import { google } from 'googleapis'
+
+type CalendarEvent = {
+  id: string
+  title: string
+  start: string // ISO 8601 string
+  end: string // ISO 8601 string
+  url?: string
+  location?: string
+  description?: string
+}
+
+interface Props {
+  enableLocation?: boolean
+  scrollable?: boolean
+}
+
+const { enableLocation = true, scrollable = false } = Astro.props
+
+const apiKey = import.meta.env.GOOGLE_CAL_API_KEY
+const calendarId = import.meta.env.GOOGLE_CAL_ID
+
+const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
+let cachedEvents: CalendarEvent[] = []
+let lastUpdated = new Date(1970, 0, 1)
+
+async function loadEvents(): Promise<CalendarEvent[]> {
+  const now = new Date()
+  const cacheAge = now.getTime() - lastUpdated.getTime()
+
+  if (cacheAge < CACHE_DURATION && cachedEvents.length > 0) {
+    return cachedEvents
+  }
+
+  try {
+    const calendar = google.calendar({ version: 'v3', auth: apiKey })
+    const timeMin = new Date()
+    const timeMax = new Date()
+    timeMax.setDate(timeMax.getDate() + 14)
+
+    const response = await calendar.events.list({
+      calendarId: calendarId,
+      timeMin: timeMin.toISOString(),
+      timeMax: timeMax.toISOString(),
+      singleEvents: true,
+      maxResults: 10,
+      orderBy: 'startTime',
+      fields: 'items(start,end,summary,description,location,htmlLink,id)',
+    })
+
+    if (response.status !== 200 || !response.data.items) return []
+
+    const events: CalendarEvent[] = response.data.items
+      .filter(
+        (event) => event.start?.dateTime && event.end?.dateTime && event.id,
+      )
+      .map((event) => ({
+        id: event.id!,
+        title: event.summary || 'Untitled Event',
+        start: event.start!.dateTime!,
+        end: event.end!.dateTime!,
+        url: event.htmlLink || undefined,
+        location: event.location || undefined,
+        description: event.description || undefined,
+      }))
+
+    cachedEvents = events
+    lastUpdated = new Date()
+    return events
+  } catch (error) {
+    console.error('Error fetching calendar events:', error)
+    return cachedEvents
+  }
+}
+
+const events = await loadEvents()
+
+function formatTime(date: Date): string {
+  const hours = date.getHours()
+  const minutes = date.getMinutes().toString().padStart(2, '0')
+  const amPm = hours >= 12 ? 'pm' : 'am'
+  const hour = hours % 12 || 12
+  return `${hour}:${minutes}${amPm}`
+}
+
+function formatDate(date: Date): string {
+  return date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  })
+}
+
+const eventsByDay: {
+  date: string
+  events: (CalendarEvent & { startDate: Date; endDate: Date; isNow: boolean })[]
+}[] = []
+const now = new Date()
+
+events.forEach((event) => {
+  const startDate = new Date(event.start)
+  const endDate = new Date(event.end)
+  const dateString = formatDate(startDate)
+  const isNow =
+    startDate.getTime() < now.getTime() && endDate.getTime() > now.getTime()
+
+  let dayGroup = eventsByDay.find((d) => d.date === dateString)
+  if (!dayGroup) {
+    dayGroup = { date: dateString, events: [] }
+    eventsByDay.push(dayGroup)
+  }
+
+  dayGroup.events.push({ ...event, startDate, endDate, isNow })
+})
+---
+
+{
+  events.length === 0 ? (
+    <div class="flex flex-col items-center justify-center gap-2 py-8 text-center">
+      <Icon name="lucide:calendar-x" class="text-muted-foreground size-12" />
+      <p class="text-muted-foreground text-sm">
+        No upcoming events. Check our Discord for announcements!
+      </p>
+    </div>
+  ) : (
+    <div class={cn('flex flex-col', scrollable && 'max-h-65 overflow-y-auto')}>
+      {eventsByDay.map((day) => (
+        <div>
+          <div class="bg-muted/30 border-y px-6 py-1.5">
+            <h3 class="text-xs font-medium tracking-wide uppercase">
+              {day.date}
+            </h3>
+          </div>
+
+          {day.events.map((event, _) => {
+            const timeString = `${formatTime(event.startDate)} - ${formatTime(event.endDate)}`
+
+            return (
+              <Link
+                href={event.url ? event.url : ''}
+                external={true}
+                class="block"
+              >
+                <div
+                  class={cn(
+                    'hover:bg-secondary/50 group border-b px-6 py-2 transition-colors duration-200 last:border-b-0',
+                    event.isNow && 'bg-primary/5 border-l-primary border-l-4',
+                  )}
+                >
+                  <div class="min-w-0">
+                    <div class="mb-1 flex items-start justify-between gap-2">
+                      <h4 class="group-hover:text-foreground font-bold leading-tight font-medium transition-colors">
+                        {event.title}
+                      </h4>
+                      <Icon
+                        name="lucide:external-link"
+                        class="text-muted-foreground group-hover:text-foreground size-4 flex-shrink-0 transition-colors"
+                      />
+                    </div>
+
+                    <div class="text-muted-foreground flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
+                      <span class="flex items-center gap-1">
+                        <Icon name="lucide:clock" class="size-3" />
+                        {timeString}
+                      </span>
+
+                      {enableLocation && event.location && (
+                        <span class="flex items-center gap-1">
+                          <Icon name="lucide:map-pin" class="size-3" />
+                          {event.location}
+                        </span>
+                      )}
+
+                      {event.isNow && (
+                        <span class="text-primary flex items-center gap-1 font-medium">
+                          <Icon name="lucide:radio" class="size-3" />
+                          Happening now
+                        </span>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            )
+          })}
+        </div>
+      ))}
+    </div>
+  )
+}
