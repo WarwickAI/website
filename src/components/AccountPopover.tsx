@@ -5,27 +5,28 @@ import {
   PopoverTrigger,
 } from '@/components/ui/popover'
 import { cn } from '@/lib/utils'
+import AccountAvatar from '@/components/AccountAvatar'
+import AuthWall from '@/components/AuthWall'
+import UserInfo from '@/components/UserInfo'
 
-interface IconPopoverProps extends React.ComponentProps<'div'> {
-  icon?: React.ReactNode
-}
-
-export default function IconPopover(props: IconPopoverProps) {
+export default function AccountPopover() {
   return (
     <Popover>
       <PopoverTrigger asChild>
         <Button
           variant="ghost"
           size="icon"
-          title={props.title}
+          title="Account information"
           className={cn('-me-2 size-8')}
         >
-          {props.icon}
-          <span className="sr-only">{props.title}</span>
+          <AccountAvatar />
+          <span className="sr-only">Account information</span>
         </Button>
       </PopoverTrigger>
       <PopoverContent className={cn('bg-accent w-80')}>
-        {props.children}
+        <AuthWall>
+          <UserInfo />
+        </AuthWall>
       </PopoverContent>
     </Popover>
   )
