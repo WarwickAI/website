@@ -50,6 +50,15 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
       class="flex gap-4"
       columnClass="*:mb-4 *:last:mb-0"
     >
+      <Card class="overflow-hidden p-0!" color="sky">
+        <div slot="header" class="flex flex-row items-center gap-3 p-6 pb-2">
+          <Icon name="lucide:calendar-days" class="size-8" />
+          <h3 class="text-xl leading-none font-medium">
+            Upcoming Events
+          </h3>
+        </div>
+        <Calendar enableLocation={true} scrollable={true} />
+      </Card>
       <Card class="overflow-hidden p-0!">
         <Image
           src="/gallery/018-summit-24.jpg"
@@ -61,6 +70,35 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
           class="w-full"
         />
       </Card>
+      <Link
+        href="https://www.warwicksu.com/societies-sports/societies/warwickai/"
+        external
+      >
+        <Card color="green">
+          <div slot="header" class="flex flex-row items-center gap-3">
+            <Icon name="warwick-su-wordmark" class="size-8" />
+            <h3 class="text-xl leading-none font-medium">
+              Become a society member
+            </h3>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <p>
+              Are you a student at Warwick with an interest in AI? There are
+              many benefits to becoming a member through the Student's Union:
+            </p>
+
+            <ul class="list-inside list-['✓'] *:before:pr-1">
+              <li>Completley free for Warwick students</li>
+              <li>Be the first to know about new projects</li>
+              <li>Friendly community with great socials</li>
+              <li>Be part of the only society with a pet fish 🐠</li>
+              <li>Priority access to tickets at our AI summit</li>
+              <li>Utilise our compute resources for projects</li>
+            </ul>
+          </div>
+        </Card>
+      </Link>
       <Link href="https://instagram.com/warwick_ai" external>
         <Card color="pink">
           <div slot="header" class="flex flex-row items-center gap-3">
@@ -76,6 +114,17 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
           </p>
         </Card>
       </Link>
+      <Card class="overflow-hidden p-0!">
+        <Image
+          src="/gallery/013-summit-25.JPG"
+          alt=""
+          inferSize={true}
+          width="1600"
+          height="900"
+          loading="lazy"
+          class="w-full"
+        />
+      </Card>
       <Link href="https://discord.gg/YshvNtPUZm" external>
         <Card color="indigo">
           <div slot="header" class="flex flex-row items-center gap-3">
@@ -91,17 +140,61 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
           </p>
         </Card>
       </Link>
-      <Card class="overflow-hidden p-0!">
-        <Image
-          src="/gallery/011-summit-25.JPG"
-          alt=""
-          inferSize={true}
-          width="1600"
-          height="900"
-          loading="lazy"
-          class="w-full"
-        />
+      <Card color="violet">
+        <Fragment slot="header">
+          <WHACK />
+          <p class="text-muted-foreground text-center text-sm font-medium">
+            18&ndash;19 October 2025, The <Link
+              href="https://campus.warwick.ac.uk/search/623c8864421e6f5928c0c8b3"
+              external
+              underline
+            >Oculus</Link> Building
+          </p>
+        </Fragment>
+
+        <div class="flex flex-col gap-2">
+          <p>
+            Each year, WAI co-organises Warwick's flagship on-campus hackathon,
+            WHACK, along with UWCS and CodeSoc &mdash; and we're back for 2025!
+          </p>
+          <p>
+            Following a huge success last year, we are now opening our doors to <em
+              >ALL</em
+            > university students nationwide! Join us with a team of (up to) four
+            and submit a project to one of many categories set by top industy names
+            to win from the prize pot of over <strong>£4,000</strong>! And of
+            course, we will be providing free food to hackers all weekend long.
+          </p>
+          <p>
+            Keep an eye out for tickets. More information is available on the <Link
+              href="https://warwickhack.co.uk"
+              external
+              underline>WHACK website</Link
+            >.
+          </p>
+        </div>
       </Card>
+      <Card color="teal">
+        <h3 slot="header" class="text-2xl leading-none font-medium">
+          🐍 Snake Competition
+        </h3>
+        <Leaderboard server:defer limit={3} project="snake" />
+      </Card>
+      <Link href="/authors/exec">
+        <Card color="pink">
+          <div slot="header" class="flex flex-row items-center gap-3">
+            <Icon name="lucide:sparkles" class="size-8" />
+            <h3 class="text-xl leading-none font-medium">
+              Meet the Exec for 25/26!
+            </h3>
+          </div>
+
+          <p>
+            Click here to meet this year's exec team!
+            We are always happy to help with anything :)
+          </p>
+        </Card>
+      </Link>
       <Card color="red">
         <Fragment slot="header">
           <Link href="/summit">
@@ -148,38 +241,9 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
           </p>
         </div>
       </Card>
-      <Link
-        href="https://www.warwicksu.com/societies-sports/societies/warwickai/"
-        external
-      >
-        <Card color="green">
-          <div slot="header" class="flex flex-row items-center gap-3">
-            <Icon name="warwick-su-wordmark" class="size-8" />
-            <h3 class="text-xl leading-none font-medium">
-              Become a society member
-            </h3>
-          </div>
-
-          <div class="flex flex-col gap-2">
-            <p>
-              Are you a student at Warwick with an interest in AI? There are
-              many benefits to becoming a member through the Student's Union:
-            </p>
-
-            <ul class="list-inside list-['✓'] *:before:pr-1">
-              <li>Completley free for Warwick students</li>
-              <li>Be the first to know about new projects</li>
-              <li>Friendly community with great socials</li>
-              <li>Be part of the only society with a pet fish 🐠</li>
-              <li>Priority access to tickets at our AI summit</li>
-              <li>Utilise our compute resources for projects</li>
-            </ul>
-          </div>
-        </Card>
-      </Link>
       <Card class="overflow-hidden p-0!">
         <Image
-          src="/gallery/013-summit-25.JPG"
+          src="/gallery/011-summit-25.JPG"
           alt=""
           inferSize={true}
           width="1600"
@@ -188,55 +252,8 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
           class="w-full"
         />
       </Card>
-      <Card color="violet">
-        <Fragment slot="header">
-          <WHACK />
-          <p class="text-muted-foreground text-center text-sm font-medium">
-            18&ndash;19 October 2025, <Link
-              href="https://campus.warwick.ac.uk/search/623c8864421e6f5928c0c8b3"
-              external
-              underline>Oculus</Link
-            > and <Link
-              href="https://campus.warwick.ac.uk/search/623c8927421e6f5928c0ef6e"
-              external
-              underline>Junction Halls</Link
-            >
-          </p>
-        </Fragment>
-
-        <div class="flex flex-col gap-2">
-          <p>
-            Each year, WAI co-organises Warwick's flagship on-campus hackathon,
-            WHACK, along with UWCS and CodeSoc &mdash; and we're back for 2025!
-          </p>
-          <p>
-            Following a huge success last year, we are now opening our doors to <em
-              >ALL</em
-            > university students nationwide! Join us with a team of (up to) four
-            and submit a project to one of many categories set by top industy names
-            to win from the prize pot of over <strong>£4,000</strong>! And of
-            course, we will be providing free food to hackers all weekend long.
-          </p>
-          <p>
-            Keep an eye out for tickets. More information is available on the <Link
-              href="https://warwickhack.co.uk"
-              external
-              underline>WHACK website</Link
-            >.
-          </p>
-        </div>
-      </Card>
-      <Card color="teal">
-        <h3 slot="header" class="text-2xl leading-none font-medium">
-          🐍 Snake Competition
-        </h3>
-        <Leaderboard server:defer limit={3} project="snake" />
-      </Card>
       <Card class="overflow-hidden p-0!">
         <LivestreamFeed channel="warwickai" width="100%" height="300" />
-      </Card>
-      <Card>
-        <Calendar enableLocation={true} enableLinks={true} />
       </Card>
       {blog.map((post) => <BlogCard entry={post} masonryCard />)}
     </Masonry>
