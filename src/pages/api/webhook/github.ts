@@ -8,9 +8,7 @@ import type {
 import {
   db,
   eq,
-  gt,
   and,
-  isNull,
   Account,
   Project,
   Submission,
@@ -49,7 +47,7 @@ gh.webhooks.on("workflow_run.completed", async ({ payload }) => {
   ) return;
 
   try {
-    if (!repository.fork) return;
+    if (repository.fork || repository.is_template) return;
 
     // Get installation-specific octokit instance
     const installationId = workflowPayload.installation?.id;
@@ -60,15 +58,15 @@ gh.webhooks.on("workflow_run.completed", async ({ payload }) => {
 
     const octokit = await gh.getInstallationOctokit(installationId);
 
-    const parent = (await octokit.rest.repos.get({
+    const templateRepo = (await octokit.rest.repos.get({
       owner: repository.owner.login,
       repo: repository.name
-    })).data.parent;
-    if (!parent) return;
+    })).data.template_repository;
+    if (!templateRepo) return;
 
     const project = await db.select()
       .from(Project)
-      .where(eq(Project.templateRepo, parent.full_name))
+      .where(eq(Project.templateRepo, templateRepo.full_name))
       .get();
     if (!project) return;
 
@@ -78,7 +76,22 @@ gh.webhooks.on("workflow_run.completed", async ({ payload }) => {
       .get();
     if (existing) return;
 
-    const score = Math.round(Math.random() * 100); // TODO: implement
+    // TODO: Block early and late submissions
+
+    const { data: { jobs } } = await octokit.rest.actions.listJobsForWorkflowRun({
+      owner: repository.owner.login,
+      repo: repository.name,
+      run_id: workflow.id,
+    });
+
+    const { data: logs } = await octokit.rest.actions.downloadJobLogsForWorkflowRun({
+      owner: repository.owner.login,
+      repo: repository.name,
+      job_id: jobs[0].id
+    }) as { data: string };
+
+    const match = logs.match(/\*\*Score\*\*:\s*(\d+(?:\.\d+)?)/);
+    const score = match ? parseFloat(match[1]) : 0.0;
     const submissionId = randomUUID();
 
     await db.insert(Submission).values({
@@ -132,8 +145,6 @@ gh.webhooks.on("workflow_run.completed", async ({ payload }) => {
         linkedAt: null,
       });
     }
-
-    // TODO: commit comment here
   } catch (error) {
     console.error("Error processing submission:", error);
   }
