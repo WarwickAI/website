@@ -2,5 +2,5 @@
 name: 'Alex Moses'
 exec: true
 pronouns: 'President'
-avatar: '/exec/alex-moses.jpg'
+avatar: '/exec/alex-moses.webp'
 ---

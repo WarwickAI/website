@@ -15,6 +15,10 @@ import { Icon } from 'astro-icon/components'
 import { Masonry } from 'astro-masonry'
 import { Image } from 'astro:assets'
 
+import summitSocial from '../content/gallery/011-summit-25.jpg'
+import safetyPanel from '../content/gallery/013-summit-25.jpg'
+import robotProject from '../content/gallery/018-summit-24.jpg'
+
 const blog = await getRecentPosts(SITE.featuredPostCount)
 ---
 
@@ -61,11 +65,9 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
       </Card>
       <Card class="overflow-hidden p-0!">
         <Image
-          src="/gallery/018-summit-24.jpg"
-          alt=""
-          inferSize={true}
-          width="1600"
-          height="900"
+          src={robotProject}
+          alt="A WAI member shows a robot cat"
+          decoding="async"
           loading="lazy"
           class="w-full"
         />
@@ -116,11 +118,9 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
       </Link>
       <Card class="overflow-hidden p-0!">
         <Image
-          src="/gallery/013-summit-25.JPG"
-          alt=""
-          inferSize={true}
-          width="1600"
-          height="900"
+          src={safetyPanel}
+          alt="An AI safety panel discussing at the 2025 summit"
+          decoding="async"
           loading="lazy"
           class="w-full"
         />
@@ -243,11 +243,9 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
       </Card>
       <Card class="overflow-hidden p-0!">
         <Image
-          src="/gallery/011-summit-25.JPG"
-          alt=""
-          inferSize={true}
-          width="1600"
-          height="900"
+          src={summitSocial}
+          alt="A group of society members at a social event"
+          decoding="async"
           loading="lazy"
           class="w-full"
         />
