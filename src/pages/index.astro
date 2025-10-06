@@ -57,7 +57,7 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
             Upcoming Events
           </h3>
         </div>
-        <Calendar enableLocation={true} scrollable={true} />
+        <Calendar server:defer enableLocation={true} scrollable={true} />
       </Card>
       <Card class="overflow-hidden p-0!">
         <Image
