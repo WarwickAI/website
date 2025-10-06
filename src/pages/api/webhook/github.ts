@@ -90,7 +90,7 @@ gh.webhooks.on("workflow_run.completed", async ({ payload }) => {
       job_id: jobs[0].id
     }) as { data: string };
 
-    const match = logs.match(/\*\*Score\*\*:\s*(\d+(?:\.\d+)?)/);
+    const match = logs.match(/\*\*Score:\*\*\s*(\d+(?:\.\d+)?)/);
     const score = match ? parseFloat(match[1]) : 0.0;
     const submissionId = randomUUID();
 
