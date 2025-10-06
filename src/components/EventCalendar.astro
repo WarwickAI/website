@@ -80,11 +80,15 @@ async function loadEvents(): Promise<CalendarEvent[]> {
 const events = await loadEvents()
 
 function formatTime(date: Date): string {
-  const hours = date.getHours()
-  const minutes = date.getMinutes().toString().padStart(2, '0')
-  const amPm = hours >= 12 ? 'pm' : 'am'
-  const hour = hours % 12 || 12
-  return `${hour}:${minutes}${amPm}`
+  // Format in Europe/London timezone regardless of server timezone
+  const timeString = date.toLocaleTimeString("en-GB", {
+    timeZone: "Europe/London",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
+  });
+
+  return timeString.toLowerCase().replace(/\s/g, "");
 }
 
 function formatDate(date: Date): string {
