@@ -43,7 +43,7 @@ export const auth = betterAuth({
               })
               .where(
                 and(
-                  eq(Contribution.githubUserId, parseInt(account.id)),
+                  eq(Contribution.githubUserId, parseInt(account.accountId)),
                   isNull(Contribution.userId),
                 ),
               )
