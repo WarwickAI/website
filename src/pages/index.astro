@@ -174,12 +174,17 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
           </p>
         </div>
       </Card>
-      <Card color="teal">
-        <h3 slot="header" class="text-2xl leading-none font-medium">
-          🐍 Snake Competition
-        </h3>
-        <Leaderboard server:defer limit={3} project="snake" />
-      </Card>
+      <Link 
+        href="https://github.com/WarwickAI/snake-comp?tab=readme-ov-file#-warwick-ai-snake-competition-"
+        external
+      >
+        <Card color="teal">
+          <h3 slot="header" class="text-2xl leading-none font-medium">
+            🐍 Snake Competition
+          </h3>
+          <Leaderboard server:defer limit={3} project="snake" />
+        </Card>
+      </Link>
       <Link href="/authors/exec">
         <Card color="pink">
           <div slot="header" class="flex flex-row items-center gap-3">
