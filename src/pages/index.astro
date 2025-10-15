@@ -24,7 +24,7 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
 
 <Layout class="max-w-3xl" particles>
   <PageHead slot="head" title="" />
-  <section>
+  <section class="flex flex-col flex-1 gap-4">
     <Card color="purple">
       <Fragment slot="header">
         <h3 class="text-center text-3xl leading-none font-medium">
@@ -44,6 +44,21 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
         throughout term, and meet weekly for 'codenight'.
       </p>
     </Card>
+    <Link href="https://forms.gle/zcpdeMboACpHjUTs7" external>
+      <Card color="amber">
+        <div slot="header" class="flex flex-row items-center gap-3">
+          <Icon name="lucide:smile" class="size-8" />
+          <h3 class="text-xl leading-none font-medium">
+            Apply for 2025/26 Fresher Reps!
+          </h3>
+        </div>
+
+        <p>
+          Click here to apply to join us this year as a fresher rep,
+          and help us bring cool AI events to Warwick!
+        </p>
+      </Card>
+    </Link>
   </section>
   <section class="bg-background/75 flex flex-col gap-y-4">
     <Masonry
