@@ -58,6 +58,7 @@ for (const contrib of contributions) {
   contributionsBySubmission[contrib.submissionId].push(contrib)
 }
 
+const seenRepos = new Set<string>()
 const allSubmissions = submissionsRaw.map((sub) => {
   const contribs = contributionsBySubmission[sub.id] || []
   const linkedContribs = contribs.filter((c) => c.userId)
@@ -68,6 +69,11 @@ const allSubmissions = submissionsRaw.map((sub) => {
     contributors: linkedContribs,
     unlinkedCount,
   }
+}).filter((sub) => {
+  // Filter to keep only the top submission per repo
+  if (seenRepos.has(sub.repo)) return false
+  seenRepos.add(sub.repo)
+  return true
 })
 
 const totalSubmissions = allSubmissions.length

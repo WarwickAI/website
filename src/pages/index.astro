@@ -15,12 +15,16 @@ import { Icon } from 'astro-icon/components'
 import { Masonry } from 'astro-masonry'
 import { Image } from 'astro:assets'
 
+import summitSocial from '../content/gallery/011-summit-25.jpg'
+import safetyPanel from '../content/gallery/013-summit-25.jpg'
+import robotProject from '../content/gallery/018-summit-24.jpg'
+
 const blog = await getRecentPosts(SITE.featuredPostCount)
 ---
 
 <Layout class="max-w-3xl" particles>
   <PageHead slot="head" title="" />
-  <section>
+  <section class="flex flex-col flex-1 gap-4">
     <Card color="purple">
       <Fragment slot="header">
         <h3 class="text-center text-3xl leading-none font-medium">
@@ -40,6 +44,21 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
         throughout term, and meet weekly for 'codenight'.
       </p>
     </Card>
+    <Link href="https://forms.gle/zcpdeMboACpHjUTs7" external>
+      <Card color="amber">
+        <div slot="header" class="flex flex-row items-center gap-3">
+          <Icon name="lucide:smile" class="size-8" />
+          <h3 class="text-xl leading-none font-medium">
+            Apply for 2025/26 Fresher Reps!
+          </h3>
+        </div>
+
+        <p>
+          Click here to apply to join us this year as a fresher rep,
+          and help us bring cool AI events to Warwick!
+        </p>
+      </Card>
+    </Link>
   </section>
   <section class="bg-background/75 flex flex-col gap-y-4">
     <Masonry
@@ -48,7 +67,7 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
         700: 1,
       }}
       class="flex gap-4"
-      columnClass="*:mb-4 *:last:mb-0"
+      columnClass="flex flex-col flex-1 gap-4"
     >
       <Card class="overflow-hidden p-0!" color="sky">
         <div slot="header" class="flex flex-row items-center gap-3 p-6 pb-2">
@@ -57,15 +76,13 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
             Upcoming Events
           </h3>
         </div>
-        <Calendar enableLocation={true} scrollable={true} />
+        <Calendar server:defer enableLocation={true} scrollable={true} />
       </Card>
       <Card class="overflow-hidden p-0!">
         <Image
-          src="/gallery/018-summit-24.jpg"
-          alt=""
-          inferSize={true}
-          width="1600"
-          height="900"
+          src={robotProject}
+          alt="A WAI member shows a robot cat"
+          decoding="async"
           loading="lazy"
           class="w-full"
         />
@@ -116,11 +133,9 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
       </Link>
       <Card class="overflow-hidden p-0!">
         <Image
-          src="/gallery/013-summit-25.JPG"
-          alt=""
-          inferSize={true}
-          width="1600"
-          height="900"
+          src={safetyPanel}
+          alt="An AI safety panel discussing at the 2025 summit"
+          decoding="async"
           loading="lazy"
           class="w-full"
         />
@@ -174,12 +189,17 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
           </p>
         </div>
       </Card>
-      <Card color="teal">
-        <h3 slot="header" class="text-2xl leading-none font-medium">
-          🐍 Snake Competition
-        </h3>
-        <Leaderboard server:defer limit={3} project="snake" />
-      </Card>
+      <Link 
+        href="https://github.com/WarwickAI/snake-comp?tab=readme-ov-file#-warwick-ai-snake-competition-"
+        external
+      >
+        <Card color="teal">
+          <h3 slot="header" class="text-2xl leading-none font-medium">
+            🐍 Snake Competition
+          </h3>
+          <Leaderboard server:defer limit={3} project="snake" />
+        </Card>
+      </Link>
       <Link href="/authors/exec">
         <Card color="pink">
           <div slot="header" class="flex flex-row items-center gap-3">
@@ -243,11 +263,9 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
       </Card>
       <Card class="overflow-hidden p-0!">
         <Image
-          src="/gallery/011-summit-25.JPG"
-          alt=""
-          inferSize={true}
-          width="1600"
-          height="900"
+          src={summitSocial}
+          alt="A group of society members at a social event"
+          decoding="async"
           loading="lazy"
           class="w-full"
         />
