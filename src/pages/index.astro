@@ -51,6 +51,7 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
         default: 2,
         700: 1,
       }}
+      sortByHeight={true}
       class="flex gap-4"
       columnClass="flex flex-col flex-1 gap-4"
     >
@@ -72,6 +73,78 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
           class="w-full"
         />
       </Card>
+      <Card color="yellow">
+          <div slot="header" class="flex flex-row items-center gap-3">
+            <Icon name="lucide:brain" class="size-8" />
+            <h3 class="text-xl leading-none font-medium">
+              Group Projects 25/26!
+            </h3>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <p>
+              We're excited to announce that group projects are back for the
+              2025/26 academic year!
+            </p>
+            <p>
+              We're running two tracks this year: 
+            </p>
+            <ul class="list-inside list-['✓'] *:before:pr-1">
+              <li>Autonomous Drone AI</li>
+              <li>Stock Trading AI vs our pet fish</li>
+            </ul>
+            <p>
+              <a
+                href="https://docs.google.com/forms/d/e/1FAIpQLSdImGqRifxfu-ncqQYf7JmPIb8W4bFxvorfx-WBgimBpBSEzw/viewform?usp=sf_link"
+                target="_blank"
+                rel="noopener noreferrer"
+                style="font-weight: bold; text-decoration: underline;"
+              >
+                Click here to sign up!
+              </a>
+            </p>
+            <p>
+              Below are brief overviews of each project to help you decide which
+              one to join:
+            </p>
+            <ul class="list-inside list-['→'] *:before:pr-1">
+              <li>
+                <a
+                  href="/static/DroneAI.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-bold underline"
+                >
+                  Autonomous Drone AI brief (PDF)
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/static/StockTradingAI.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-bold underline"
+                >
+                  Stock Trading AI vs our pet fish brief (PDF)
+                </a>
+              </li>
+            </ul>
+            <p>
+              If you have any questions reach out to us on our socials, or email us.
+            </p>
+          </div>
+        </Card>
+      <Link 
+        href="https://github.com/WarwickAI/snake-comp?tab=readme-ov-file#-warwick-ai-snake-competition-"
+        external
+      >
+        <Card color="teal">
+          <h3 slot="header" class="text-2xl leading-none font-medium">
+            🐍 Snake Competition
+          </h3>
+          <Leaderboard server:defer limit={3} project="snake" />
+        </Card>
+      </Link>
       <Link
         href="https://www.warwicksu.com/societies-sports/societies/warwickai/"
         external
@@ -174,17 +247,6 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
           </p>
         </div>
       </Card>
-      <Link 
-        href="https://github.com/WarwickAI/snake-comp?tab=readme-ov-file#-warwick-ai-snake-competition-"
-        external
-      >
-        <Card color="teal">
-          <h3 slot="header" class="text-2xl leading-none font-medium">
-            🐍 Snake Competition
-          </h3>
-          <Leaderboard server:defer limit={3} project="snake" />
-        </Card>
-      </Link>
       <Link href="/authors/exec">
         <Card color="pink">
           <div slot="header" class="flex flex-row items-center gap-3">
