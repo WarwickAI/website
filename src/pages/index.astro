@@ -8,6 +8,7 @@ import Calendar from '@/components/EventCalendar.astro'
 import PageHead from '@/components/PageHead.astro'
 import { buttonVariants } from '@/components/ui/button'
 import WHACK from '@/components/WHACK.astro'
+import Stemettes from '@/components/Stemettes.astro'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
 import { getRecentPosts } from '@/lib/data-utils'
@@ -189,11 +190,74 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
           </p>
         </div>
       </Card>
+      <Card color="emerald">
+        <Fragment slot="header">
+          <Stemettes />
+          <img
+          src="/stemettes.png"
+          alt="Stemettes Logo"
+          class="w-full"
+          loading="lazy"
+          decoding="async"
+          />
+          <p class="text-muted-foreground text-center text-sm font-medium">
+            Thurs 13th November,  <Link
+              href="https://campus.warwick.ac.uk/search/623c8864421e6f5928c0c8b3"
+              external
+              underline
+            >Oculus</Link> Building
+          </p>
+        </Fragment>
+        <div class="overflow-hidden rounded-lg">
+          <p>
+            Our flagship women/non-binary students in STEAM event! This event featured a mentor from Stemettes who joined us to introduce what
+            Stemettes is, how the organisation was founded, and the mission behind their work to support women and non-binary people in STEAM. 
+          </p>
+
+          <p>
+            They spoke about the wide range of opportunities Stemettes offers, including
+            mentoring, workshops, events, and programmes designed to help students build
+            confidence, skills, and networks in STEM fields. 
+            You can find out more about
+            Stemettes and their work on their
+            <Link
+              href="https://stemettes.org"
+              external
+              underline
+              class="ml-1"
+            >
+            website
+            </Link>.
+          </p>
+          <p> 
+            We’ll be continuing this collaboration with future mini-hacks, workshops,
+            seminars, and other events, so keep an eye out for upcoming opportunities
+            hosted by Warwick AI, Stemettes, and our collaborating societies!
+          <p class="text-center">
+            Scan to sign up for upcoming Stemettes events & mentorship opportunities!
+          </p>
+          <img
+            src="/stemettes-qr-code-for-signups.png"
+            alt="QR code linking to Stemettes and partner event sign-ups"
+            class="w-32 h-32 mx-auto"
+            loading="lazy"
+          />
+          <Link
+            href="https://sfutures.org/warwick"
+            external
+            underline
+            class="block mx-auto text-center font-medium"
+          >
+            Or click here to find the links →
+          </Link>
+        </div>
+      </Card>
+
       <Link 
         href="https://github.com/WarwickAI/snake-comp?tab=readme-ov-file#-warwick-ai-snake-competition-"
         external
       >
-        <Card color="teal">
+      <Card color="teal">
           <h3 slot="header" class="text-2xl leading-none font-medium">
             🐍 Snake Competition
           </h3>
