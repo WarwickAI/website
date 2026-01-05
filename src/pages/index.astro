@@ -8,7 +8,6 @@ import Calendar from '@/components/EventCalendar.astro'
 import PageHead from '@/components/PageHead.astro'
 import { buttonVariants } from '@/components/ui/button'
 import WHACK from '@/components/WHACK.astro'
-import Stemettes from '@/components/Stemettes.astro'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
 import { getRecentPosts } from '@/lib/data-utils'
@@ -272,7 +271,9 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
 <<<<<<< HEAD
       <Card color="emerald">
         <Fragment slot="header">
-          <Stemettes />
+          <h3 class="text-center text-2xl leading-none font-medium">
+              Intro to Stemettes
+          </h3>
           <img
           src="/stemettes.png"
           alt="Stemettes Logo"
@@ -288,7 +289,7 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
             >Oculus</Link> Building
           </p>
         </Fragment>
-        <div class="overflow-hidden rounded-lg">
+        <div class="flex flex-col gap-2">
           <p>
             Our flagship women/non-binary students in STEAM event! This event featured a mentor from Stemettes who joined us to introduce what
             Stemettes is, how the organisation was founded, and the mission behind their work to support women and non-binary people in STEAM. 
@@ -304,7 +305,6 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
               href="https://stemettes.org"
               external
               underline
-              class="ml-1"
             >
             website
             </Link>.
