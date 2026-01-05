@@ -45,21 +45,6 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
         throughout term, and meet weekly for 'codenight'.
       </p>
     </Card>
-    <Link href="https://forms.gle/zcpdeMboACpHjUTs7" external>
-      <Card color="amber">
-        <div slot="header" class="flex flex-row items-center gap-3">
-          <Icon name="lucide:smile" class="size-8" />
-          <h3 class="text-xl leading-none font-medium">
-            Apply for 2025/26 Fresher Reps!
-          </h3>
-        </div>
-
-        <p>
-          Click here to apply to join us this year as a fresher rep,
-          and help us bring cool AI events to Warwick!
-        </p>
-      </Card>
-    </Link>
   </section>
   <section class="bg-background/75 flex flex-col gap-y-4">
     <Masonry
@@ -67,6 +52,7 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
         default: 2,
         700: 1,
       }}
+      sortByHeight={true}
       class="flex gap-4"
       columnClass="flex flex-col flex-1 gap-4"
     >
@@ -88,6 +74,99 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
           class="w-full"
         />
       </Card>
+      <Card color="yellow">
+          <div slot="header" class="flex flex-row items-center gap-3">
+            <Icon name="lucide:brain" class="size-8" />
+            <h3 class="text-xl leading-none font-medium">
+              Group Projects 25/26!
+            </h3>
+          </div>
+
+          <div class="flex flex-col gap-2">
+            <p>
+              We're excited to announce that group projects are back for the
+              2025/26 academic year!
+            </p>
+            <p>
+              We're running two tracks this year: 
+            </p>
+            <ul class="list-inside list-['✓'] *:before:pr-1">
+              <li>Autonomous Drone AI</li>
+              <li>Stock Trading AI vs our pet fish</li>
+            </ul>
+            <p>
+              <a
+                href="https://docs.google.com/forms/d/e/1FAIpQLSdImGqRifxfu-ncqQYf7JmPIb8W4bFxvorfx-WBgimBpBSEzw/viewform?usp=sf_link"
+                target="_blank"
+                rel="noopener noreferrer"
+                style="font-weight: bold; text-decoration: underline;"
+              >
+                Click here to sign up!
+              </a>
+            </p>
+            <p>
+              Below are brief overviews of each project to help you decide which
+              one to join:
+            </p>
+            <ul class="list-inside list-['→'] *:before:pr-1">
+              <li>
+                <a
+                  href="/static/DroneAI.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-bold underline"
+                >
+                  Autonomous Drone AI brief (PDF)
+                </a>
+              </li>
+              <li>
+                <a
+                  href="/static/StockTradingAI.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="font-bold underline"
+                >
+                  Stock Trading AI vs our pet fish brief (PDF)
+                </a>
+              </li>
+            </ul>
+            <div>
+              <p>
+                Term 2 Deadlines:
+              </p>
+              <ul class="list-inside list-['→'] *:before:pr-1">
+                <li>
+                  Week 1 Code Night: Stock Trading AI Portfolio Submissions
+                </li>
+                <li>
+                  Week 4 Code Night: Presentations for both projects!
+                </li>
+              </ul>
+            </div>
+            <div>
+              <p>
+                The best presentations will be invited to present at our yearly AI summit in February! 
+              </p>
+              <p>
+                Previous speakers include Google, IBM, Warwick AI alumni startups and more.
+              </p>
+            </div>
+            <p>
+              If you have any questions reach out to us on our socials, or email us.
+            </p>
+          </div>
+        </Card>
+      <Link 
+        href="https://github.com/WarwickAI/snake-comp?tab=readme-ov-file#-warwick-ai-snake-competition-"
+        external
+      >
+        <Card color="teal">
+          <h3 slot="header" class="text-2xl leading-none font-medium">
+            🐍 Snake Competition
+          </h3>
+          <Leaderboard server:defer limit={3} project="snake" />
+        </Card>
+      </Link>
       <Link
         href="https://www.warwicksu.com/societies-sports/societies/warwickai/"
         external
@@ -190,13 +269,14 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
           </p>
         </div>
       </Card>
+<<<<<<< HEAD
       <Card color="emerald">
         <Fragment slot="header">
           <Stemettes />
           <img
           src="/stemettes.png"
           alt="Stemettes Logo"
-          class="w-full"
+          class="w-full dark:invert"
           loading="lazy"
           decoding="async"
           />
@@ -233,22 +313,13 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
             We’ll be continuing this collaboration with future mini-hacks, workshops,
             seminars, and other events, so keep an eye out for upcoming opportunities
             hosted by Warwick AI, Stemettes, and our collaborating societies!
-          <p class="text-center">
-            Scan to sign up for upcoming Stemettes events & mentorship opportunities!
-          </p>
-          <img
-            src="/stemettes-qr-code-for-signups.png"
-            alt="QR code linking to Stemettes and partner event sign-ups"
-            class="w-32 h-32 mx-auto"
-            loading="lazy"
-          />
           <Link
             href="https://sfutures.org/warwick"
             external
             underline
             class="block mx-auto text-center font-medium"
           >
-            Or click here to find the links →
+            Click here to find out about upcoming Stemettes events & other mentorship opportunities! →
           </Link>
         </div>
       </Card>
@@ -264,6 +335,8 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
           <Leaderboard server:defer limit={3} project="snake" />
         </Card>
       </Link>
+=======
+>>>>>>> origin/main
       <Link href="/authors/exec">
         <Card color="pink">
           <div slot="header" class="flex flex-row items-center gap-3">

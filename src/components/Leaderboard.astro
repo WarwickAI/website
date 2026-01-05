@@ -58,7 +58,17 @@ for (const contrib of contributions) {
   contributionsBySubmission[contrib.submissionId].push(contrib)
 }
 
+// Helper function to create a unique identifier for each team
+const getTeamKey = (contributors: any[]) => {
+  const githubIds = contributors
+    .map(c => c.githubUserId)
+    .sort() // Sort to ensure consistent key regardless of order
+  return githubIds.join('|')
+}
+
+const seenTeams = new Set<string>()
 const seenRepos = new Set<string>()
+
 const allSubmissions = submissionsRaw.map((sub) => {
   const contribs = contributionsBySubmission[sub.id] || []
   const linkedContribs = contribs.filter((c) => c.userId)
@@ -68,10 +78,13 @@ const allSubmissions = submissionsRaw.map((sub) => {
     ...sub,
     contributors: linkedContribs,
     unlinkedCount,
+    teamKey: getTeamKey(contribs),
   }
 }).filter((sub) => {
-  // Filter to keep only the top submission per repo
-  if (seenRepos.has(sub.repo)) return false
+  // Filter if we've seen either this team OR this repo before
+  if (seenTeams.has(sub.teamKey) || seenRepos.has(sub.repo)) return false
+  
+  seenTeams.add(sub.teamKey)
   seenRepos.add(sub.repo)
   return true
 })
