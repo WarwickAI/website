@@ -71,6 +71,48 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
           class="w-full"
         />
       </Card>
+      <Card color="blue">
+        <Fragment slot="header">
+          <p class="text-muted-foreground text-center text-xs">
+            Proudly sponsored by
+          </p>
+          <img
+            src="/jane-street.png"
+            alt="Jane Street Logo"
+            class="mx-auto w-60 dark:invert"
+          />
+        </Fragment>
+
+        <div class="flex flex-col gap-2">
+          <p>
+            Jane Street is a global trading firm with offices in London, New
+            York, Hong Kong, Singapore, and Amsterdam. Our approach is rooted in
+            technology and rigorous quantitative analysis, but our success is
+            driven by our people.
+          </p>
+          <p>
+            We are always recruiting top candidates and we invest heavily in
+            teaching and training. Applications for our <Link
+              href="https://www.janestreet.com/join-jane-street/open-roles/?type=internship&location=london"
+              external
+              underline>2026 summer internships</Link
+            > are open now - they give you a real sense of working at Jane Street
+            full-time. <Link
+              href="https://www.janestreet.com/join-jane-street/internships/"
+              external
+              underline>Learn more</Link
+            >.
+          </p>
+          <p>
+            Learn more about us and our roles at our <Link
+              href="https://www.janestreet.com/join-jane-street/programs-and-events/?location=europe&program-type=all-programs&event-type=all-events&show-programs=true&show-events=true"
+              external
+              underline>programs and events</Link
+            >. No finance experience needed. We look for a passion for critical
+            thinking and creative problem-solving – people like you!
+          </p>
+        </div>
+      </Card>
       <Card color="yellow">
         <div slot="header" class="flex flex-row items-center gap-3">
           <Icon name="lucide:brain" class="size-8" />
