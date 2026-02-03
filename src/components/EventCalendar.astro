@@ -37,14 +37,14 @@ async function loadEvents(): Promise<CalendarEvent[]> {
     const calendar = google.calendar({ version: 'v3', auth: apiKey })
     const timeMin = new Date()
     const timeMax = new Date()
-    timeMax.setDate(timeMax.getDate() + 14)
+    timeMax.setDate(timeMax.getDate() + 28)
 
     const response = await calendar.events.list({
       calendarId: calendarId,
       timeMin: timeMin.toISOString(),
       timeMax: timeMax.toISOString(),
       singleEvents: true,
-      maxResults: 10,
+      maxResults: 20,
       orderBy: 'startTime',
       fields: 'items(start,end,summary,description,location,htmlLink,id)',
     })

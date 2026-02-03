@@ -9,7 +9,9 @@ interface Props {
   limit?: number
 }
 
-const { project, className, limit = 3 } = Astro.props
+const { project, className, limit } = Astro.props
+
+const fallbackLimit = limit == undefined ? 10 : limit;
 ---
 
 <LeaderboardTable server:defer project={project} className={className} limit={limit}>
@@ -24,7 +26,7 @@ const { project, className, limit = 3 } = Astro.props
 
     <!-- Submission rows -->
     <div class="flex flex-col">
-      {Array.from({ length: limit }).map((_, i) => (
+      {Array.from({ length: fallbackLimit }).map((_, i) => (
         <>
           <div class="py-4 sm:py-5 px-2 sm:px-3">
             <div class="flex items-start gap-3">
@@ -53,7 +55,7 @@ const { project, className, limit = 3 } = Astro.props
               </div>
             </div>
           </div>
-          {i < limit - 1 && (
+          {i < fallbackLimit - 1 && (
             <div class="mx-auto max-w-2xl w-full">
               <div class="h-px bg-gradient-to-r from-transparent via-border/30 to-transparent" />
             </div>

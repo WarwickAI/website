@@ -1,7 +1,7 @@
 ---
 import BlogCard from '@/components/BlogCard.astro'
-import Card from '@/components/Card.astro'
 import Calendar from '@/components/Calendar.astro'
+import Card from '@/components/Card.astro'
 import Leaderboard from '@/components/Leaderboard.astro'
 import Link from '@/components/Link.astro'
 import LivestreamFeed from '@/components/LivestreamFeed.astro'
@@ -71,6 +71,52 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
           class="w-full"
         />
       </Card>
+      <Card color="red">
+        <Fragment slot="header">
+          <Link href="/summit">
+            <img
+              src="/summit.png"
+              alt="WAI Summit Icon"
+              class="mx-auto w-30 dark:hidden"
+            />
+            <img
+              src="/summit-dark.png"
+              alt="WAI Summit Icon"
+              class="mx-auto w-30 not-dark:hidden"
+            />
+
+            <h3 class="pt-2 text-center text-2xl leading-none font-medium">
+              Warwick AI Summit
+            </h3>
+          </Link>
+
+          <p class="text-muted-foreground text-center text-sm font-medium">
+            21 February 2026, The <Link
+              href="https://campus.warwick.ac.uk/search/623c8864421e6f5928c0c8b3"
+              external
+              underline>Oculus</Link
+            > Building
+          </p>
+        </Fragment>
+
+        <div class="flex flex-col gap-2">
+          <p>
+            Join us for our annual AI summit, showcasing the best of AI research
+            and projects at Warwick &mdash; from both students and staff. There
+            will be opportunities to get hands-on with workshops, and learn from
+            industry guests.
+          </p>
+          <p>
+            Our summit is open to everyone! This includes Warwick students and
+            staff (from all faculties), sixth form students, and members of the
+            public. Lunch will be provided for all guests.
+          </p>
+          <p>
+            Tickets will become available very soon. Follow us on Instagram to
+            stay in the loop as speakers are announced!
+          </p>
+        </div>
+      </Card>
       <Card color="blue">
         <Fragment slot="header">
           <p class="text-muted-foreground text-center text-xs">
@@ -110,83 +156,6 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
               underline>programs and events</Link
             >. No finance experience needed. We look for a passion for critical
             thinking and creative problem-solving – people like you!
-          </p>
-        </div>
-      </Card>
-      <Card color="yellow">
-        <div slot="header" class="flex flex-row items-center gap-3">
-          <Icon name="lucide:brain" class="size-8" />
-          <h3 class="text-xl leading-none font-medium">
-            Group Projects 25/26!
-          </h3>
-        </div>
-
-        <div class="flex flex-col gap-2">
-          <p>
-            We're excited to announce that group projects are back for the
-            2025/26 academic year!
-          </p>
-          <p>We're running two tracks this year:</p>
-          <ul class="list-inside list-['✓'] *:before:pr-1">
-            <li>Autonomous Drone AI</li>
-            <li>Stock Trading AI vs our pet fish</li>
-          </ul>
-          <p>
-            <a
-              href="https://docs.google.com/forms/d/e/1FAIpQLSdImGqRifxfu-ncqQYf7JmPIb8W4bFxvorfx-WBgimBpBSEzw/viewform?usp=sf_link"
-              target="_blank"
-              rel="noopener noreferrer"
-              style="font-weight: bold; text-decoration: underline;"
-            >
-              Click here to sign up!
-            </a>
-          </p>
-          <p>
-            Below are brief overviews of each project to help you decide which
-            one to join:
-          </p>
-          <ul class="list-inside list-['→'] *:before:pr-1">
-            <li>
-              <a
-                href="/static/DroneAI.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="font-bold underline"
-              >
-                Autonomous Drone AI brief (PDF)
-              </a>
-            </li>
-            <li>
-              <a
-                href="/static/StockTradingAI.pdf"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="font-bold underline"
-              >
-                Stock Trading AI vs our pet fish brief (PDF)
-              </a>
-            </li>
-          </ul>
-          <div>
-            <p>Term 2 Deadlines:</p>
-            <ul class="list-inside list-['→'] *:before:pr-1">
-              <li>Week 1 Code Night: Stock Trading AI Portfolio Submissions</li>
-              <li>Week 4 Code Night: Presentations for both projects!</li>
-            </ul>
-          </div>
-          <div>
-            <p>
-              The best presentations will be invited to present at our yearly AI
-              summit in February!
-            </p>
-            <p>
-              Previous speakers include Google, IBM, Warwick AI alumni startups
-              and more.
-            </p>
-          </div>
-          <p>
-            If you have any questions reach out to us on our socials, or email
-            us.
           </p>
         </div>
       </Card>
@@ -316,7 +285,7 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
             decoding="async"
           />
           <p class="text-muted-foreground text-center text-sm font-medium">
-            13 November 2025, <Link
+            13 November 2025, The <Link
               href="https://campus.warwick.ac.uk/search/623c8864421e6f5928c0c8b3"
               external
               underline>Oculus</Link
@@ -372,49 +341,80 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
           </p>
         </Card>
       </Link>
-      <Card color="red">
-        <Fragment slot="header">
-          <Link href="/summit">
-            <img
-              src="/summit.png"
-              alt="WAI Summit Icon"
-              class="mx-auto w-30 dark:hidden"
-            />
-            <img
-              src="/summit-dark.png"
-              alt="WAI Summit Icon"
-              class="mx-auto w-30 not-dark:hidden"
-            />
-
-            <h3 class="pt-2 text-center text-2xl leading-none font-medium">
-              Warwick AI Summit
-            </h3>
-          </Link>
-
-          <p class="text-muted-foreground text-center text-sm font-medium">
-            February 2026, The <Link
-              href="https://campus.warwick.ac.uk/search/623c8864421e6f5928c0c8b3"
-              external
-              underline>Oculus</Link
-            > Building
-          </p>
-        </Fragment>
+      <Card color="yellow">
+        <div slot="header" class="flex flex-row items-center gap-3">
+          <Icon name="lucide:brain" class="size-8" />
+          <h3 class="text-xl leading-none font-medium">
+            Group Projects 25/26!
+          </h3>
+        </div>
 
         <div class="flex flex-col gap-2">
           <p>
-            Join us for our annual AI summit, showcasing the best of AI research
-            and projects at Warwick &mdash; from both students and staff. There
-            will be opportunities to get hands-on with workshops, and learn from
-            industry guests.
+            We're excited to announce that group projects are back for the
+            2025/26 academic year!
+          </p>
+          <p>We're running two tracks this year:</p>
+          <ul class="list-inside list-['✓'] *:before:pr-1">
+            <li>Autonomous Drone AI</li>
+            <li>Stock Trading AI vs our pet fish</li>
+          </ul>
+          <p>
+            <a
+              href="https://docs.google.com/forms/d/e/1FAIpQLSdImGqRifxfu-ncqQYf7JmPIb8W4bFxvorfx-WBgimBpBSEzw/viewform?usp=sf_link"
+              target="_blank"
+              rel="noopener noreferrer"
+              style="font-weight: bold; text-decoration: underline;"
+            >
+              Click here to sign up!
+            </a>
           </p>
           <p>
-            Our summit is open to everyone! This includes Warwick students and
-            staff (from all faculties), sixth form students, and members of the
-            public. Lunch will be provided for all guests.
+            Below are brief overviews of each project to help you decide which
+            one to join:
           </p>
+          <ul class="list-inside list-['→'] *:before:pr-1">
+            <li>
+              <a
+                href="/static/DroneAI.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="font-bold underline"
+              >
+                Autonomous Drone AI brief (PDF)
+              </a>
+            </li>
+            <li>
+              <a
+                href="/static/StockTradingAI.pdf"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="font-bold underline"
+              >
+                Stock Trading AI vs our pet fish brief (PDF)
+              </a>
+            </li>
+          </ul>
+          <div>
+            <p>Term 2 Deadlines:</p>
+            <ul class="list-inside list-['→'] *:before:pr-1">
+              <li>Week 1 Code Night: Stock Trading AI Portfolio Submissions</li>
+              <li>Week 4 Code Night: Presentations for both projects!</li>
+            </ul>
+          </div>
+          <div>
+            <p>
+              The best presentations will be invited to present at our yearly AI
+              summit in February!
+            </p>
+            <p>
+              Previous speakers include Google, IBM, Warwick AI alumni startups
+              and more.
+            </p>
+          </div>
           <p>
-            Tickets will become available at the end of the year. Follow us on
-            Instagram to stay in the loop!
+            If you have any questions reach out to us on our socials, or email
+            us.
           </p>
         </div>
       </Card>
