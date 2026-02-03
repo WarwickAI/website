@@ -197,7 +197,7 @@ const timeAgo = (date: Date) => {
         <span>Deadline: {formatDate(new Date(project.endDate))}</span>
       </div>
     )}
-    <UserRank client:load submissions={userRankData} />
+    <UserRank client:only="react" transition:persist submissions={userRankData} />
   </div>
 
   {submissions.length > 0 ? (
