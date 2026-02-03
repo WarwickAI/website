@@ -1,7 +1,7 @@
 ---
 import BlogCard from '@/components/BlogCard.astro'
 import Card from '@/components/Card.astro'
-import Calendar from '@/components/EventCalendar.astro'
+import Calendar from '@/components/Calendar.astro'
 import Leaderboard from '@/components/Leaderboard.astro'
 import Link from '@/components/Link.astro'
 import LivestreamFeed from '@/components/LivestreamFeed.astro'
@@ -60,7 +60,7 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
           <Icon name="lucide:calendar-days" class="size-8" />
           <h3 class="text-xl leading-none font-medium">Upcoming Events</h3>
         </div>
-        <Calendar server:defer enableLocation={true} scrollable={true} />
+        <Calendar enableLocation={true} scrollable={true} />
       </Card>
       <Card class="overflow-hidden p-0!">
         <Image
@@ -198,7 +198,7 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
           <h3 slot="header" class="text-2xl leading-none font-medium">
             🐍 Snake Competition
           </h3>
-          <Leaderboard server:defer limit={3} project="snake" />
+          <Leaderboard limit={3} project="snake" />
         </Card>
       </Link>
       <Link

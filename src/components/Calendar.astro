@@ -1,0 +1,63 @@
+---
+import EventCalendar from './EventCalendar.astro'
+
+interface Props {
+  enableLocation?: boolean
+  scrollable?: boolean
+}
+
+const props = Astro.props
+---
+
+<EventCalendar server:defer {...props}>
+  <div slot="fallback" class="flex flex-col">
+    <!-- Day 1 -->
+    <div class="bg-muted/30 border-y px-6 py-1.5">
+      <div class="h-3.5 w-28 bg-foreground/10 animate-pulse rounded" />
+    </div>
+    <div class="border-b px-6 py-2">
+      <div class="mb-1 flex items-start justify-between gap-2">
+        <div class="h-5 w-44 bg-foreground/10 animate-pulse rounded" />
+        <div class="h-4 w-4 bg-foreground/10 animate-pulse rounded" />
+      </div>
+      <div class="flex items-center gap-x-3">
+        <div class="h-3.5 w-28 bg-foreground/10 animate-pulse rounded" />
+        <div class="h-3.5 w-24 bg-foreground/10 animate-pulse rounded" />
+      </div>
+    </div>
+    <div class="border-b px-6 py-2">
+      <div class="mb-1 flex items-start justify-between gap-2">
+        <div class="h-5 w-36 bg-foreground/10 animate-pulse rounded" />
+        <div class="h-4 w-4 bg-foreground/10 animate-pulse rounded" />
+      </div>
+      <div class="flex items-center gap-x-3">
+        <div class="h-3.5 w-24 bg-foreground/10 animate-pulse rounded" />
+        <div class="h-3.5 w-20 bg-foreground/10 animate-pulse rounded" />
+      </div>
+    </div>
+    <!-- Day 2 -->
+    <div class="bg-muted/30 border-y px-6 py-1.5">
+      <div class="h-3.5 w-24 bg-foreground/10 animate-pulse rounded" />
+    </div>
+    <div class="border-b px-6 py-2">
+      <div class="mb-1 flex items-start justify-between gap-2">
+        <div class="h-5 w-40 bg-foreground/10 animate-pulse rounded" />
+        <div class="h-4 w-4 bg-foreground/10 animate-pulse rounded" />
+      </div>
+      <div class="flex items-center gap-x-3">
+        <div class="h-3.5 w-28 bg-foreground/10 animate-pulse rounded" />
+        <div class="h-3.5 w-32 bg-foreground/10 animate-pulse rounded" />
+      </div>
+    </div>
+    <div class="px-6 py-2">
+      <div class="mb-1 flex items-start justify-between gap-2">
+        <div class="h-5 w-48 bg-foreground/10 animate-pulse rounded" />
+        <div class="h-4 w-4 bg-foreground/10 animate-pulse rounded" />
+      </div>
+      <div class="flex items-center gap-x-3">
+        <div class="h-3.5 w-24 bg-foreground/10 animate-pulse rounded" />
+        <div class="h-3.5 w-20 bg-foreground/10 animate-pulse rounded" />
+      </div>
+    </div>
+  </div>
+</EventCalendar>
