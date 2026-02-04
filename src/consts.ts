@@ -7,6 +7,7 @@ export const SITE: Site = {
   author: 'Warwick AI Exec',
   locale: 'en-GB',
   featuredPostCount: 2,
+  featuredCourseCount: 2,
   postsPerPage: 5,
 }
 
@@ -18,6 +19,10 @@ export const NAV_LINKS: SocialLink[] = [
   {
     href: '/authors/exec',
     label: 'meet our exec',
+  },
+  {
+    href: '/education/courses',
+    label: 'courses',
   },
   // {
   //   href: '/about',

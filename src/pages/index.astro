@@ -1,5 +1,6 @@
 ---
 import BlogCard from '@/components/BlogCard.astro'
+import CourseCard from '@/components/education/CourseCard.astro'
 import Card from '@/components/Card.astro'
 import Calendar from '@/components/EventCalendar.astro'
 import Leaderboard from '@/components/Leaderboard.astro'
@@ -11,6 +12,7 @@ import WHACK from '@/components/WHACK.astro'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
 import { getRecentPosts } from '@/lib/data-utils'
+import { getRecentCourses } from '@/lib/course-utils'
 import { Icon } from 'astro-icon/components'
 import { Masonry } from 'astro-masonry'
 import { Image } from 'astro:assets'
@@ -20,6 +22,7 @@ import safetyPanel from '../content/gallery/013-summit-25.jpg'
 import robotProject from '../content/gallery/018-summit-24.jpg'
 
 const blog = await getRecentPosts(SITE.featuredPostCount)
+const courses = await getRecentCourses(SITE.featuredCourseCount)
 ---
 
 <Layout class="max-w-3xl" particles>
@@ -389,6 +392,7 @@ const blog = await getRecentPosts(SITE.featuredPostCount)
         <LivestreamFeed channel="warwickai" width="100%" height="300" />
       </Card>
       {blog.map((post) => <BlogCard entry={post} masonryCard />)}
+      {courses.map((post) => <CourseCard entry={post} masonryCard />)}
     </Masonry>
     <div class="flex justify-center">
       <Link

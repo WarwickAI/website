@@ -1,0 +1,57 @@
+---
+import CourseCard from '@/components/education/CourseCard.astro'
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import PageHead from '@/components/PageHead.astro'
+import PaginationComponent from '@/components/ui/pagination'
+import { SITE } from '@/consts'
+import Layout from '@/layouts/Layout.astro'
+import { getAllCourses, groupPostsByCourse } from '@/lib/course-utils'
+import type { PaginateFunction } from 'astro'
+
+export async function getStaticPaths({
+  paginate,
+}: {
+  paginate: PaginateFunction
+}) {
+  const allPosts = await getAllCourses()
+  return paginate(allPosts, { pageSize: SITE.postsPerPage })
+}
+
+const { page } = Astro.props
+
+const postsByCourse = groupPostsByCourse(page.data)
+const courseTitles = Object.keys(postsByCourse)
+---
+
+<Layout class="max-w-3xl">
+  <PageHead slot="head" title="Courses" />
+  <Breadcrumbs
+    items={[
+      { label: 'Courses', href: '/education/courses', icon: 'lucide:library-big' },
+      { label: `Page ${page.currentPage}`, icon: 'lucide:book-copy' },
+    ]}
+  />
+
+  <div class="flex min-h-[calc(100vh-18rem)] flex-col gap-y-8">
+    {
+      courseTitles.map((course) => (
+        <section class="flex flex-col gap-y-4">
+          <ul class="flex flex-col gap-4">
+            {postsByCourse[course].map((post) => (
+              <li>
+                <CourseCard entry={post} />
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+
+  <PaginationComponent
+    currentPage={page.currentPage}
+    totalPages={page.lastPage}
+    baseUrl="/education/courses/"
+    client:load
+  />
+</Layout>
