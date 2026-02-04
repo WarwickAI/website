@@ -9,8 +9,8 @@ export const prerender = false
 type CalendarEvent = {
   id: string
   title: string
-  start: string // ISO 8601 string
-  end: string // ISO 8601 string
+  start: string
+  end: string
   url?: string
   location?: string
   description?: string
@@ -26,37 +26,32 @@ const { enableLocation = true, scrollable = false } = Astro.props
 const apiKey = import.meta.env.GOOGLE_CAL_API_KEY
 const calendarId = import.meta.env.GOOGLE_CAL_ID
 
-const CACHE_DURATION = 5 * 60 * 1000 // 5 minutes
-let cachedEvents: CalendarEvent[] = []
-let lastUpdated = new Date(1970, 0, 1)
+// ISR: Cache at Vercel edge for 5 minutes, serve stale while revalidating for up to 1 hour
+Astro.response.headers.set(
+  'Cache-Control',
+  'public, s-maxage=300, stale-while-revalidate=3600'
+)
 
 async function loadEvents(): Promise<CalendarEvent[]> {
-  const now = new Date()
-  const cacheAge = now.getTime() - lastUpdated.getTime()
-
-  if (cacheAge < CACHE_DURATION && cachedEvents.length > 0) {
-    return cachedEvents
-  }
-
   try {
     const calendar = google.calendar({ version: 'v3', auth: apiKey })
     const timeMin = new Date()
     const timeMax = new Date()
-    timeMax.setDate(timeMax.getDate() + 14)
+    timeMax.setDate(timeMax.getDate() + 28)
 
     const response = await calendar.events.list({
       calendarId: calendarId,
       timeMin: timeMin.toISOString(),
       timeMax: timeMax.toISOString(),
       singleEvents: true,
-      maxResults: 10,
+      maxResults: 20,
       orderBy: 'startTime',
       fields: 'items(start,end,summary,description,location,htmlLink,id)',
     })
 
     if (response.status !== 200 || !response.data.items) return []
 
-    const events: CalendarEvent[] = response.data.items
+    return response.data.items
       .filter(
         (event) => event.start?.dateTime && event.end?.dateTime && event.id,
       )
@@ -69,27 +64,21 @@ async function loadEvents(): Promise<CalendarEvent[]> {
         location: event.location || undefined,
         description: event.description || undefined,
       }))
-
-    cachedEvents = events
-    lastUpdated = new Date()
-    return events
   } catch (error) {
     console.error('Error fetching calendar events:', error)
-    return cachedEvents
+    return []
   }
 }
 
 const events = await loadEvents()
 
 function formatTime(date: Date): string {
-  // Format in Europe/London timezone regardless of server timezone
   const timeString = date.toLocaleTimeString("en-GB", {
     timeZone: "Europe/London",
     hour: "numeric",
     minute: "2-digit",
     hour12: true,
   });
-
   return timeString.toLowerCase().replace(/\s/g, "");
 }
 
@@ -142,7 +131,7 @@ events.forEach((event) => {
             </h3>
           </div>
 
-          {day.events.map((event, _) => {
+          {day.events.map((event) => {
             const timeString = `${formatTime(event.startDate)} - ${formatTime(event.endDate)}`
 
             return (
