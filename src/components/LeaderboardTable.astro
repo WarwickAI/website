@@ -2,6 +2,7 @@
 import Link from '@/components/Link.astro'
 import AvatarComponent from '@/components/ui/avatar'
 import UserRank from '@/components/UserRank'
+import ScrollingNames from '@/components/ScrollingNames'
 import { buttonVariants } from '@/components/ui/button'
 import { formatDate, cn } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
@@ -185,7 +186,7 @@ const timeAgo = (date: Date) => {
 }
 ---
 
-<div class={cn('flex flex-col gap-4', className)}>
+<div class={cn('flex flex-col gap-4 overflow-hidden', className)}>
   <div class="flex flex-col gap-1 text-xs sm:text-sm text-muted-foreground">
     <div class="flex items-center gap-2">
       <Icon name="lucide:users" class="size-3 sm:size-4" />
@@ -201,7 +202,7 @@ const timeAgo = (date: Date) => {
   </div>
 
   {submissions.length > 0 ? (
-    <div class="flex flex-col">
+    <div class="flex flex-col overflow-hidden">
       {submissions.map((submission, index) => {
         const rank = index + 1
 
@@ -217,10 +218,10 @@ const timeAgo = (date: Date) => {
         return (
           <>
             <div class={cn(
-              'group transition-colors duration-200 py-4 sm:py-5 px-2 sm:px-3 rounded-md',
+              'group transition-colors duration-200 py-4 sm:py-5 px-2 sm:px-3 rounded-md overflow-hidden',
               rowBackground
             )}>
-              <div class="flex items-start gap-3">
+              <div class="flex items-start gap-3 min-w-0">
                 <div class="flex-shrink-0">
                   <div class={cn(
                     'flex items-center justify-center w-10 py-1 rounded-md border font-semibold text-base px-2 gap-1',
@@ -237,7 +238,7 @@ const timeAgo = (date: Date) => {
                   </div>
                 </div>
 
-                <div class="flex-1 min-w-0 flex flex-col gap-1">
+                <div class="flex-1 min-w-0 overflow-hidden flex flex-col gap-1">
                   <div class="flex -space-x-2">
                     {submission.contributors.slice(0, 5).map((c) => (
                       <AvatarComponent
@@ -260,20 +261,11 @@ const timeAgo = (date: Date) => {
                     )}
                   </div>
 
-                  <p class="text-xs sm:text-sm text-muted-foreground truncate">
-                    {submission.contributors.map((c, idx) => {
-                      const name = c.userName || 'Anonymous'
-                      return <span>{idx > 0 && ", "}{name}</span>
-                    })}
-                    {submission.unlinkedCount > 0 && (
-                      <>
-                        {submission.contributors.length > 0 && ', '}
-                        <span class="italic text-muted-foreground">
-                          {submission.unlinkedCount} unclaimed
-                        </span>
-                      </>
-                    )}
-                  </p>
+                  <ScrollingNames
+                    client:load
+                    names={submission.contributors.map((c) => c.userName || 'Anonymous')}
+                    unlinkedCount={submission.unlinkedCount}
+                  />
 
                   <p class="text-[11px] sm:text-xs text-muted-foreground">
                     {timeAgo(new Date(submission.submittedAt))}
