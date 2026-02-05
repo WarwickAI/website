@@ -6,7 +6,7 @@ import CourseNavigation from '@/components/education/CourseNavigation.astro'
 import SubcoursepostsHeader from '@/components/education/SubcoursepostsHeader.astro'
 import SubcoursepostsSidebar from '@/components/education/SubcoursepostsSidebar.astro'
 import TOCHeader from '@/components/TOCHeader.astro'
-import TOCSidebar from '@/components/TOCSidebar.astro'
+import TOCcourseSidebar from '@/components/education/TOCcourseSidebar.astro'
 import { badgeVariants } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import Layout from '@/layouts/Layout.astro'
@@ -219,7 +219,7 @@ const tocSections = await getTOCSections(currentPostId)
 
     {
       tocSections.length > 0 && (
-        <TOCSidebar sections={tocSections} currentPostId={currentPostId} />
+        <TOCcourseSidebar sections={tocSections} currentPostId={currentPostId} />
       )
     }
 
