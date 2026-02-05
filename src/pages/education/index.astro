@@ -1,0 +1,18 @@
+---
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import PageHead from '@/components/PageHead.astro'
+import Layout from '@/layouts/Layout.astro'
+---
+
+<Layout class="max-w-3xl" particles>
+  <PageHead slot="head" title="Education" />
+  <Breadcrumbs items={[{ label: 'Education', icon: 'lucide:book' }]} />
+
+  <section>
+    <div class="min-w-full">
+      <div class="prose mb-8">
+        <p class="mt-0">Welcome to Warwick AI Education!</p>
+      </div>
+    </div>
+  </section>
+</Layout>

@@ -1,0 +1,94 @@
+---
+import Link from '@/components/Link.astro'
+import { buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import { Icon } from 'astro-icon/components'
+
+const { nextPage, prevPage, coursePage } = Astro.props
+const isSubpost = !!coursePage
+---
+
+<nav
+  class={cn(
+    'col-start-2 grid grid-cols-1 gap-4',
+    isSubpost ? 'sm:grid-cols-3' : 'sm:grid-cols-2',
+  )}
+>
+  <Link
+    href={prevPage ? `/education/courses/${prevPage.id}#post-title` : '/education/courses/'}
+    class={cn(
+      buttonVariants({ variant: 'outline' }),
+      'rounded-lg group flex items-center justify-start size-full',
+      !prevPage && isSubpost && 'pointer-events-none opacity-50 cursor-not-allowed',
+    )}
+    aria-disabled={!prevPage && isSubpost}
+  >
+    <Icon
+      name="lucide:arrow-left"
+      class="mr-2 size-4 transition-transform group-hover:-translate-x-1"
+    />
+    <div class="flex flex-col items-start overflow-hidden text-wrap">
+      <span class="text-muted-foreground text-left text-xs">
+        {isSubpost ? 'Previous Page' : 'Back to Courses'}
+      </span>
+      <span class="w-full text-left text-sm text-balance text-ellipsis">
+        {
+          prevPage?.data.title ||
+            (isSubpost ? '' : "")
+        }
+      </span>
+    </div>
+  </Link>
+
+  {
+    isSubpost && (
+      <Link
+        href={coursePage ? `/education/courses/${coursePage.id}#post-title` : '#'}
+        class={cn(
+          buttonVariants({ variant: 'outline' }),
+          'group flex size-full items-center justify-center rounded-lg',
+          !coursePage && 'pointer-events-none cursor-not-allowed opacity-50',
+        )}
+      >
+        <Icon
+          name="lucide:corner-left-up"
+          class="mr-2 size-4 transition-transform group-hover:-translate-y-1"
+        />
+        <div class="flex flex-col items-center overflow-hidden text-wrap">
+          <span class="text-muted-foreground text-center text-xs">
+            Course Page
+          </span>
+          <span class="w-full text-center text-sm text-balance text-ellipsis">
+            {coursePage?.data.title || 'No course page!?'}
+          </span>
+        </div>
+      </Link>
+    )
+  }
+
+  <Link
+    href={nextPage ? `/education/courses/${nextPage.id}#post-title` : '#'}
+    class={cn(
+      buttonVariants({ variant: 'outline' }),
+      'rounded-lg group flex items-center justify-end size-full',
+      !nextPage && 'pointer-events-none opacity-50 cursor-not-allowed',
+    )}
+    aria-disabled={!nextPage}
+  >
+    <div class="flex flex-col items-end overflow-hidden text-wrap">
+      <span class="text-muted-foreground text-right text-xs">
+        {isSubpost ? 'Next Page' : 'Next Page'}
+      </span>
+      <span class="w-full text-right text-sm text-balance text-ellipsis">
+        {
+          nextPage?.data.title ||
+            (isSubpost ? "Thanks for reading!" : "Thanks for reading!")
+        }
+      </span>
+    </div>
+    <Icon
+      name="lucide:arrow-right"
+      class="ml-2 size-4 transition-transform group-hover:translate-x-1"
+    />
+  </Link>
+</nav>
