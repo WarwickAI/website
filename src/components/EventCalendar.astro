@@ -19,9 +19,16 @@ type CalendarEvent = {
 interface Props {
   enableLocation?: boolean
   scrollable?: boolean
+  dateFrom?: string
+  dateTo?: string
 }
 
-const { enableLocation = true, scrollable = false } = Astro.props
+const {
+  enableLocation = true,
+  scrollable = false,
+  dateFrom,
+  dateTo,
+} = Astro.props
 
 const apiKey = import.meta.env.GOOGLE_CAL_API_KEY
 const calendarId = import.meta.env.GOOGLE_CAL_ID
@@ -35,9 +42,12 @@ Astro.response.headers.set(
 async function loadEvents(): Promise<CalendarEvent[]> {
   try {
     const calendar = google.calendar({ version: 'v3', auth: apiKey })
-    const timeMin = new Date()
-    const timeMax = new Date()
-    timeMax.setDate(timeMax.getDate() + 28)
+
+    const timeMin = dateFrom ? new Date(dateFrom) : new Date()
+    const timeMax = dateTo ? new Date(dateTo) : new Date()
+    if (!dateTo) {
+      timeMax.setDate(timeMax.getDate() + 28)
+    }
 
     const response = await calendar.events.list({
       calendarId: calendarId,

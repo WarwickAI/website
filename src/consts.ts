@@ -24,10 +24,10 @@ export const NAV_LINKS: SocialLink[] = [
     href: '/education/courses',
     label: 'courses',
   },
-  // {
-  //   href: '/about',
-  //   label: 'about',
-  // },
+  {
+    href: '/summit',
+    label: 'summit',
+  },
 ]
 
 export const SOCIAL_LINKS: SocialLink[] = [

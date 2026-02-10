@@ -1,18 +1,131 @@
 ---
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import Card from '@/components/Card.astro'
+import Link from '@/components/Link.astro'
 import PageHead from '@/components/PageHead.astro'
+import Calendar from '@/components/Calendar.astro'
 import Layout from '@/layouts/Layout.astro'
+import { Icon } from 'astro-icon/components'
 ---
 
-<Layout class="max-w-3xl">
-  <PageHead slot="head" title="Summit" />
+<Layout class="max-w-3xl" particles>
+  <PageHead
+    slot="head"
+    title="Summit"
+    description="WAI Summit 2026: showcasing AI research, workshops, and industry speakers at the University of Warwick."
+  />
   <Breadcrumbs items={[{ label: 'Summit', icon: 'lucide:mountain-snow' }]} />
 
-  <section>
-    <div class="min-w-full">
-      <div class="prose mb-8">
-        <p class="mt-0">More info about summit coming soon!</p>
+  <section class="flex flex-col gap-4">
+    <Card color="red">
+      <Fragment slot="header">
+        <Link href="/summit">
+          <img
+            src="/summit.png"
+            alt="WAI Summit Icon"
+            class="mx-auto w-40 dark:hidden"
+          />
+          <img
+            src="/summit-dark.png"
+            alt="WAI Summit Icon"
+            class="mx-auto w-40 not-dark:hidden"
+          />
+          <h1 class="pt-2 text-center text-2xl font-medium sm:text-3xl">
+            Warwick AI Summit
+          </h1>
+        </Link>
+      </Fragment>
+
+      <div class="flex flex-col gap-4">
+        <div class="text-muted-foreground flex flex-wrap items-center justify-center gap-x-4 gap-y-2 text-sm">
+          <span class="flex items-center gap-1.5">
+            <Icon name="lucide:calendar" class="size-4" />
+            21 February 2026
+          </span>
+          <span class="flex items-center gap-1.5">
+            <Icon name="lucide:map-pin" class="size-4" />
+            <span>
+              The
+              <Link
+                href="https://campus.warwick.ac.uk/search/623c8864421e6f5928c0c8b3"
+                external
+                underline
+              >
+                Oculus
+              </Link>
+              Building, University of Warwick
+            </span>
+          </span>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <p>
+            Join us for our annual AI summit, showcasing the best of AI research
+            and projects from leading researchers around the globe and at Warwick
+            &mdash; from both students and staff. There will be opportunities to
+            get hands-on with workshops, and learn from industry guests.
+          </p>
+          <p>
+            Our summit is open to everyone! This includes Warwick students and
+            staff (from all faculties), sixth form students, and members of the
+            public.
+          </p>
+          <p>
+            Tickets will become available very soon. Follow us on
+            <Link href="https://instagram.com/warwick_ai" external underline>
+              Instagram
+            </Link>
+            to stay in the loop as speakers are announced!
+          </p>
+        </div>
       </div>
-    </div>
+    </Card>
+
+    <!-- Schedule -->
+    <Card class="overflow-hidden p-0!" color="sky">
+      <div slot="header" class="flex flex-row items-center gap-3 p-6 pb-2">
+        <Icon name="lucide:calendar-days" class="size-8" />
+        <h2 class="text-xl leading-none font-medium">Summit Schedule</h2>
+      </div>
+      <Calendar enableLocation={true} dateFrom="2026-02-21T00:00:00Z" dateTo="2026-02-22T00:00:00Z" />
+    </Card>
+
+    <!-- Venue & Practical Info -->
+    <Card color="purple">
+      <h2 slot="header" class="text-xl leading-none font-medium">
+        <span class="flex items-center gap-2">
+          <Icon name="lucide:info" class="size-8" />
+          Practical Information
+        </span>
+      </h2>
+
+      <div class="flex flex-col gap-2">
+        <p>
+          The summit takes place at the
+          <Link
+            href="https://campus.warwick.ac.uk/search/623c8864421e6f5928c0c8b3"
+            external
+            underline
+          >
+            Oculus Building
+          </Link>
+          on the University of Warwick campus. The Oculus is centrally located
+          and easily accessible by bus from the University Interchange, car (follow
+          signs for Warwick Arts Centre parking), and on foot.
+        </p>
+        <p>
+          Snacks and refreshments will be provided for all attendees free of charge.
+          If you have any dietary requirements, please let us know when you register.
+        </p>
+        <p>
+          For any questions, feel free to reach out to us on
+          <Link href="https://discord.gg/YshvNtPUZm" external underline>
+            Discord
+          </Link>
+          or email us at
+          <Link href="mailto:hello@warwick.ai" underline>hello@warwick.ai</Link>.
+        </p>
+      </div>
+    </Card>
   </section>
 </Layout>
