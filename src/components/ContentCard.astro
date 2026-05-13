@@ -6,6 +6,7 @@ import type { ContentCollectionConfig, ContentEntry } from '@/lib/collections'
 import {
   getCombinedReadingTime,
   getEntryAuthorIds,
+  getEntryTags,
   getSubentryCount,
   isSubpost,
   parseAuthors,
@@ -25,6 +26,7 @@ const { entry, config, masonryCard } = Astro.props
 const formattedDate = formatDate(entry.data.date)
 const readTime = await getCombinedReadingTime(config, entry.id)
 const authors = await parseAuthors(await getEntryAuthorIds(config, entry.id))
+const tags = await getEntryTags(config, entry.id)
 const subpostCount = !isSubpost(entry.id) ? await getSubentryCount(config, entry.id) : 0
 ---
 
@@ -94,9 +96,9 @@ const subpostCount = !isSubpost(entry.id) ? await getSubentryCount(config, entry
       </div>
 
       {
-        entry.data.tags && (
+        tags.length > 0 && (
           <div class="flex flex-wrap gap-2">
-            {entry.data.tags.map((tag) => (
+            {tags.map((tag) => (
               <Badge variant="secondary" className="flex items-center gap-x-1">
                 <Icon name="lucide:hash" class="size-3" />
                 {tag}

@@ -4,27 +4,39 @@ import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import PageHead from '@/components/PageHead.astro'
 import Layout from '@/layouts/Layout.astro'
 import { getAllTags, getEntriesByTag } from '@/lib/data-utils'
-import { blogConfig } from '@/lib/collections'
+import { allConfigs } from '@/lib/collections'
 
 export async function getStaticPaths() {
-  const tagMap = await getAllTags(blogConfig)
-  const uniqueTags = Array.from(tagMap.keys())
+  const tagSets = await Promise.all(
+    allConfigs.map((config) => getAllTags(config)),
+  )
+  const uniqueTags = new Set<string>()
+  for (const tagMap of tagSets) {
+    for (const tag of tagMap.keys()) uniqueTags.add(tag)
+  }
 
   return Promise.all(
-    uniqueTags.map(async (tag) => {
-      const posts = await getEntriesByTag(blogConfig, tag)
+    [...uniqueTags].map(async (tag) => {
+      const matches = (
+        await Promise.all(
+          allConfigs.map(async (config) => {
+            const entries = await getEntriesByTag(config, tag)
+            return entries.map((entry) => ({ entry, config }))
+          }),
+        )
+      )
+        .flat()
+        .sort((a, b) => b.entry.data.date.valueOf() - a.entry.data.date.valueOf())
+
       return {
         params: { id: tag },
-        props: {
-          tag,
-          posts,
-        },
+        props: { tag, matches },
       }
     }),
   )
 }
 
-const { tag, posts } = Astro.props
+const { tag, matches } = Astro.props
 ---
 
 <Layout class="max-w-3xl">
@@ -43,9 +55,9 @@ const { tag, posts } = Astro.props
 
   <ul class="flex flex-col gap-y-4">
     {
-      posts.map((post) => (
+      matches.map(({ entry, config }) => (
         <li>
-          <ContentCard entry={post} config={blogConfig} />
+          <ContentCard entry={entry} config={config} />
         </li>
       ))
     }

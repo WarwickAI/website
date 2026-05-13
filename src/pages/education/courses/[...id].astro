@@ -16,6 +16,7 @@ import {
   getAllEntriesAndSubentries,
   getCombinedReadingTime,
   getEntryAuthorIds,
+  getEntryTags,
   getParentId,
   getParentEntry,
   getEntryReadingTime,
@@ -44,6 +45,7 @@ const post = Astro.props
 const currentPostId = Astro.params.id
 const { Content, headings } = await render(post)
 const authors = await parseAuthors(await getEntryAuthorIds(config, currentPostId))
+const tags = await getEntryTags(config, currentPostId)
 
 const isCurrentSubpost = isSubpost(currentPostId)
 const navigation = await getAdjacentEntries(config, currentPostId)
@@ -200,9 +202,8 @@ const tocSections = await getTOCSections(config, currentPostId)
         </div>
         <div class="flex flex-wrap justify-center gap-2">
           {
-            post.data.tags &&
-              post.data.tags.length > 0 &&
-              post.data.tags.map((tag) => (
+            tags.length > 0 &&
+              tags.map((tag) => (
                 <a
                   href={`/tags/${tag}`}
                   class={badgeVariants({ variant: 'secondary' })}

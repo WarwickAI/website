@@ -67,3 +67,5 @@ export const coursesConfig: ContentCollectionConfig = {
     prev: null,
   }),
 }
+
+export const allConfigs: ContentCollectionConfig[] = [blogConfig, coursesConfig]

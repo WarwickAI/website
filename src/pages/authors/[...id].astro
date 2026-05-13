@@ -5,7 +5,7 @@ import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import PageHead from '@/components/PageHead.astro'
 import Layout from '@/layouts/Layout.astro'
 import { getAllAuthors, getEntriesByAuthor } from '@/lib/data-utils'
-import { blogConfig } from '@/lib/collections'
+import { allConfigs } from '@/lib/collections'
 
 export async function getStaticPaths() {
   const authors = await getAllAuthors()
@@ -16,7 +16,17 @@ export async function getStaticPaths() {
 }
 
 const { author } = Astro.props
-const authorPosts = await getEntriesByAuthor(blogConfig, author.id)
+
+const authorEntries = (
+  await Promise.all(
+    allConfigs.map(async (config) => {
+      const entries = await getEntriesByAuthor(config, author.id)
+      return entries.map((entry) => ({ entry, config }))
+    }),
+  )
+)
+  .flat()
+  .sort((a, b) => b.entry.data.date.valueOf() - a.entry.data.date.valueOf())
 ---
 
 <Layout class="max-w-3xl">
@@ -44,13 +54,13 @@ const authorPosts = await getEntriesByAuthor(blogConfig, author.id)
   <section class="flex flex-col gap-y-4">
     <h2 class="text-2xl font-medium">Posts by {author.data.name}</h2>
     {
-      authorPosts.length > 0 ? (
+      authorEntries.length > 0 ? (
         <ul class="flex flex-col gap-4">
-          {authorPosts
-            .filter((post) => !post.data.draft)
-            .map((post) => (
+          {authorEntries
+            .filter(({ entry }) => !entry.data.draft)
+            .map(({ entry, config }) => (
               <li>
-                <ContentCard entry={post} config={blogConfig} />
+                <ContentCard entry={entry} config={config} />
               </li>
             ))}
         </ul>

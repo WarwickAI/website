@@ -4,11 +4,23 @@ import Link from '@/components/Link.astro'
 import PageHead from '@/components/PageHead.astro'
 import { badgeVariants } from '@/components/ui/badge'
 import Layout from '@/layouts/Layout.astro'
-import { getSortedTags } from '@/lib/data-utils'
-import { blogConfig } from '@/lib/collections'
+import { getAllTags } from '@/lib/data-utils'
+import { allConfigs } from '@/lib/collections'
 import { Icon } from 'astro-icon/components'
 
-const sortedTags = await getSortedTags(blogConfig)
+const counts = new Map<string, number>()
+for (const config of allConfigs) {
+  const tagMap = await getAllTags(config)
+  for (const [tag, count] of tagMap) {
+    counts.set(tag, (counts.get(tag) || 0) + count)
+  }
+}
+const sortedTags = [...counts.entries()]
+  .map(([tag, count]) => ({ tag, count }))
+  .sort((a, b) => {
+    const countDiff = b.count - a.count
+    return countDiff !== 0 ? countDiff : a.tag.localeCompare(b.tag)
+  })
 ---
 
 <Layout class="max-w-3xl">

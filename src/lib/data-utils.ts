@@ -125,6 +125,29 @@ export async function getEntryAuthorIds(
   return [...seen]
 }
 
+export async function getEntryTags(
+  config: ContentCollectionConfig,
+  entryId: string,
+): Promise<string[]> {
+  const entry = await getEntryById(config, entryId)
+  if (!entry) return []
+
+  if (entry.data.tags && entry.data.tags.length > 0) {
+    return entry.data.tags
+  }
+
+  if (isSubpost(entryId)) return []
+
+  const subentries = await getSubentriesForParent(config, entryId)
+  const seen = new Set<string>()
+  for (const subentry of subentries) {
+    for (const tag of subentry.data.tags ?? []) {
+      seen.add(tag)
+    }
+  }
+  return [...seen]
+}
+
 export async function getParentEntry(
   config: ContentCollectionConfig,
   subentryId: string,
@@ -192,12 +215,14 @@ export async function getAllTags(
   config: ContentCollectionConfig,
 ): Promise<Map<string, number>> {
   const entries = await getAllEntries(config)
-  return entries.reduce((acc, entry) => {
-    entry.data.tags?.forEach((tag) => {
-      acc.set(tag, (acc.get(tag) || 0) + 1)
-    })
-    return acc
-  }, new Map<string, number>())
+  const counts = new Map<string, number>()
+  for (const entry of entries) {
+    const tags = await getEntryTags(config, entry.id)
+    for (const tag of tags) {
+      counts.set(tag, (counts.get(tag) || 0) + 1)
+    }
+  }
+  return counts
 }
 
 export async function getSortedTags(
@@ -217,7 +242,13 @@ export async function getEntriesByAuthor(
   authorId: string,
 ): Promise<ContentEntry[]> {
   const entries = await getAllEntries(config)
-  return entries.filter((entry) => entry.data.authors?.includes(authorId))
+  const matches = await Promise.all(
+    entries.map(async (entry) => {
+      const authorIds = await getEntryAuthorIds(config, entry.id)
+      return authorIds.includes(authorId) ? entry : null
+    }),
+  )
+  return matches.filter((entry): entry is ContentEntry => entry !== null)
 }
 
 export async function getEntriesByTag(
@@ -225,7 +256,13 @@ export async function getEntriesByTag(
   tag: string,
 ): Promise<ContentEntry[]> {
   const entries = await getAllEntries(config)
-  return entries.filter((entry) => entry.data.tags?.includes(tag))
+  const matches = await Promise.all(
+    entries.map(async (entry) => {
+      const tags = await getEntryTags(config, entry.id)
+      return tags.includes(tag) ? entry : null
+    }),
+  )
+  return matches.filter((entry): entry is ContentEntry => entry !== null)
 }
 
 export async function getRecentEntries(
