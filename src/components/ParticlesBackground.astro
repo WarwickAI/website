@@ -1,6 +1,5 @@
 ---
-import Particles from 'astro-particles'
-import type { ISourceOptions } from 'tsparticles-engine'
+import type { ISourceOptions } from '@tsparticles/engine'
 
 const options: ISourceOptions = {
   autoPlay: true,
@@ -73,17 +72,16 @@ const options: ISourceOptions = {
 }
 ---
 
+<div id="tsparticles" data-options={JSON.stringify(options)}></div>
+
 <script>
-  import { loadFull } from 'tsparticles'
-  import { type Engine } from 'tsparticles-engine'
+  import { tsParticles, type ISourceOptions } from '@tsparticles/engine'
+  import { loadSlim } from '@tsparticles/slim'
 
-  declare global {
-    interface Window {
-      particlesInit: (engine: Engine) => Promise<void>
-    }
+  const el = document.getElementById('tsparticles')
+  if (el) {
+    const options = JSON.parse(el.dataset.options!) as ISourceOptions
+    await loadSlim(tsParticles)
+    await tsParticles.load({ id: 'tsparticles', options })
   }
-
-  window.particlesInit = async (engine: Engine) => await loadFull(engine)
 </script>
-
-<Particles id="tsparticles" options={options} init="particlesInit" />
