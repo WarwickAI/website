@@ -1,39 +1,45 @@
 ---
 import { ScrollArea } from '@/components/ui/scroll-area'
+import type { ContentCollectionConfig } from '@/lib/collections'
 import {
   getCombinedReadingTime,
   getParentId,
-  getParentPost,
-  getPostById,
-  getPostReadingTime,
-  getSubpostsForParent,
+  getParentEntry,
+  getEntryById,
+  getEntryReadingTime,
+  getSubentriesForParent,
   isSubpost,
 } from '@/lib/data-utils'
 import { Icon } from 'astro-icon/components'
 
-const { parentId } = Astro.props
+interface Props {
+  parentId: string
+  config: ContentCollectionConfig
+}
+
+const { parentId, config } = Astro.props
 const currentPostId = Astro.params.id as string
 const isCurrentSubpost = isSubpost(currentPostId)
 const rootParentId = isCurrentSubpost ? getParentId(currentPostId) : parentId
 
-const currentPost = !isCurrentSubpost ? await getPostById(currentPostId) : null
-const subposts = await getSubpostsForParent(rootParentId)
-const parentPost = isCurrentSubpost ? await getParentPost(currentPostId) : null
+const currentPost = !isCurrentSubpost ? await getEntryById(config, currentPostId) : null
+const subposts = await getSubentriesForParent(config, rootParentId)
+const parentPost = isCurrentSubpost ? await getParentEntry(config, currentPostId) : null
 
 const activePost = parentPost || currentPost
 const isActivePost = activePost?.id === currentPostId
 
 const activePostReadingTime = activePost
-  ? await getPostReadingTime(activePost.id)
+  ? await getEntryReadingTime(config, activePost.id)
   : null
 const activePostCombinedReadingTime =
   activePost && subposts.length > 0
-    ? await getCombinedReadingTime(activePost.id)
+    ? await getCombinedReadingTime(config, activePost.id)
     : null
 const subpostsWithReadingTime = await Promise.all(
   subposts.map(async (subpost) => ({
     ...subpost,
-    readingTime: await getPostReadingTime(subpost.id),
+    readingTime: await getEntryReadingTime(config, subpost.id),
   })),
 )
 
@@ -114,7 +120,7 @@ const currentSubpostDetails = isCurrentSubpost
                     </div>
                   ) : (
                     <a
-                      href={`/blog/${activePost.id}`}
+                      href={`${config.basePath}/${activePost.id}`}
                       class="mobile-subposts-link hover:text-foreground text-muted-foreground hover:bg-muted/50 flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors"
                     >
                       <Icon
@@ -164,7 +170,7 @@ const currentSubpostDetails = isCurrentSubpost
                       </div>
                     ) : (
                       <a
-                        href={`/blog/${subpost.id}`}
+                        href={`${config.basePath}/${subpost.id}`}
                         class="mobile-subposts-link hover:text-foreground text-muted-foreground hover:bg-muted/50 flex items-center gap-2 rounded-md px-2 py-1.5 text-sm transition-colors"
                       >
                         <Icon

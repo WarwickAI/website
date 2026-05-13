@@ -1,11 +1,12 @@
 import { SITE } from '@/consts'
 import rss from '@astrojs/rss'
 import type { APIContext } from 'astro'
-import { getAllPosts } from '@/lib/data-utils'
+import { getAllEntries } from '@/lib/data-utils'
+import { blogConfig } from '@/lib/collections'
 
 export async function GET(context: APIContext) {
   try {
-    const posts = await getAllPosts()
+    const posts = await getAllEntries(blogConfig)
 
     return rss({
       title: SITE.title,

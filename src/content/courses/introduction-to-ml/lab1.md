@@ -3,10 +3,8 @@ title: 'Lab 1'
 course: 'Introduction to Machine Learning'
 description: "Part 1 of Introduction to Machine Learning"
 date: 2026-02-03
+authors: ['12-jan-lindroos', '03-laura-harkins']
 ---
-
-# **WAI Intro to ML** - Session 1 Lab
-🖋️ *Written by Jan and Laura from [Warwick AI](https://warwick.ai)*
 
 # Section 1 - Linear Regression
 

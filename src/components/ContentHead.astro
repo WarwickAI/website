@@ -1,21 +1,20 @@
 ---
 import { SITE } from '@/consts'
-import { isSubpost } from '@/lib/data-utils'
-import type { CollectionEntry } from 'astro:content'
+import type { ContentCollectionConfig, ContentEntry } from '@/lib/collections'
+import { getEntryAuthorIds, isSubpost } from '@/lib/data-utils'
 
 interface Props {
-  post: CollectionEntry<'blog'>
+  post: ContentEntry
+  config: ContentCollectionConfig
 }
 
-const { post } = Astro.props
+const { post, config } = Astro.props
 
 const title = post.data.title || SITE.title
 const description = post.data.description || SITE.description
 const image = new URL('/static/1200x630.png', Astro.site)
-const author =
-  post.data.authors && post.data.authors.length > 0
-    ? post.data.authors.join(', ')
-    : SITE.author
+const authorIds = await getEntryAuthorIds(config, post.id)
+const author = authorIds.length > 0 ? authorIds.join(', ') : SITE.author
 ---
 
 <title>{`${title} | ${SITE.title}`}</title>

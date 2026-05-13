@@ -5,9 +5,10 @@ import PageHead from '@/components/PageHead.astro'
 import { badgeVariants } from '@/components/ui/badge'
 import Layout from '@/layouts/Layout.astro'
 import { getSortedTags } from '@/lib/data-utils'
+import { blogConfig } from '@/lib/collections'
 import { Icon } from 'astro-icon/components'
 
-const sortedTags = await getSortedTags()
+const sortedTags = await getSortedTags(blogConfig)
 ---
 
 <Layout class="max-w-3xl">

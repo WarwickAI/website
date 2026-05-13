@@ -1,11 +1,20 @@
 ---
 import Link from '@/components/Link.astro'
 import { buttonVariants } from '@/components/ui/button'
+import type { ContentCollectionConfig, ContentEntry } from '@/lib/collections'
 import { cn } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
 
-const { nextPage, prevPage, coursePage } = Astro.props
-const isSubpost = !!coursePage
+interface Props {
+  config: ContentCollectionConfig
+  next: ContentEntry | null
+  prev: ContentEntry | null
+  parent?: ContentEntry | null
+}
+
+const { config, next, prev, parent } = Astro.props
+const isSubpost = !!parent
+const subLabel = config.subpostLabel.charAt(0).toUpperCase() + config.subpostLabel.slice(1)
 ---
 
 <nav
@@ -15,13 +24,13 @@ const isSubpost = !!coursePage
   )}
 >
   <Link
-    href={prevPage ? `/education/courses/${prevPage.id}#post-title` : '/education/courses/'}
+    href={prev ? `${config.basePath}/${prev.id}#post-title` : isSubpost ? '#' : config.basePath}
     class={cn(
       buttonVariants({ variant: 'outline' }),
       'rounded-lg group flex items-center justify-start size-full',
-      !prevPage && isSubpost && 'pointer-events-none opacity-50 cursor-not-allowed',
+      !prev && isSubpost && 'pointer-events-none opacity-50 cursor-not-allowed',
     )}
-    aria-disabled={!prevPage && isSubpost}
+    aria-disabled={!prev && isSubpost}
   >
     <Icon
       name="lucide:arrow-left"
@@ -29,13 +38,10 @@ const isSubpost = !!coursePage
     />
     <div class="flex flex-col items-start overflow-hidden text-wrap">
       <span class="text-muted-foreground text-left text-xs">
-        {isSubpost ? 'Previous Page' : 'Back to Courses'}
+        {isSubpost ? `Previous ${subLabel}` : prev ? 'Previous' : `Back to ${config.label}`}
       </span>
       <span class="w-full text-left text-sm text-balance text-ellipsis">
-        {
-          prevPage?.data.title ||
-            (isSubpost ? '' : "")
-        }
+        {prev?.data.title || ''}
       </span>
     </div>
   </Link>
@@ -43,11 +49,11 @@ const isSubpost = !!coursePage
   {
     isSubpost && (
       <Link
-        href={coursePage ? `/education/courses/${coursePage.id}#post-title` : '#'}
+        href={parent ? `${config.basePath}/${parent.id}#post-title` : '#'}
         class={cn(
           buttonVariants({ variant: 'outline' }),
           'group flex size-full items-center justify-center rounded-lg',
-          !coursePage && 'pointer-events-none cursor-not-allowed opacity-50',
+          !parent && 'pointer-events-none cursor-not-allowed opacity-50',
         )}
       >
         <Icon
@@ -56,10 +62,10 @@ const isSubpost = !!coursePage
         />
         <div class="flex flex-col items-center overflow-hidden text-wrap">
           <span class="text-muted-foreground text-center text-xs">
-            Course Page
+            {config.parentLabel}
           </span>
           <span class="w-full text-center text-sm text-balance text-ellipsis">
-            {coursePage?.data.title || 'No course page!?'}
+            {parent?.data.title || ''}
           </span>
         </div>
       </Link>
@@ -67,23 +73,20 @@ const isSubpost = !!coursePage
   }
 
   <Link
-    href={nextPage ? `/education/courses/${nextPage.id}#post-title` : '#'}
+    href={next ? `${config.basePath}/${next.id}#post-title` : '#'}
     class={cn(
       buttonVariants({ variant: 'outline' }),
       'rounded-lg group flex items-center justify-end size-full',
-      !nextPage && 'pointer-events-none opacity-50 cursor-not-allowed',
+      !next && 'pointer-events-none opacity-50 cursor-not-allowed',
     )}
-    aria-disabled={!nextPage}
+    aria-disabled={!next}
   >
     <div class="flex flex-col items-end overflow-hidden text-wrap">
       <span class="text-muted-foreground text-right text-xs">
-        {isSubpost ? 'Next Page' : 'Next Page'}
+        {isSubpost ? `Next ${subLabel}` : `Next ${subLabel}`}
       </span>
       <span class="w-full text-right text-sm text-balance text-ellipsis">
-        {
-          nextPage?.data.title ||
-            (isSubpost ? "Thanks for reading!" : "Thanks for reading!")
-        }
+        {next?.data.title || 'Thanks for reading!'}
       </span>
     </div>
     <Icon

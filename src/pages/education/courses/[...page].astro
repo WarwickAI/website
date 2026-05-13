@@ -1,45 +1,48 @@
 ---
-import CourseCard from '@/components/education/CourseCard.astro'
+import ContentCard from '@/components/ContentCard.astro'
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import PageHead from '@/components/PageHead.astro'
 import PaginationComponent from '@/components/ui/pagination'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
-import { getAllCourses, groupPostsByCourse } from '@/lib/course-utils'
+import { coursesConfig } from '@/lib/collections'
+import { getAllEntries } from '@/lib/data-utils'
 import type { PaginateFunction } from 'astro'
+
+const config = coursesConfig
 
 export async function getStaticPaths({
   paginate,
 }: {
   paginate: PaginateFunction
 }) {
-  const allPosts = await getAllCourses()
+  const allPosts = await getAllEntries(coursesConfig)
   return paginate(allPosts, { pageSize: SITE.postsPerPage })
 }
 
 const { page } = Astro.props
 
-const postsByCourse = groupPostsByCourse(page.data)
-const courseTitles = Object.keys(postsByCourse)
+const grouped = config.groupEntries(page.data)
+const groupKeys = Object.keys(grouped)
 ---
 
 <Layout class="max-w-3xl">
-  <PageHead slot="head" title="Courses" />
+  <PageHead slot="head" title={config.label} />
   <Breadcrumbs
     items={[
-      { label: 'Courses', href: '/education/courses', icon: 'lucide:library-big' },
+      { label: config.label, href: config.basePath, icon: 'lucide:library-big' },
       { label: `Page ${page.currentPage}`, icon: 'lucide:book-copy' },
     ]}
   />
 
   <div class="flex min-h-[calc(100vh-18rem)] flex-col gap-y-8">
     {
-      courseTitles.map((course) => (
+      groupKeys.map((key) => (
         <section class="flex flex-col gap-y-4">
           <ul class="flex flex-col gap-4">
-            {postsByCourse[course].map((post) => (
+            {grouped[key].map((post) => (
               <li>
-                <CourseCard entry={post} />
+                <ContentCard entry={post} config={config} />
               </li>
             ))}
           </ul>
@@ -51,7 +54,7 @@ const courseTitles = Object.keys(postsByCourse)
   <PaginationComponent
     currentPage={page.currentPage}
     totalPages={page.lastPage}
-    baseUrl="/education/courses/"
+    baseUrl={`${config.basePath}/`}
     client:load
   />
 </Layout>

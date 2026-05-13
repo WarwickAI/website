@@ -1,8 +1,8 @@
 ---
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import Link from '@/components/Link.astro'
-import PostHead from '@/components/PostHead.astro'
-import PostNavigation from '@/components/PostNavigation.astro'
+import ContentHead from '@/components/ContentHead.astro'
+import ContentNavigation from '@/components/ContentNavigation.astro'
 import SubpostsHeader from '@/components/SubpostsHeader.astro'
 import SubpostsSidebar from '@/components/SubpostsSidebar.astro'
 import TOCHeader from '@/components/TOCHeader.astro'
@@ -10,16 +10,18 @@ import TOCSidebar from '@/components/TOCSidebar.astro'
 import { badgeVariants } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import Layout from '@/layouts/Layout.astro'
+import { blogConfig } from '@/lib/collections'
 import {
-  getAdjacentPosts,
-  getAllPostsAndSubposts,
+  getAdjacentEntries,
+  getAllEntriesAndSubentries,
   getCombinedReadingTime,
+  getEntryAuthorIds,
   getParentId,
-  getParentPost,
-  getPostReadingTime,
-  getSubpostCount,
+  getParentEntry,
+  getEntryReadingTime,
+  getSubentryCount,
   getTOCSections,
-  hasSubposts,
+  hasSubentries,
   isSubpost,
   parseAuthors,
 } from '@/lib/data-utils'
@@ -28,8 +30,10 @@ import { Icon } from 'astro-icon/components'
 import { Image } from 'astro:assets'
 import { render } from 'astro:content'
 
+const config = blogConfig
+
 export async function getStaticPaths() {
-  const posts = await getAllPostsAndSubposts()
+  const posts = await getAllEntriesAndSubentries(blogConfig)
   return posts.map((post) => ({
     params: { id: post.id },
     props: post,
@@ -39,32 +43,33 @@ export async function getStaticPaths() {
 const post = Astro.props
 const currentPostId = Astro.params.id
 const { Content, headings } = await render(post)
-const authors = await parseAuthors(post.data.authors ?? [])
+const authors = await parseAuthors(await getEntryAuthorIds(config, currentPostId))
 
 const isCurrentSubpost = isSubpost(currentPostId)
-const navigation = await getAdjacentPosts(currentPostId)
-const parentPost = isCurrentSubpost ? await getParentPost(currentPostId) : null
+const navigation = await getAdjacentEntries(config, currentPostId)
+const parentPost = isCurrentSubpost ? await getParentEntry(config, currentPostId) : null
 
-const hasChildPosts = await hasSubposts(currentPostId)
+const hasChildPosts = await hasSubentries(config, currentPostId)
 const subpostCount = !isCurrentSubpost
-  ? await getSubpostCount(currentPostId)
+  ? await getSubentryCount(config, currentPostId)
   : 0
-const postReadingTime = await getPostReadingTime(currentPostId)
+const postReadingTime = await getEntryReadingTime(config, currentPostId)
 const combinedReadingTime =
   hasChildPosts && !isCurrentSubpost
-    ? await getCombinedReadingTime(currentPostId)
+    ? await getCombinedReadingTime(config, currentPostId)
     : null
 
-const tocSections = await getTOCSections(currentPostId)
+const tocSections = await getTOCSections(config, currentPostId)
 ---
 
 <Layout>
-  <PostHead slot="head" post={post} />
+  <ContentHead slot="head" post={post} config={config} />
   {
     (hasChildPosts || isCurrentSubpost) && (
       <SubpostsHeader
         slot="subposts-navigation"
         parentId={isCurrentSubpost ? getParentId(currentPostId) : currentPostId}
+        config={config}
       />
     )
   }
@@ -83,23 +88,23 @@ const tocSections = await getTOCSections(currentPostId)
     <div class="col-start-2">
       <Breadcrumbs
         items={[
-          { href: '/blog', label: 'Blog', icon: 'lucide:library-big' },
+          { href: config.basePath, label: config.label, icon: 'lucide:library-big' },
           ...(isCurrentSubpost && parentPost
             ? [
                 {
-                  href: `/blog/${parentPost.id}`,
+                  href: `${config.basePath}/${parentPost.id}`,
                   label: parentPost.data.title,
                   icon: 'lucide:book-open',
                 },
                 {
-                  href: `/blog/${currentPostId}`,
+                  href: `${config.basePath}/${currentPostId}`,
                   label: post.data.title,
                   icon: 'lucide:file-text',
                 },
               ]
             : [
                 {
-                  href: `/blog/${currentPostId}`,
+                  href: `${config.basePath}/${currentPostId}`,
                   label: post.data.title,
                   icon: 'lucide:book-open-text',
                 },
@@ -210,16 +215,17 @@ const tocSections = await getTOCSections(currentPostId)
         </div>
       </div>
 
-      <PostNavigation
-        newerPost={navigation.newer}
-        olderPost={navigation.older}
-        parentPost={isCurrentSubpost ? navigation.parent : undefined}
+      <ContentNavigation
+        config={config}
+        next={navigation.next}
+        prev={navigation.prev}
+        parent={isCurrentSubpost ? navigation.parent : undefined}
       />
     </section>
 
     {
       tocSections.length > 0 && (
-        <TOCSidebar sections={tocSections} currentPostId={currentPostId} />
+        <TOCSidebar sections={tocSections} currentPostId={currentPostId} basePath={config.basePath} />
       )
     }
 
@@ -233,15 +239,17 @@ const tocSections = await getTOCSections(currentPostId)
           parentId={
             isCurrentSubpost ? getParentId(currentPostId) : currentPostId
           }
+          config={config}
           className="w-64"
         />
       )
     }
 
-    <PostNavigation
-      newerPost={navigation.newer}
-      olderPost={navigation.older}
-      parentPost={isCurrentSubpost ? navigation.parent : undefined}
+    <ContentNavigation
+      config={config}
+      next={navigation.next}
+      prev={navigation.prev}
+      parent={isCurrentSubpost ? navigation.parent : undefined}
     />
   </section>
 

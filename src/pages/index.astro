@@ -1,6 +1,5 @@
 ---
-import BlogCard from '@/components/BlogCard.astro'
-import CourseCard from '@/components/education/CourseCard.astro'
+import ContentCard from '@/components/ContentCard.astro'
 import Calendar from '@/components/Calendar.astro'
 import Card from '@/components/Card.astro'
 import Leaderboard from '@/components/Leaderboard.astro'
@@ -11,8 +10,8 @@ import { buttonVariants } from '@/components/ui/button'
 import WHACK from '@/components/WHACK.astro'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
-import { getRecentPosts } from '@/lib/data-utils'
-import { getRecentCourses } from '@/lib/course-utils'
+import { getRecentEntries } from '@/lib/data-utils'
+import { blogConfig, coursesConfig } from '@/lib/collections'
 import { Icon } from 'astro-icon/components'
 import { Masonry } from 'astro-masonry'
 import { Image } from 'astro:assets'
@@ -21,8 +20,8 @@ import summitSocial from '../content/gallery/011-summit-25.jpg'
 import safetyPanel from '../content/gallery/013-summit-25.jpg'
 import robotProject from '../content/gallery/018-summit-24.jpg'
 
-const blog = await getRecentPosts(SITE.featuredPostCount)
-const courses = await getRecentCourses(SITE.featuredCourseCount)
+const blog = await getRecentEntries(blogConfig, SITE.featuredPostCount)
+const courses = await getRecentEntries(coursesConfig, SITE.featuredCourseCount)
 ---
 
 <Layout class="max-w-3xl" particles>
@@ -432,8 +431,8 @@ const courses = await getRecentCourses(SITE.featuredCourseCount)
       <Card class="overflow-hidden p-0!">
         <LivestreamFeed channel="warwickai" width="100%" height="300" />
       </Card>
-      {blog.map((post) => <BlogCard entry={post} masonryCard />)}
-      {courses.map((post) => <CourseCard entry={post} masonryCard />)}
+      {blog.map((post) => <ContentCard entry={post} config={blogConfig} masonryCard />)}
+      {courses.map((post) => <ContentCard entry={post} config={coursesConfig} masonryCard />)}
     </Masonry>
     <div class="flex justify-center">
       <Link

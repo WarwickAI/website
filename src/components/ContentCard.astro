@@ -2,35 +2,37 @@
 import AvatarComponent from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
+import type { ContentCollectionConfig, ContentEntry } from '@/lib/collections'
 import {
   getCombinedReadingTime,
-  getSubpostCount,
+  getEntryAuthorIds,
+  getSubentryCount,
   isSubpost,
   parseAuthors,
 } from '@/lib/data-utils'
 import { formatDate } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
 import { Image } from 'astro:assets'
-import type { CollectionEntry } from 'astro:content'
-import Link from '@/components/Link.astro'
+import Link from './Link.astro'
 
 interface Props {
-  entry: CollectionEntry<'courses'>
+  entry: ContentEntry
+  config: ContentCollectionConfig
   masonryCard?: boolean
 }
 
-const { entry, masonryCard } = Astro.props
+const { entry, config, masonryCard } = Astro.props
 const formattedDate = formatDate(entry.data.date)
-const readTime = await getCombinedReadingTime(entry.id)
-const authors = await parseAuthors(entry.data.authors ?? [])
-const subpostCount = !isSubpost(entry.id) ? await getSubpostCount(entry.id) : 0
+const readTime = await getCombinedReadingTime(config, entry.id)
+const authors = await parseAuthors(await getEntryAuthorIds(config, entry.id))
+const subpostCount = !isSubpost(entry.id) ? await getSubentryCount(config, entry.id) : 0
 ---
 
 <div
   class="hover:bg-secondary/50 rounded-xl border p-4 transition-colors duration-300 ease-in-out"
 >
   <Link
-    href={`/education/${entry.collection}/${entry.id}`}
+    href={`${config.basePath}/${entry.id}`}
     class={masonryCard
       ? 'flex flex-col gap-4'
       : 'flex flex-col gap-4 sm:flex-row'}

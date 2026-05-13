@@ -1,10 +1,11 @@
 ---
 import AuthorCard from '@/components/AuthorCard.astro'
-import BlogCard from '@/components/BlogCard.astro'
+import ContentCard from '@/components/ContentCard.astro'
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import PageHead from '@/components/PageHead.astro'
 import Layout from '@/layouts/Layout.astro'
-import { getAllAuthors, getPostsByAuthor } from '@/lib/data-utils'
+import { getAllAuthors, getEntriesByAuthor } from '@/lib/data-utils'
+import { blogConfig } from '@/lib/collections'
 
 export async function getStaticPaths() {
   const authors = await getAllAuthors()
@@ -15,7 +16,7 @@ export async function getStaticPaths() {
 }
 
 const { author } = Astro.props
-const authorPosts = await getPostsByAuthor(author.id)
+const authorPosts = await getEntriesByAuthor(blogConfig, author.id)
 ---
 
 <Layout class="max-w-3xl">
@@ -49,7 +50,7 @@ const authorPosts = await getPostsByAuthor(author.id)
             .filter((post) => !post.data.draft)
             .map((post) => (
               <li>
-                <BlogCard entry={post} />
+                <ContentCard entry={post} config={blogConfig} />
               </li>
             ))}
         </ul>

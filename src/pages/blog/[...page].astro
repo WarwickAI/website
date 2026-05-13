@@ -1,46 +1,49 @@
 ---
-import BlogCard from '@/components/BlogCard.astro'
+import ContentCard from '@/components/ContentCard.astro'
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import PageHead from '@/components/PageHead.astro'
 import PaginationComponent from '@/components/ui/pagination'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
-import { getAllPosts, groupPostsByYear } from '@/lib/data-utils'
+import { blogConfig } from '@/lib/collections'
+import { getAllEntries } from '@/lib/data-utils'
 import type { PaginateFunction } from 'astro'
+
+const config = blogConfig
 
 export async function getStaticPaths({
   paginate,
 }: {
   paginate: PaginateFunction
 }) {
-  const allPosts = await getAllPosts()
+  const allPosts = await getAllEntries(blogConfig)
   return paginate(allPosts, { pageSize: SITE.postsPerPage })
 }
 
 const { page } = Astro.props
 
-const postsByYear = groupPostsByYear(page.data)
-const years = Object.keys(postsByYear).sort((a, b) => parseInt(b) - parseInt(a))
+const grouped = config.groupEntries(page.data)
+const groupKeys = Object.keys(grouped).sort((a, b) => parseInt(b) - parseInt(a))
 ---
 
 <Layout class="max-w-3xl">
-  <PageHead slot="head" title="Blog" />
+  <PageHead slot="head" title={config.label} />
   <Breadcrumbs
     items={[
-      { label: 'Blog', href: '/blog', icon: 'lucide:library-big' },
+      { label: config.label, href: config.basePath, icon: 'lucide:library-big' },
       { label: `Page ${page.currentPage}`, icon: 'lucide:book-copy' },
     ]}
   />
 
   <div class="flex min-h-[calc(100vh-18rem)] flex-col gap-y-8">
     {
-      years.map((year) => (
+      groupKeys.map((key) => (
         <section class="flex flex-col gap-y-4">
-          <div class="font-medium">{year}</div>
+          <div class="font-medium">{key}</div>
           <ul class="flex flex-col gap-4">
-            {postsByYear[year].map((post) => (
+            {grouped[key].map((post) => (
               <li>
-                <BlogCard entry={post} />
+                <ContentCard entry={post} config={config} />
               </li>
             ))}
           </ul>
@@ -52,7 +55,7 @@ const years = Object.keys(postsByYear).sort((a, b) => parseInt(b) - parseInt(a))
   <PaginationComponent
     currentPage={page.currentPage}
     totalPages={page.lastPage}
-    baseUrl="/blog/"
+    baseUrl={`${config.basePath}/`}
     client:load
   />
 </Layout>
