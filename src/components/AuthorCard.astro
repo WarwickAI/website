@@ -7,12 +7,19 @@ import type { SocialLink } from '@/types'
 import type { CollectionEntry } from 'astro:content'
 import SocialIcons from './SocialIcons.astro'
 
-interface Props {
-  author: CollectionEntry<'authors'>
+export interface AuthorBadge {
+  text: string
+  current?: boolean
+  href?: string
 }
 
-const { author } = Astro.props
-const { name, avatar, bio, pronouns } = author.data
+interface Props {
+  author: CollectionEntry<'authors'>
+  badges?: AuthorBadge[]
+}
+
+const { author, badges = [] } = Astro.props
+const { name, avatar, bio } = author.data
 const currentPath = Astro.url.pathname
 const isAuthorPage = currentPath === `/authors/${author.id}`
 
@@ -26,11 +33,12 @@ const socialLinks: SocialLink[] = [
 ---
 
 <div
-  class="has-[a:hover]:bg-secondary/50 relative overflow-hidden rounded-xl border p-4 transition-colors duration-300 ease-in-out"
+  class="has-[a[data-card-link]:hover]:bg-secondary/50 relative overflow-hidden rounded-xl border p-4 transition-colors duration-300 ease-in-out"
 >
   <div class="flex flex-wrap gap-4">
     <Link
       href={`/authors/${author.id}`}
+      data-card-link
       class={cn('block', isAuthorPage && 'pointer-events-none')}
     >
       <AvatarComponent
@@ -47,13 +55,27 @@ const socialLinks: SocialLink[] = [
     </Link>
     <div class="flex grow flex-col justify-between gap-y-4">
       <div>
-        <div class="flex flex-wrap items-center gap-x-2">
+        <div class="flex flex-wrap items-start gap-x-2">
           <h3 class="text-lg font-medium">{name}</h3>
           {
-            pronouns && (
-              <Badge className="text-foreground bg-accent text-xs sm:absolute sm:top-4 sm:right-4">
-                {pronouns}
-              </Badge>
+            badges.length > 0 && (
+              <div class="flex flex-col items-start gap-1 sm:absolute sm:top-4 sm:right-4 sm:items-end">
+                {badges.map((b) => {
+                  const badge = (
+                    <Badge
+                      className={cn(
+                        'py-1 leading-none',
+                        b.current
+                          ? 'bg-primary text-primary-foreground [a&]:hover:bg-primary/90'
+                          : 'text-foreground bg-accent [a&]:hover:bg-accent/70',
+                      )}
+                    >
+                      {b.text}
+                    </Badge>
+                  )
+                  return b.href ? <a href={b.href}>{badge}</a> : badge
+                })}
+              </div>
             )
           }
         </div>

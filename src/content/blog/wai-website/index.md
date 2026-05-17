@@ -2,7 +2,7 @@
 title: 'The new WAI website!'
 description: 'We have redesigned our website for the next academic year! Let us know what you think.'
 date: 2025-07-23
-authors: ['01-sam-turner']
+authors: ['sam-turner']
 ---
 
 We've redesigned our website for the next academic year, in hopes it will allow our members to easily find information about events and projects.

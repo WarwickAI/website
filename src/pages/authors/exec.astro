@@ -1,32 +1,28 @@
 ---
-import AuthorCard from '@/components/AuthorCard.astro'
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import Exec from '@/components/Exec.astro'
 import PageHead from '@/components/PageHead.astro'
 import Layout from '@/layouts/Layout.astro'
-import { getAllExec } from '@/lib/data-utils'
+import { getCurrentExecTerm } from '@/lib/data-utils'
 
-const exec = await getAllExec()
+const term = await getCurrentExecTerm()
 ---
 
 <Layout class="max-w-3xl">
   <PageHead slot="head" title="Meet the Exec" />
-  <Breadcrumbs
-    items={[
-      { label: 'Authors', icon: 'lucide:users', href: '/authors' },
-      { label: 'Exec', icon: 'lucide:sparkles' },
-    ]}
-  />
   {
-    exec.length > 0 ? (
-      <ul class="flex flex-col gap-4">
-        {exec.map((e) => (
-          <li>
-            <AuthorCard author={e} />
-          </li>
-        ))}
-      </ul>
+    term ? (
+      <Exec term={term} />
     ) : (
-      <p class="text-muted-foreground text-center">No exec members found.</p>
+      <>
+        <Breadcrumbs
+          items={[
+            { label: 'Authors', icon: 'lucide:users', href: '/authors' },
+            { label: 'Exec', icon: 'lucide:sparkles' },
+          ]}
+        />
+        <p class="text-muted-foreground text-center">No exec members found.</p>
+      </>
     )
   }
 </Layout>

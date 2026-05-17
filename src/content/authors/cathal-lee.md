@@ -1,7 +1,5 @@
 ---
 name: 'Cathal Lee'
-exec: true
-pronouns: 'Summit Coordinator'
 avatar: '/exec/cathal-lee.webp'
 bio: |
     Hey everyone! My name is Cathal, and I’m excited to be this year’s summit coordinator. I’m currently a 3rd year maths student with a particular interest in audio signal processing especially in areas like emotion recognition using MFCC and Harmonics!  

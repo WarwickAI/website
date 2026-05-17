@@ -1,5 +1,5 @@
 import { glob } from 'astro/loaders'
-import { defineCollection, z } from 'astro:content'
+import { defineCollection, reference, z } from 'astro:content'
 
 const blog = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/blog' }),
@@ -20,8 +20,6 @@ const authors = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/authors' }),
   schema: z.object({
     name: z.string(),
-    exec: z.boolean(),
-    pronouns: z.string().optional(),
     avatar: z.string().url().or(z.string().startsWith('/')).optional(),
     bio: z.string().optional(),
     mail: z.string().email().optional(),
@@ -31,6 +29,23 @@ const authors = defineCollection({
     linkedin: z.string().url().optional(),
     discord: z.string().url().optional(),
   }),
+})
+
+const exec = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/exec' }),
+  schema: ({ image }) =>
+    z.object({
+      year: z.string(),
+      current: z.boolean().optional(),
+      groupPhoto: image().optional(),
+      intro: z.string().optional(),
+      roles: z.array(
+        z.object({
+          role: z.string(),
+          author: reference('authors'),
+        }),
+      ),
+    }),
 })
 
 const projects = defineCollection({
@@ -63,4 +78,4 @@ const courses = defineCollection({
     }),
 })
 
-export const collections = { blog, authors, projects, courses }
+export const collections = { blog, authors, exec, projects, courses }
