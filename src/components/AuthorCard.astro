@@ -55,11 +55,11 @@ const socialLinks: SocialLink[] = [
     </Link>
     <div class="flex grow flex-col justify-between gap-y-4">
       <div>
-        <div class="flex flex-wrap items-start gap-x-2">
+        <div class="flex flex-wrap items-center gap-x-2">
           <h3 class="text-lg font-medium">{name}</h3>
           {
             badges.length > 0 && (
-              <div class="flex flex-col items-start gap-1 sm:absolute sm:top-4 sm:right-4 sm:items-end">
+              <div class="contents sm:absolute sm:top-4 sm:right-4 sm:flex sm:flex-col sm:items-end sm:gap-1">
                 {badges.map((b) => {
                   const badge = (
                     <Badge
@@ -79,7 +79,7 @@ const socialLinks: SocialLink[] = [
             )
           }
         </div>
-        <p class="text-muted-foreground text-sm">{bio}</p>
+        <p class="text-muted-foreground mt-1 text-sm">{bio}</p>
       </div>
       <SocialIcons links={socialLinks} />
     </div>
