@@ -2,6 +2,6 @@
 name: 'Sinni Chandra'
 avatar: '/exec/sinni-chandra.webp'
 bio: |
-    Hi! I’m Sinni, a 2nd year CS student and I’ll be your Engineer for 25/26! Along with managing the website and handling the technical side of the society, I’m happy to help out with any coding questions you may have. I’m particularly interested in the neural networks side of AI, and I think that the way machines can learn to recognize patterns and improve over time is fascinating. 
-    Fun fact: I once managed to trip over flat ground, twice in the same day.
+    Hi! I'm Sinni, a 3rd year CompSci student and Treasurer for 26/27! I love getting involved in all parts of the society, from socials to random last-minute ideas that somehow turn into real events. One of my favourite things that we organised was the Stemettes event, it was super rewarding to see so many people come together and making the space feel welcoming and inclusive for everyone. I'm so excited to help bring in new sponsors and create even more opportunities for members this year, while improving inclusivity. 
+    Fun fact: My favourite show is Brooklyn 99!
 ---
