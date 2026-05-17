@@ -7,9 +7,48 @@ export async function getAllAuthors(): Promise<CollectionEntry<'authors'>[]> {
   return authors.sort((a, b) => a.id.localeCompare(b.id))
 }
 
-export async function getAllExec(): Promise<CollectionEntry<'authors'>[]> {
-  const authors = await getCollection('authors')
-  return authors.filter((a) => a.data.exec).sort((a, b) => a.id.localeCompare(b.id))
+export async function getAllExecTerms(): Promise<CollectionEntry<'exec'>[]> {
+  const terms = await getCollection('exec')
+  return terms.sort((a, b) => b.data.year.localeCompare(a.data.year))
+}
+
+export async function getCurrentExecTerm(): Promise<
+  CollectionEntry<'exec'> | null
+> {
+  const terms = await getAllExecTerms()
+  const flagged = terms.filter((t) => t.data.current)
+  if (flagged.length > 1) {
+    throw new Error(
+      `Multiple exec terms marked current: ${flagged.map((t) => t.data.year).join(', ')}`,
+    )
+  }
+  return flagged[0] ?? terms[0] ?? null
+}
+
+export async function getExecTermByYear(
+  year: string,
+): Promise<CollectionEntry<'exec'> | null> {
+  const terms = await getAllExecTerms()
+  return terms.find((t) => t.data.year === year) ?? null
+}
+
+export async function getRolesForAuthor(
+  authorId: string,
+): Promise<{ year: string; role: string; isCurrent: boolean }[]> {
+  const terms = await getAllExecTerms()
+  const roles: { year: string; role: string; isCurrent: boolean }[] = []
+  for (const term of terms) {
+    for (const entry of term.data.roles) {
+      if (entry.author.id === authorId) {
+        roles.push({
+          year: term.data.year,
+          role: entry.role,
+          isCurrent: term.data.current === true,
+        })
+      }
+    }
+  }
+  return roles
 }
 
 export async function getAllProjects(): Promise<CollectionEntry<'projects'>[]> {

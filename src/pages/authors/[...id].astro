@@ -4,7 +4,11 @@ import ContentCard from '@/components/ContentCard.astro'
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import PageHead from '@/components/PageHead.astro'
 import Layout from '@/layouts/Layout.astro'
-import { getAllAuthors, getEntriesByAuthor } from '@/lib/data-utils'
+import {
+  getAllAuthors,
+  getEntriesByAuthor,
+  getRolesForAuthor,
+} from '@/lib/data-utils'
 import { allConfigs } from '@/lib/collections'
 
 export async function getStaticPaths() {
@@ -16,6 +20,14 @@ export async function getStaticPaths() {
 }
 
 const { author } = Astro.props
+
+const roles = await getRolesForAuthor(author.id)
+const isExec = roles.length > 0
+const badges = roles.map((r) => ({
+  text: `${r.role} · ${r.year}`,
+  current: r.isCurrent,
+  href: r.isCurrent ? '/authors/exec' : `/authors/exec/${r.year}`,
+}))
 
 const authorEntries = (
   await Promise.all(
@@ -39,7 +51,7 @@ const authorEntries = (
   <Breadcrumbs
     items={[
       { href: '/authors', label: 'Authors', icon: 'lucide:users' },
-      ...(author.data.exec
+      ...(isExec
         ? [
             { href: '/authors/exec', label: 'Exec', icon: 'lucide:sparkles' },
             { label: author.data.name, icon: 'lucide:user' },
@@ -49,7 +61,7 @@ const authorEntries = (
   />
 
   <section>
-    <AuthorCard author={author} />
+    <AuthorCard author={author} badges={badges} />
   </section>
   <section class="flex flex-col gap-y-4">
     <h2 class="text-2xl font-medium">Posts by {author.data.name}</h2>

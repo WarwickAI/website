@@ -1,0 +1,79 @@
+---
+import AuthorCard from '@/components/AuthorCard.astro'
+import Breadcrumbs from '@/components/Breadcrumbs.astro'
+import Card from '@/components/Card.astro'
+import YearSwitcher from '@/components/YearSwitcher.astro'
+import { getAllExecTerms } from '@/lib/data-utils'
+import { Image } from 'astro:assets'
+import { getEntry, type CollectionEntry } from 'astro:content'
+
+interface Props {
+  term: CollectionEntry<'exec'>
+}
+
+const { term } = Astro.props
+const allTerms = await getAllExecTerms()
+
+const switcherTerms = allTerms.map((t) => ({
+  year: t.data.year,
+  href: t.data.current ? '/authors/exec' : `/authors/exec/${t.data.year}`,
+}))
+
+type TeamMember = {
+  author: Awaited<ReturnType<typeof getEntry>>
+  roles: string[]
+}
+
+const teamMembers: TeamMember[] = []
+{
+  const indexByAuthorId = new Map<string, number>()
+  for (const entry of term.data.roles) {
+    const resolvedAuthor = await getEntry(entry.author)
+    const authorId = resolvedAuthor.id
+    const existing = indexByAuthorId.get(authorId)
+    if (existing !== undefined) {
+      teamMembers[existing].roles.push(entry.role)
+    } else {
+      indexByAuthorId.set(authorId, teamMembers.length)
+      teamMembers.push({ author: resolvedAuthor, roles: [entry.role] })
+    }
+  }
+}
+---
+
+<Breadcrumbs
+  items={[
+    { label: 'Authors', icon: 'lucide:users', href: '/authors' },
+    { label: 'Exec', icon: 'lucide:sparkles', href: '/authors/exec' },
+    { label: term.data.year, icon: 'lucide:calendar' },
+  ]}
+/>
+<YearSwitcher terms={switcherTerms} activeYear={term.data.year} />
+{
+  (term.data.groupPhoto || term.data.intro) && (
+    <Card class="p-4!" color="purple">
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-start">
+        {term.data.groupPhoto && (
+          <Image
+            src={term.data.groupPhoto}
+            alt={`Warwick AI Exec ${term.data.year}`}
+            class="w-full rounded-md object-cover sm:max-w-sm sm:shrink-0"
+          />
+        )}
+        {term.data.intro && <p class="grow">{term.data.intro}</p>}
+      </div>
+    </Card>
+  )
+}
+<ul class="flex flex-col gap-4">
+  {
+    teamMembers.map(({ author, roles }) => (
+      <li>
+        <AuthorCard
+          author={author}
+          badges={roles.map((r) => ({ text: r }))}
+        />
+      </li>
+    ))
+  }
+</ul>

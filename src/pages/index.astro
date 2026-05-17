@@ -10,7 +10,7 @@ import { buttonVariants } from '@/components/ui/button'
 import WHACK from '@/components/WHACK.astro'
 import { SITE } from '@/consts'
 import Layout from '@/layouts/Layout.astro'
-import { getRecentEntries } from '@/lib/data-utils'
+import { getCurrentExecTerm, getRecentEntries } from '@/lib/data-utils'
 import { blogConfig, coursesConfig } from '@/lib/collections'
 import { Icon } from 'astro-icon/components'
 import { Masonry } from 'astro-masonry'
@@ -22,6 +22,10 @@ import robotProject from '../content/gallery/018-summit-24.jpg'
 
 const blog = await getRecentEntries(blogConfig, SITE.featuredPostCount)
 const courses = await getRecentEntries(coursesConfig, SITE.featuredCourseCount)
+const currentExec = await getCurrentExecTerm()
+const execTitleSuffix = currentExec
+  ? currentExec.data.year.replace(/^\d{2}(\d{2})-\d{2}(\d{2})$/, '$1/$2')
+  : ''
 ---
 
 <Layout class="max-w-3xl" particles>
@@ -332,7 +336,7 @@ const courses = await getRecentEntries(coursesConfig, SITE.featuredCourseCount)
           <div slot="header" class="flex flex-row items-center gap-3">
             <Icon name="lucide:sparkles" class="size-8" />
             <h3 class="text-xl leading-none font-medium">
-              Meet the Exec for 25/26!
+              Meet the Exec{execTitleSuffix ? ` for ${execTitleSuffix}` : ''}!
             </h3>
           </div>
 

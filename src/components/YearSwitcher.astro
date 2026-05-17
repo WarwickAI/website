@@ -1,0 +1,33 @@
+---
+import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
+
+interface Props {
+  terms: { year: string; href: string }[]
+  activeYear: string
+}
+
+const { terms, activeYear } = Astro.props
+---
+
+<nav class="flex flex-wrap gap-2" aria-label="Exec academic year">
+  {
+    terms.map((term) => {
+      const isActive = term.year === activeYear
+      return (
+        <a href={term.href} aria-current={isActive ? 'page' : undefined}>
+          <Badge
+            className={cn(
+              'py-1 leading-none',
+              isActive
+                ? 'bg-primary text-primary-foreground [a&]:hover:bg-primary/90'
+                : 'text-foreground bg-accent [a&]:hover:bg-accent/70',
+            )}
+          >
+            {term.year}
+          </Badge>
+        </a>
+      )
+    })
+  }
+</nav>

@@ -1,0 +1,23 @@
+---
+import Exec from '@/components/Exec.astro'
+import PageHead from '@/components/PageHead.astro'
+import Layout from '@/layouts/Layout.astro'
+import { getAllExecTerms } from '@/lib/data-utils'
+
+export async function getStaticPaths() {
+  const terms = await getAllExecTerms()
+  return terms
+    .filter((t) => !t.data.current)
+    .map((term) => ({
+      params: { year: term.data.year },
+      props: { term },
+    }))
+}
+
+const { term } = Astro.props
+---
+
+<Layout class="max-w-3xl">
+  <PageHead slot="head" title={`Meet the Exec: ${term.data.year}`} />
+  <Exec term={term} />
+</Layout>

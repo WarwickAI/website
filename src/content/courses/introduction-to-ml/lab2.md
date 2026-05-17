@@ -3,7 +3,7 @@ title: 'Lab 2'
 course: 'Introduction to Machine Learning'
 description: "Part 2 of Introduction to Machine Learning"
 date: 2026-02-03
-authors: ['03-laura-harkins', '00-alex-moses']
+authors: ['laura-harkins', 'alex-moses']
 ---
 
 We've put all the imports at the top this time so that they're out the way.
