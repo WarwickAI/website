@@ -7,15 +7,19 @@ import path from 'node:path'
 // Downloads each repo's best submission from before the project's deadline,
 // for final testing. Run from the website root:
 //
-//   PROJECT_ID=snake BLOB_READ_WRITE_TOKEN=... \
-//     npx astro db execute db/download-snapshots.ts --remote
+//   PROJECT_ID=snake npx astro db execute db/download-snapshots.ts --remote
 //
-// Each repo is unpacked into snapshots/<project>/<owner>__<repo>/, with a
-// manifest.csv of what was picked alongside.
+// Reads BLOB_READ_WRITE_TOKEN from .env (or the shell, which wins). Each repo
+// is unpacked into snapshots/<project>/<owner>__<repo>/, with a manifest.csv
+// of what was picked alongside.
 //
-// This is students' code - run it somewhere without these credentials.
+// This is students' code - only run it with the competitions repo's
+// results/run.sh, which keeps it away from this folder's .env.
 
 export default async function downloadSnapshots() {
+  // astro db execute only loads its own ASTRO_* variables
+  if (existsSync('.env')) process.loadEnvFile('.env')
+
   const projects = await db.select().from(Project)
   const project = projects.find((p) => p.id === process.env.PROJECT_ID)
   if (!project) {

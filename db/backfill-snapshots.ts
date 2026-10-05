@@ -1,18 +1,23 @@
 import { db, eq, isNull, Submission } from 'astro:db'
+import { existsSync } from 'node:fs'
 import { App, Octokit } from 'octokit'
 import { snapshotSubmission } from '../src/lib/snapshots'
 
 // Snapshots submissions that were recorded before the webhook started taking
 // snapshots. Only touches rows still missing one, so it's safe to rerun.
+// Run from the website root:
 //
-//   DRY_RUN=1 GITHUB_APP_ID=... GITHUB_APP_PRIVATE_KEY=... \
-//     npx astro db execute db/backfill-snapshots.ts --remote
+//   DRY_RUN=1 npx astro db execute db/backfill-snapshots.ts --remote
 //
-// Without DRY_RUN it uploads, so it also needs BLOB_READ_WRITE_TOKEN. Set
-// GITHUB_TOKEN (a personal token) to also cover public repos that have since
-// uninstalled the GitHub App.
+// Reads GITHUB_APP_ID and GITHUB_APP_PRIVATE_KEY from .env (or the shell,
+// which wins). Without DRY_RUN it uploads, so it also needs
+// BLOB_READ_WRITE_TOKEN. Set GITHUB_TOKEN (a personal token) to also cover
+// public repos that have since uninstalled the GitHub App.
 
 export default async function backfillSnapshots() {
+  // astro db execute only loads its own ASTRO_* variables
+  if (existsSync('.env')) process.loadEnvFile('.env')
+
   const { GITHUB_APP_ID, GITHUB_APP_PRIVATE_KEY, DRY_RUN } = process.env
   if (!GITHUB_APP_ID || !GITHUB_APP_PRIVATE_KEY) {
     throw new Error('Set GITHUB_APP_ID and GITHUB_APP_PRIVATE_KEY')
