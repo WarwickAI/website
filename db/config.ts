@@ -78,6 +78,7 @@ const Submission = defineTable({
     score: column.number(),
     submissionRepo: column.text(),
     commitHash: column.text(),
+    snapshotUrl: column.text({ optional: true }), // private Vercel Blob .tar.gz of the repo at commitHash
     submittedAt: column.date({ default: NOW }),
   },
   indexes: [

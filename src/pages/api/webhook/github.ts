@@ -16,6 +16,7 @@ import {
 } from "astro:db";
 import { App } from "octokit";
 import { randomUUID } from "crypto";
+import { snapshotSubmission } from "@/lib/snapshots";
 
 export const prerender = false;
 
@@ -94,12 +95,27 @@ gh.webhooks.on("workflow_run.completed", async ({ payload }) => {
     const score = match ? parseFloat(match[1]) : 0.0;
     const submissionId = randomUUID();
 
+    // Keep a copy of the repo at the scored commit, so the exact code (and any
+    // trained model) behind a score survives later pushes or the repo being deleted
+    let snapshotUrl: string | null = null;
+    try {
+      snapshotUrl = await snapshotSubmission(octokit, {
+        projectId: project.id,
+        repo: repository.full_name,
+        sha: workflow.head_sha,
+      });
+    } catch (error) {
+      // Still record the score, just without a snapshot
+      console.error("Error snapshotting submission:", error);
+    }
+
     await db.insert(Submission).values({
       id: submissionId,
       projectId: project.id,
       score: score,
       submissionRepo: repository.full_name,
       commitHash: workflow.head_sha,
+      snapshotUrl: snapshotUrl,
       submittedAt: new Date(workflow.created_at),
     });
 
