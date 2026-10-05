@@ -11,3 +11,6 @@ pnpm-debug.log*
 better-auth_migrations/
 *.db
 .vercel
+
+# final-testing downloads from db/download-snapshots.ts (students' code)
+snapshots/
