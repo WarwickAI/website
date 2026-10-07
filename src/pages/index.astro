@@ -183,7 +183,18 @@ const execTitleSuffix = currentExec
         </div>
       </Card>
       <Link
-        href="https://github.com/WarwickAI/snake-comp?tab=readme-ov-file#-warwick-ai-snake-competition-"
+        href="https://github.com/WarwickAI/poker-comp?tab=readme-ov-file"
+        external
+      >
+        <Card color="red">
+          <h3 slot="header" class="text-2xl leading-none font-medium">
+            🃏 Poker Competition
+          </h3>
+          <Leaderboard limit={3} project="poker" />
+        </Card>
+      </Link>
+      <Link
+        href="https://github.com/WarwickAI/snake-comp?tab=readme-ov-file"
         external
       >
         <Card color="teal">
@@ -193,52 +204,6 @@ const execTitleSuffix = currentExec
           <Leaderboard limit={3} project="snake" />
         </Card>
       </Link>
-      <Card color="red">
-        <Fragment slot="header">
-          <Link href="/summit">
-            <img
-              src="/summit.png"
-              alt="WAI Summit Icon"
-              class="mx-auto w-30 dark:hidden"
-            />
-            <img
-              src="/summit-dark.png"
-              alt="WAI Summit Icon"
-              class="mx-auto w-30 not-dark:hidden"
-            />
-
-            <h3 class="pt-2 text-center text-2xl leading-none font-medium">
-              Warwick AI Summit
-            </h3>
-          </Link>
-
-          <p class="text-muted-foreground text-center text-sm font-medium">
-            21 February 2026, The <Link
-              href="https://link.mazemap.com/a6M90Iaj"
-              external
-              underline>Oculus</Link
-            > Building
-          </p>
-        </Fragment>
-
-        <div class="flex flex-col gap-2">
-          <p>
-            Join us for our annual AI summit, showcasing the best of AI research
-            and projects at Warwick &mdash; from both students and staff. There
-            will be opportunities to get hands-on with workshops, and learn from
-            industry guests.
-          </p>
-          <p>
-            Our summit is open to everyone! This includes Warwick students and
-            staff (from all faculties), sixth form students, and members of the
-            public.
-          </p>
-          <p>
-            Follow us on Instagram to stay in the loop as speakers are
-            announced!
-          </p>
-        </div>
-      </Card>
       <Link
         href="https://www.warwicksu.com/societies-sports/societies/warwickai/"
         external
@@ -291,6 +256,52 @@ const execTitleSuffix = currentExec
           loading="lazy"
           class="w-full"
         />
+      </Card>
+      <Card color="red">
+        <Fragment slot="header">
+          <Link href="/summit">
+            <img
+              src="/summit.png"
+              alt="WAI Summit Icon"
+              class="mx-auto w-30 dark:hidden"
+            />
+            <img
+              src="/summit-dark.png"
+              alt="WAI Summit Icon"
+              class="mx-auto w-30 not-dark:hidden"
+            />
+
+            <h3 class="pt-2 text-center text-2xl leading-none font-medium">
+              Warwick AI Summit
+            </h3>
+          </Link>
+
+          <p class="text-muted-foreground text-center text-sm font-medium">
+            21 February 2026, The <Link
+              href="https://link.mazemap.com/a6M90Iaj"
+              external
+              underline>Oculus</Link
+            > Building
+          </p>
+        </Fragment>
+
+        <div class="flex flex-col gap-2">
+          <p>
+            Join us for our annual AI summit, showcasing the best of AI research
+            and projects at Warwick &mdash; from both students and staff. There
+            will be opportunities to get hands-on with workshops, and learn from
+            industry guests.
+          </p>
+          <p>
+            Our summit is open to everyone! This includes Warwick students and
+            staff (from all faculties), sixth form students, and members of the
+            public.
+          </p>
+          <p>
+            Follow us on Instagram to stay in the loop as speakers are
+            announced!
+          </p>
+        </div>
       </Card>
       <Link href="https://discord.gg/YshvNtPUZm" external>
         <Card color="indigo">
