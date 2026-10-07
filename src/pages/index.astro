@@ -187,9 +187,12 @@ const execTitleSuffix = currentExec
         external
       >
         <Card color="red">
-          <h3 slot="header" class="text-2xl leading-none font-medium">
-            🃏 Poker Competition
-          </h3>
+          <div slot="header" class="flex flex-row items-center gap-3">
+            <Icon name="playing-cards.svg" class="size-8" />
+            <h3 class="text-2xl leading-none font-medium">
+              Poker Competition
+            </h3>
+          </div>
           <Leaderboard limit={3} project="poker" />
         </Card>
       </Link>
