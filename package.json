@@ -24,7 +24,7 @@
     "@astrojs/vercel": "^10.0.6",
     "@expressive-code/plugin-collapsible-sections": "^0.42.0",
     "@expressive-code/plugin-line-numbers": "^0.42.0",
-    "@iconify-json/lucide": "^1.2.26",
+    "@iconify-json/lucide": "^1.2.141",
     "@radix-ui/react-avatar": "^1.1.10",
     "@radix-ui/react-label": "^2.1.7",
     "@radix-ui/react-popover": "^1.1.14",
