@@ -77,7 +77,11 @@ gh.webhooks.on("workflow_run.completed", async ({ payload }) => {
       .get();
     if (existing) return;
 
-    // TODO: Block early and late submissions
+    // Late submissions are still recorded, the leaderboard marks them as late
+    if (new Date(workflow.created_at) < project.startDate) {
+      console.log(`Ignoring ${repository.full_name}@${workflow.head_sha}, submitted before ${project.id} opened`);
+      return;
+    }
 
     const { data: { jobs } } = await octokit.rest.actions.listJobsForWorkflowRun({
       owner: repository.owner.login,
