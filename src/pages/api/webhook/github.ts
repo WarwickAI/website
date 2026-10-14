@@ -130,7 +130,7 @@ gh.webhooks.on("workflow_run.completed", async ({ payload }) => {
       });
 
       for (const contributor of contributors.data) {
-        if (!contributor.id) continue;
+        if (!contributor.id || contributor.type === "Bot") continue;
 
         // Check if user is authed on WAI site with GitHub
         const account = await db.select()
