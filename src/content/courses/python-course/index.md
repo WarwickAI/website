@@ -3,7 +3,7 @@ title: 'WAI x UWCS x CodeSoc Python Course'
 course: 'WAI x UWCS x CodeSoc Python Course'
 description: 'A beginner Python course run by Warwick AI, UWCS and CodeSoc. No previous Python experience is needed.'
 date: 2026-10-15
-authors: ['jan-lindroos']
+authors: ['jan-lindroos', 'shaana-amarawickrama', 'tanvi-patnayukuni']
 ---
 
 Welcome to the **WAI x UWCS x CodeSoc Python Course**!

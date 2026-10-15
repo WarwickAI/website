@@ -3,7 +3,7 @@ title: 'ML/AI Flagship Course'
 course: 'ML/AI Flagship Course'
 description: 'Our workshop series that builds up your intuition for neural networks, starting with small models you can see on one graph.'
 date: 2026-10-15
-authors: ['jan-lindroos']
+authors: ['jan-lindroos', 'shaana-amarawickrama', 'tanvi-patnayukuni']
 ---
 
 Welcome to the **ML/AI Flagship Course**!
