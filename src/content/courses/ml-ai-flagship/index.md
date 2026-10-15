@@ -1,12 +1,12 @@
 ---
-title: 'ML/AI Flagship Course'
-course: 'ML/AI Flagship Course'
+title: 'ML/AI Course'
+course: 'ML/AI Course'
 description: 'Our workshop series that builds up your intuition for neural networks, starting with small models you can see on one graph.'
 date: 2026-10-15
-authors: ['jan-lindroos', 'shaana-amarawickrama', 'tanvi-patnayukuni']
+authors: ['jan-lindroos', 'shaana-amarawickrama', 'tanvi-patnayukuni', 'sam-turner', 'finlay-sanders']
 ---
 
-Welcome to the **ML/AI Flagship Course**!
+Welcome to the **ML/AI Course**!
 
 This workshop series builds up your intuition for **neural networks**. We start with small models you can see on one graph, but every idea you meet is also used to train large neural networks.
 

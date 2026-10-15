@@ -1,12 +1,12 @@
 ---
-title: 'WAI x UWCS x CodeSoc Python Course'
-course: 'WAI x UWCS x CodeSoc Python Course'
+title: 'Python Course'
+course: 'Python Course'
 description: 'A beginner Python course run by Warwick AI, UWCS and CodeSoc. No previous Python experience is needed.'
 date: 2026-10-15
-authors: ['jan-lindroos', 'shaana-amarawickrama', 'tanvi-patnayukuni']
+authors: ['jan-lindroos', 'shaana-amarawickrama', 'tanvi-patnayukuni', 'sam-turner']
 ---
 
-Welcome to the **WAI x UWCS x CodeSoc Python Course**!
+Welcome to the **Python Course**!
 
 This course is run by Warwick AI (WAI), UWCS and CodeSoc. No previous Python experience is needed.
 

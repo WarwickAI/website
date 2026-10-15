@@ -1,10 +1,10 @@
 ---
 title: 'Workshop 1'
-course: 'ML/AI Flagship Course'
+course: 'ML/AI Course'
 description: 'Models, loss and learning: predict house prices, then choose how flexible a model should be.'
 date: 2026-10-15
 order: 1
-authors: ['jan-lindroos', 'shaana-amarawickrama', 'tanvi-patnayukuni']
+authors: ['jan-lindroos', 'shaana-amarawickrama', 'tanvi-patnayukuni', 'sam-turner', 'finlay-sanders']
 ---
 
 Follow along with the [slides](https://molab.marimo.io/notebooks/nb_dK3fGU6auLMzoccLPisLZb/app), then work through the lab below.
