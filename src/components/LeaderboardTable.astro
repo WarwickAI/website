@@ -7,7 +7,8 @@ import { buttonVariants } from '@/components/ui/button'
 import { formatDate, cn } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
 import { buildLeaderboard } from '@/lib/leaderboard'
-import { db, eq, Project, Submission, Contribution, User } from 'astro:db'
+import { addTournamentPoints, totalPointsByRepo } from '@/lib/tournaments'
+import { db, eq, Project, Submission, Contribution, User, Tournament, TournamentResult } from 'astro:db'
 
 export const prerender = false
 
@@ -31,6 +32,7 @@ Astro.response.headers.set(
 
 let project = null
 let submissionsWithContributions: any[] = []
+let tournamentResults: { submissionRepo: string; points: number }[] = []
 
 try {
   const results = await Promise.all([
@@ -43,6 +45,7 @@ try {
       .select({
         submissionId: Submission.id,
         score: Submission.score,
+        submissionRepo: Submission.submissionRepo,
         submittedAt: Submission.submittedAt,
         githubUserId: Contribution.githubUserId,
         userId: Contribution.userId,
@@ -52,11 +55,27 @@ try {
       .from(Submission)
       .leftJoin(Contribution, eq(Submission.id, Contribution.submissionId))
       .leftJoin(User, eq(Contribution.userId, User.id))
-      .where(eq(Submission.projectId, projectId))
+      .where(eq(Submission.projectId, projectId)),
+    // Points from live tournaments, which count for the team whose submission played.
+    // If these can't be read, the leaderboard still shows everyone's submission scores
+    db
+      .select({
+        submissionRepo: Submission.submissionRepo,
+        points: TournamentResult.points,
+      })
+      .from(TournamentResult)
+      .innerJoin(Tournament, eq(TournamentResult.tournamentId, Tournament.id))
+      .innerJoin(Submission, eq(TournamentResult.submissionId, Submission.id))
+      .where(eq(Tournament.projectId, projectId))
+      .catch((error) => {
+        console.error('Error fetching tournament results:', error)
+        return []
+      }),
   ])
 
   project = results[0]
   submissionsWithContributions = results[1]
+  tournamentResults = results[2]
 } catch (error) {
   console.error('Error fetching leaderboard data:', error)
 }
@@ -64,6 +83,7 @@ try {
 const submissionMap = new Map<string, {
   id: string
   score: number
+  submissionRepo: string
   submittedAt: Date
   githubUserIds: number[]
   contributors: Array<{ userId: string | null; userName: string | null; userImage: string | null }>
@@ -75,6 +95,7 @@ for (const row of submissionsWithContributions) {
     submissionMap.set(row.submissionId, {
       id: row.submissionId,
       score: row.score,
+      submissionRepo: row.submissionRepo,
       submittedAt: row.submittedAt,
       githubUserIds: [],
       contributors: [],
@@ -95,7 +116,14 @@ for (const row of submissionsWithContributions) {
   }
 }
 
-const { ranked, late } = buildLeaderboard(Array.from(submissionMap.values()), {
+// A team's score is their best submission's score, plus their points from every
+// round of a live tournament. Projects without tournaments add nothing
+const scoredSubmissions = addTournamentPoints(
+  Array.from(submissionMap.values()),
+  totalPointsByRepo(tournamentResults),
+)
+
+const { ranked, late } = buildLeaderboard(scoredSubmissions, {
   startDate: project?.startDate ?? null,
   endDate: project?.endDate ?? null,
 })
