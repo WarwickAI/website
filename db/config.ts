@@ -106,6 +106,41 @@ const Contribution = defineTable({
   ],
 });
 
+// One round of a project's live tournaments, such as poker's weekly ones.
+// Recorded with db/record-tournament.ts.
+const Tournament = defineTable({
+  columns: {
+    id: column.text({ primaryKey: true }),
+    projectId: column.text({ references: () => Project.columns.id }),
+    round: column.number(), // 1 for the first tournament, 2 for the next, and so on
+    playedAt: column.date(),
+    details: column.json({ optional: true }), // anything else the project records, e.g. poker's seed
+    recordedAt: column.date({ default: NOW }),
+  },
+  indexes: [
+    { on: ["projectId", "round"], unique: true },
+  ],
+});
+
+// A team's place and points in a tournament. Each row points at the submission
+// which played, so a team which pushes a new bot plays it the next week, and
+// the leaderboard adds the points from every tournament to the team's best
+// submission score.
+const TournamentResult = defineTable({
+  columns: {
+    id: column.text({ primaryKey: true }),
+    tournamentId: column.text({ references: () => Tournament.columns.id }),
+    submissionId: column.text({ references: () => Submission.columns.id }),
+    place: column.number(), // 1 for the winner
+    points: column.number(),
+    details: column.json({ optional: true }), // anything else the project records, e.g. poker's peak chips
+  },
+  indexes: [
+    { on: ["tournamentId", "submissionId"], unique: true },
+    { on: ["submissionId"] },
+  ],
+});
+
 // https://astro.build/db/config
 export default defineDb({
   tables: {
@@ -116,5 +151,7 @@ export default defineDb({
     Project,
     Submission,
     Contribution,
+    Tournament,
+    TournamentResult,
   },
 });
