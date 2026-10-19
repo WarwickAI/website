@@ -4,10 +4,13 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 
-// Downloads each repo's best submission from before the project's deadline,
-// for final testing. Run from the website root:
+// Downloads one submission per repo from before the project's deadline, for
+// final testing or a tournament round. Run from the website root:
 //
-//   PROJECT_ID=snake npx astro db execute db/download-snapshots.ts --remote
+//   PROJECT_ID=snake PICK=best npx astro db execute db/download-snapshots.ts --remote
+//
+// - PICK=best takes each repo's highest score, e.g. for final testing
+// - PICK=latest takes each repo's most recent, e.g. for a tournament round
 //
 // Reads BLOB_READ_WRITE_TOKEN from .env (or the shell, which wins). Each repo
 // is unpacked into snapshots/<project>/<owner>__<repo>/, with a manifest.csv
@@ -16,9 +19,17 @@ import path from 'node:path'
 // This is students' code - only run it with the competitions repo's
 // results/run.sh, which keeps it away from this folder's .env.
 
+const PICK_MODES = ['best', 'latest'] as const
+type PickMode = (typeof PICK_MODES)[number]
+
 export default async function downloadSnapshots() {
   // astro db execute only loads its own ASTRO_* variables
   if (existsSync('.env')) process.loadEnvFile('.env')
+
+  const mode = process.env.PICK as PickMode
+  if (!PICK_MODES.includes(mode)) {
+    throw new Error(`Set PICK to one of: ${PICK_MODES.join(', ')}`)
+  }
 
   const projects = await db.select().from(Project)
   const project = projects.find((p) => p.id === process.env.PROJECT_ID)
@@ -38,12 +49,12 @@ export default async function downloadSnapshots() {
     .select()
     .from(Submission)
     .where(eq(Submission.projectId, project.id))
-  const best = pickBestSubmissions(submissions, project.endDate ?? null)
+  const picked = pickSubmissions(submissions, project.endDate ?? null, mode)
 
   const manifest = ['repo,commit,score,submittedAt,folder']
   const missing: string[] = []
 
-  for (const submission of best) {
+  for (const submission of picked) {
     const { submissionRepo: repo, commitHash: sha } = submission
     const folder = repo.replace('/', '__')
 
@@ -77,7 +88,7 @@ export default async function downloadSnapshots() {
   writeFileSync(path.join(outDir, 'manifest.csv'), manifest.join('\n') + '\n')
 
   console.log(
-    `Downloaded ${best.length - missing.length} of ${best.length} repos to ${outDir}`,
+    `Downloaded ${picked.length - missing.length} of ${picked.length} repos (${mode} submission of each) to ${outDir}`,
   )
   if (missing.length) {
     console.log(
@@ -87,26 +98,30 @@ export default async function downloadSnapshots() {
   }
 }
 
-// Each repo's highest score from before the deadline (the later one on a tie),
-// sorted best first
-export function pickBestSubmissions<
+// Each repo's highest score (the later one on a tie) or most recent submission
+// from before the deadline, sorted best score first
+export function pickSubmissions<
   T extends { submissionRepo: string; score: number; submittedAt: Date },
->(submissions: T[], endDate: Date | null): T[] {
-  const best = new Map<string, T>()
+>(submissions: T[], endDate: Date | null, mode: PickMode): T[] {
+  const picked = new Map<string, T>()
   for (const submission of submissions) {
     if (endDate && submission.submittedAt > endDate) continue
 
-    const current = best.get(submission.submissionRepo)
-    if (
-      !current ||
-      submission.score > current.score ||
-      (submission.score === current.score &&
-        submission.submittedAt > current.submittedAt)
-    ) {
-      best.set(submission.submissionRepo, submission)
+    const current = picked.get(submission.submissionRepo)
+    if (!current || isPreferred(submission, current, mode)) {
+      picked.set(submission.submissionRepo, submission)
     }
   }
-  return [...best.values()].sort((a, b) => b.score - a.score)
+  return [...picked.values()].sort((a, b) => b.score - a.score)
+}
+
+function isPreferred(
+  a: { score: number; submittedAt: Date },
+  b: { score: number; submittedAt: Date },
+  mode: PickMode,
+): boolean {
+  if (mode === 'best' && a.score !== b.score) return a.score > b.score
+  return a.submittedAt > b.submittedAt
 }
 
 async function download(url: string): Promise<Buffer | null> {
