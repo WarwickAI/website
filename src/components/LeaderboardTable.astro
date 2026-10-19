@@ -166,9 +166,12 @@ const getRankIcon = (rank: number | null) => {
   return 'lucide:hash'
 }
 
+// Competitions scored in whole numbers, such as tournament points, don't need decimals
+const scoreDecimals = scoredSubmissions.every((s) => Number.isInteger(s.score)) ? 0 : 2
+
 const formatScore = (score: number | null) => {
   if (score === null) return 'Pending'
-  return score.toFixed(2)
+  return score.toFixed(scoreDecimals)
 }
 
 const timeAgo = (date: Date) => {
@@ -196,7 +199,7 @@ const timeAgo = (date: Date) => {
         <span>Deadline: {formatDate(new Date(project.endDate))}</span>
       </div>
     )}
-    <UserRank client:only="react" transition:persist submissions={userRankData} />
+    <UserRank client:only="react" transition:persist submissions={userRankData} decimals={scoreDecimals} />
   </div>
 
   {shownEntries.length > 0 ? (

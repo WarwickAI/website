@@ -8,9 +8,10 @@ interface Submission {
 
 interface Props {
   submissions: Submission[]
+  decimals: number
 }
 
-export default function UserRank({ submissions }: Props) {
+export default function UserRank({ submissions, decimals }: Props) {
   const { data: session, isPending } = useSession()
 
   if (isPending || !session?.user?.id) return null
@@ -26,7 +27,7 @@ export default function UserRank({ submissions }: Props) {
   return (
     <div className="flex items-center gap-2 hidden sm:flex">
       <Trophy className="size-4" />
-      <span>Your rank: #{rank} ({score?.toFixed(2) ?? 'Pending'} pts)</span>
+      <span>Your rank: #{rank} ({score?.toFixed(decimals) ?? 'Pending'} pts)</span>
     </div>
   )
 }

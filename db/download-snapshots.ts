@@ -7,10 +7,10 @@ import path from 'node:path'
 // Downloads one submission per repo from before the project's deadline, for
 // final testing or a tournament round. Run from the website root:
 //
-//   PROJECT_ID=snake PICK=best npx astro db execute db/download-snapshots.ts --remote
+//   PROJECT_ID=snake npx astro db execute db/download-snapshots.ts --remote
 //
+// - PICK=latest (the default) takes each repo's most recent, e.g. for a tournament round
 // - PICK=best takes each repo's highest score, e.g. for final testing
-// - PICK=latest takes each repo's most recent, e.g. for a tournament round
 //
 // Reads BLOB_READ_WRITE_TOKEN from .env (or the shell, which wins). Each repo
 // is unpacked into snapshots/<project>/<owner>__<repo>/, with a manifest.csv
@@ -19,14 +19,14 @@ import path from 'node:path'
 // This is students' code - only run it with the competitions repo's
 // results/run.sh, which keeps it away from this folder's .env.
 
-const PICK_MODES = ['best', 'latest'] as const
+const PICK_MODES = ['latest', 'best'] as const
 type PickMode = (typeof PICK_MODES)[number]
 
 export default async function downloadSnapshots() {
   // astro db execute only loads its own ASTRO_* variables
   if (existsSync('.env')) process.loadEnvFile('.env')
 
-  const mode = process.env.PICK as PickMode
+  const mode = (process.env.PICK ?? 'latest') as PickMode
   if (!PICK_MODES.includes(mode)) {
     throw new Error(`Set PICK to one of: ${PICK_MODES.join(', ')}`)
   }
