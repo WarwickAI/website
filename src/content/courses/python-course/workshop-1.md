@@ -4,7 +4,7 @@ course: 'Python Course'
 description: 'Values, conversion, decisions and debugging, using event bookings as the example.'
 date: 2026-10-15
 order: 1
-authors: ['jan-lindroos', 'shaana-amarawickrama', 'tanvi-patnayukuni', 'sam-turner']
+authors: ['jan-lindroos', 'max-ambaum', 'sam-turner', 'shaana-amarawickrama', 'tanvi-patnayukuni']
 ---
 
 Follow along with the [slides](https://molab.marimo.io/notebooks/nb_gkSnEuamD8ZeFmazDS2JsC/app), then work through the lab below.
