@@ -14,6 +14,10 @@ export type SocialLink = {
   label: string
 }
 
+export type NavLink = SocialLink & {
+  liveDuring?: string[]
+}
+
 export type IconMap = {
   [key: string]: string
 }

@@ -2,6 +2,7 @@
 import Calendar from '@/components/Calendar.astro'
 import Card from '@/components/Card.astro'
 import ContentCard from '@/components/ContentCard.astro'
+import LabBanner from '@/components/LabBanner.astro'
 import Leaderboard from '@/components/Leaderboard.astro'
 import Link from '@/components/Link.astro'
 import LivestreamFeed from '@/components/LivestreamFeed.astro'
@@ -50,6 +51,7 @@ const execTitleSuffix = currentExec
         throughout term, and meet weekly for 'codenight'.
       </p>
     </Card>
+    <LabBanner server:defer />
   </section>
   <section class="bg-background/75 flex flex-col gap-y-4">
     <Masonry

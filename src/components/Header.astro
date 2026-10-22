@@ -1,14 +1,18 @@
 ---
 import AccountPopover from '@/components/AccountPopover'
 import Link from '@/components/Link.astro'
+import LiveNavLink from '@/components/LiveNavLink.astro'
 import ThemeToggle from '@/components/ThemeToggle.astro'
 import MobileMenu from '@/components/ui/mobile-menu'
 import { NAV_LINKS, SITE } from '@/consts'
 import { Image } from 'astro:assets'
 import logo from '../../public/static/logo.svg'
+
+const navLinkClass =
+  'text-foreground/60 hover:text-foreground/80 capitalize transition-colors'
 ---
 
-<header transition:persist>
+<header>
   <div
     class="mx-auto flex max-w-3xl items-center justify-between gap-4 px-4 py-3"
   >
@@ -19,19 +23,32 @@ import logo from '../../public/static/logo.svg'
     <div class="flex items-center sm:gap-4">
       <nav class="hidden items-center gap-4 text-sm sm:flex sm:gap-6">
         {
-          NAV_LINKS.map((item) => (
-            <Link
-              href={item.href}
-              class="text-foreground/60 hover:text-foreground/80 capitalize transition-colors"
-            >
-              {item.label}
-            </Link>
-          ))
+          NAV_LINKS.map((item) =>
+            item.liveDuring ? (
+              <LiveNavLink
+                server:defer
+                href={item.href}
+                label={item.label}
+                liveDuring={item.liveDuring}
+                class={navLinkClass}
+              >
+                <Link slot="fallback" href={item.href} class={navLinkClass}>
+                  {item.label}
+                </Link>
+              </LiveNavLink>
+            ) : (
+              <Link href={item.href} class={navLinkClass}>
+                {item.label}
+              </Link>
+            ),
+          )
         }
       </nav>
-      <MobileMenu client:load />
-      <ThemeToggle />
-      <AccountPopover client:load />
+      <div class="contents" transition:persist="header-controls">
+        <MobileMenu client:load />
+        <ThemeToggle />
+        <AccountPopover client:load />
+      </div>
     </div>
   </div>
 </header>

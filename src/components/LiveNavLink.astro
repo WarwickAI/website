@@ -1,0 +1,42 @@
+---
+import Link from '@/components/Link.astro'
+import { getActiveEvent } from '@/lib/calendar'
+import { cn } from '@/lib/utils'
+
+export const prerender = false
+
+interface Props {
+  href: string
+  label: string
+  liveDuring: string[]
+  class?: string
+}
+
+const { href, label, liveDuring, class: className } = Astro.props
+
+Astro.response.headers.set(
+  'Cache-Control',
+  'public, s-maxage=60, stale-while-revalidate=300',
+)
+
+const live = !!(await getActiveEvent(liveDuring))
+---
+
+<Link
+  href={href}
+  class={cn(
+    className,
+    live &&
+      'inline-flex items-center gap-1.5 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300',
+  )}
+>
+  {
+    live && (
+      <span class="relative flex size-2">
+        <span class="absolute inline-flex size-full animate-ping rounded-full bg-red-500 opacity-75" />
+        <span class="relative inline-flex size-2 rounded-full bg-red-500" />
+      </span>
+    )
+  }
+  {label}
+</Link>

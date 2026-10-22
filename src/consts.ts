@@ -1,4 +1,4 @@
-import type { IconMap, SocialLink, Site } from '@/types'
+import type { IconMap, NavLink, SocialLink, Site } from '@/types'
 
 export const SITE: Site = {
   title: 'Warwick AI',
@@ -11,7 +11,11 @@ export const SITE: Site = {
   postsPerPage: 5,
 }
 
-export const NAV_LINKS: SocialLink[] = [
+export const LAB_URL = 'https://lab.warwick.ai'
+
+export const EDUCATION_EVENTS = ['Intro to ML/AI', 'Intro to Python']
+
+export const NAV_LINKS: NavLink[] = [
   {
     href: '/blog',
     label: 'blog',
@@ -23,6 +27,11 @@ export const NAV_LINKS: SocialLink[] = [
   {
     href: '/education/courses',
     label: 'courses',
+  },
+  {
+    href: LAB_URL,
+    label: 'labs',
+    liveDuring: EDUCATION_EVENTS,
   },
   {
     href: '/summit',

@@ -1,0 +1,36 @@
+---
+import Card from '@/components/Card.astro'
+import Link from '@/components/Link.astro'
+import { EDUCATION_EVENTS, LAB_URL } from '@/consts'
+import { getActiveEvent } from '@/lib/calendar'
+import { Icon } from 'astro-icon/components'
+
+export const prerender = false
+
+Astro.response.headers.set(
+  'Cache-Control',
+  'public, s-maxage=60, stale-while-revalidate=300',
+)
+
+const event = await getActiveEvent(EDUCATION_EVENTS)
+---
+
+{
+  event && (
+    <Link href={LAB_URL} external class="group block">
+      <Card color="red" class="py-4">
+        <div class="flex flex-row items-center gap-3 text-red-700 dark:text-red-300">
+          <Icon name="lucide:flask-conical" class="size-8 shrink-0" />
+          <div>
+            <h3 class="text-xl leading-tight font-medium">
+              {event.title} is happening now!
+            </h3>
+            <p class="text-sm">
+              Follow along with the session at lab.warwick.ai <span class="inline-block transition-transform group-hover:translate-x-1">&rarr;</span>
+            </p>
+          </div>
+        </div>
+      </Card>
+    </Link>
+  )
+}
