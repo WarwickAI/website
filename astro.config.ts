@@ -1,3 +1,4 @@
+import { existsSync } from 'node:fs'
 import { defineConfig } from 'astro/config'
 
 import tailwindcss from '@tailwindcss/vite'
@@ -20,6 +21,8 @@ import rehypeDocument from 'rehype-document'
 
 import { pluginCollapsibleSections } from '@expressive-code/plugin-collapsible-sections'
 import { pluginLineNumbers } from '@expressive-code/plugin-line-numbers'
+
+if (existsSync('.env')) process.loadEnvFile('.env')
 
 export default defineConfig({
   site: 'https://warwick.ai',
@@ -78,7 +81,6 @@ export default defineConfig({
     db()
   ],
   vite: {
-    // @ts-expect-error
     plugins: [tailwindcss()],
   },
   server: {
