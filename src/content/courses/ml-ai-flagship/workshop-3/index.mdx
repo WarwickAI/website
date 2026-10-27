@@ -50,7 +50,7 @@ Drag the sliders in each diagram. The Colab notebook has the same diagrams.
 
 ### Recap: how a model learns (1 minute)
 
-In Workshop 1, a model learnt by repeating four steps. Today PyTorch does each step in one line:
+In [Workshop 1](/education/courses/ml-ai-flagship/workshop-1), a model learnt by repeating four steps. Today PyTorch does each step in one line:
 
 | Step | What it does | In PyTorch |
 |---|---|---|
@@ -119,7 +119,7 @@ Most AI research is written in PyTorch, and so are many large models, such as Me
 
 PyTorch stores numbers in **tensors**. A tensor works like a NumPy array: maths happens on every number at once. The difference is that PyTorch can record every calculation on a tensor, then work backwards through them to find gradients.
 
-We start with Workshop 1's model, with both parameters at 0:
+We start with [Workshop 1's model](/education/courses/ml-ai-flagship/workshop-1#2-fit-a-model-and-predict-5-minutes), with both parameters at 0:
 
 $$
 \text{value} = \text{slope} \times \text{income} + \text{intercept}
@@ -253,7 +253,7 @@ The slope ends at about **0.13** and the loss at about **0.80**, worse than befo
 
 House values go up and down with latitude, from San Diego in the south (33°) to the Oregon border (42°). A straight line cannot follow that. A network with a hidden layer of ReLU neurons can, because each neuron adds a bend, as in Part 1.
 
-The cell below rescales latitude with `StandardScaler`, as in Workshop 2, which helps training. It also defines `draw`, which plots a network's predictions over the houses.
+The cell below rescales latitude with `StandardScaler`, as in [Workshop 2](/education/courses/ml-ai-flagship/workshop-2#2-see-overfitting), which helps training. It also defines `draw`, which plots a network's predictions over the houses.
 
 ```python
 latitude_scaler = StandardScaler()
@@ -358,7 +358,7 @@ Two peaks: Los Angeles and the San Francisco Bay Area. Between them is a dip for
 
 ### 4. All 8 inputs (10 minutes)
 
-Now the task from Workshop 1: predict house values from all 8 inputs. We use the same training and validation sets as Workshop 1's take-home, so we can compare scores. The test set stays aside for one final check.
+Now the task from Workshop 1: predict house values from all 8 inputs. We use the same training and validation sets as [Workshop 1's take-home](/education/courses/ml-ai-flagship/workshop-1#take-home-find-the-sweet-spot-about-15-minutes), so we can compare scores. The test set stays aside for one final check.
 
 ```python
 train, rest = train_test_split(housing, test_size=0.3, random_state=0)
@@ -544,7 +544,7 @@ The training MSE keeps falling, to about **0.15**. The validation MSE reaches it
 
 ### Extension B: Weight decay is Ridge
 
-Workshop 2's Ridge added a penalty for big weights to the loss. In PyTorch, `weight_decay` on the optimiser adds the same penalty. Run the cell to train the big network again with `weight_decay=1e-3`.
+[Workshop 2's Ridge](/education/courses/ml-ai-flagship/workshop-2#3-ridge-shrink-all-the-weights) added a penalty for big weights to the loss. In PyTorch, `weight_decay` on the optimiser adds the same penalty. Run the cell to train the big network again with `weight_decay=1e-3`.
 
 ```python
 torch.manual_seed(0)
