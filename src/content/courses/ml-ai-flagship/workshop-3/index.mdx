@@ -1,0 +1,560 @@
+---
+title: 'Workshop 3'
+course: 'ML/AI Course'
+description: 'Neural networks in PyTorch: see how neurons bend a line, then train a network that rivals a random forest.'
+date: 2026-10-29
+order: 3
+authors: ['sam-turner', 'finlay-sanders', 'jan-lindroos']
+---
+
+import NeuronDiagram from './NeuronDiagram.astro'
+
+There are no slides this week: the notebook has everything. We talk through Part 1 together, then write the code in Part 2 together.
+
+## Getting started (2 minutes)
+
+- Open the [notebook in Colab](https://colab.research.google.com/github/WarwickAI/intro-to-ml/blob/main/workshop3/ml_lab.ipynb) and save your own copy.
+- Click the **play button** beside a code cell to run it. Work from top to bottom.
+- Double-click text to edit an answer. Click outside when done.
+
+The first cell loads the libraries:
+
+| Library | What it does |
+|---|---|
+| `pandas`, `numpy`, `matplotlib.pyplot`, `sklearn` | Tables, maths on many numbers, graphs and ready-made models, as in Workshops 1 and 2 |
+| `torch` (PyTorch) | Like NumPy, but it can work out gradients for you and run on a graphics card |
+| `torch.nn`, shortened to `nn` | Building blocks for neural networks |
+
+It then loads the California house prices from Workshop 1 into a table called `housing`.
+
+```python
+import matplotlib.pyplot as plt  # Draws graphs.
+import numpy as np  # Does maths on many numbers at once.
+import pandas as pd  # Stores data in tables.
+import torch  # Tensors and automatic gradients.
+from sklearn.datasets import fetch_california_housing
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from torch import nn  # Building blocks for neural networks.
+
+housing = fetch_california_housing(as_frame=True).frame  # Download the data as a table.
+housing.head()  # Show the first five rows.
+```
+
+## Part 1: What is a neural network? (10 minutes)
+
+Drag the sliders in each diagram. The Colab notebook has the same diagrams.
+
+### Recap: how a model learns (1 minute)
+
+In Workshop 1, a model learnt by repeating four steps. Today PyTorch does each step in one line:
+
+| Step | What it does | In PyTorch |
+|---|---|---|
+| Forward pass | The model makes its predictions | `predicted = model(inputs)` |
+| Loss | One number for how wrong the predictions are | `loss = loss_fn(predicted, targets)` |
+| Backward pass | Backpropagation finds the gradient of the loss for every parameter | `loss.backward()` |
+| Step | Gradient descent moves every parameter a little way downhill | `optimizer.step()` |
+
+Today's models are bigger than a straight line, but the loop is the same.
+
+### One neuron (3 minutes)
+
+A **neuron** is Workshop 1's straight line with one change. It multiplies its input by a **weight** and adds a **bias**. Then it applies **ReLU**: negative values become 0, and positive values pass through unchanged. The result is a **hinge**: flat, then a straight line.
+
+Drag the sliders:
+
+- The **weight** sets how steep the line is, and which way it faces.
+- The **bias** moves the bend left and right.
+
+<NeuronDiagram diagram="one-neuron" />
+
+### Neurons add up (4 minutes)
+
+One hinge cannot follow much. A **neural network** puts several neurons side by side in a **hidden layer**, then adds up their outputs. Each neuron adds one bend, so together they can make any shape built from straight pieces.
+
+Each neuron below has two sliders. `bend` sets where it bends. `slope` is the weight on its output: how much it changes the slope after the bend. `start` is the output's bias.
+
+<NeuronDiagram diagram="neurons-add-up" />
+
+1. Move the sliders until the thick line goes through every dot. Can you get the MSE to 0?
+2. Untick **ReLU**. What happens to the thick line, whatever you do with the sliders?
+
+<details>
+<summary>Answer</summary>
+
+Bends at **2**, **5** and **8**, slopes **1**, **−2** and **1**, and a start of **1** give an MSE of 0. The first neuron starts the climb, the second turns it into a fall, and the third flattens it out. Training finds numbers like these for you, by gradient descent, for every neuron at once.
+
+Without ReLU, every neuron is a straight line, and straight lines add up to a straight line. However many neurons there are, the output can never bend.
+
+</details>
+
+### Layers and parameters (2 minutes)
+
+Networks can stack several hidden layers. Each neuron takes every output of the layer before it. Every line in the diagram is a weight, and every neuron has a bias. Together they are the network's **parameters**, which training adjusts.
+
+Drag the sliders and watch the count grow. The last network in the lab has 8 inputs and two hidden layers of 64 neurons: 4,801 parameters. GPT-3 has 175 billion. Both are trained with the same loop.
+
+<NeuronDiagram diagram="layers-and-parameters" />
+
+### Why PyTorch? (1 minute)
+
+scikit-learn's models are ready-made: you choose one and call `fit`. A neural network you design yourself, layer by layer, so you need building blocks instead. PyTorch gives you:
+
+- **Tensors**: like NumPy arrays, but they can also run on a graphics card (GPU), which is much faster for big networks.
+- **Autograd**: PyTorch records every calculation, then works backwards to find the gradient for every parameter. This is the backward pass, done for you.
+- **`nn` and `optim`**: ready-made layers, loss functions and optimisers.
+
+Most AI research is written in PyTorch, and so are many large models, such as Meta's Llama.
+
+## Part 2: Build a neural network in PyTorch (35 minutes)
+
+### 1. Tensors and gradients (6 minutes)
+
+PyTorch stores numbers in **tensors**. A tensor works like a NumPy array: maths happens on every number at once. The difference is that PyTorch can record every calculation on a tensor, then work backwards through them to find gradients.
+
+We start with Workshop 1's model, value = slope × income + intercept, with both parameters at 0.
+
+| Code | What it does |
+|---|---|
+| `torch.tensor(column.to_numpy(), dtype=torch.float32)` | Turns a column into a tensor of decimal numbers |
+| `torch.tensor(0.0, requires_grad=True)` | A parameter: PyTorch records every calculation that uses it |
+| `(a ** 2).mean()` | Squares every value, then takes the mean |
+| `loss.backward()` | The backward pass: calculates the gradient of the loss for every parameter |
+| `slope.grad` | The gradient for `slope` |
+| `.item()` | Turns a tensor holding one number into a plain Python number |
+
+Complete the loss, then run the backward pass. Expect a loss of about **5.61**, a slope gradient of about **−19.03** and an intercept gradient of about **−4.14**.
+
+```python
+incomes = torch.tensor(housing["MedInc"].to_numpy(), dtype=torch.float32)
+values = torch.tensor(housing["MedHouseVal"].to_numpy(), dtype=torch.float32)
+
+slope = torch.tensor(0.0, requires_grad=True)
+intercept = torch.tensor(0.0, requires_grad=True)
+
+predicted = slope * incomes + intercept  # Forward pass.
+loss = ...  # The MSE: square the errors, then take the mean.
+...  # Backward pass.
+
+print("loss:", loss.item())
+print("slope gradient:", slope.grad.item(), "| intercept gradient:", intercept.grad.item())
+```
+
+<details>
+<summary>Answer</summary>
+
+```python
+incomes = torch.tensor(housing["MedInc"].to_numpy(), dtype=torch.float32)
+values = torch.tensor(housing["MedHouseVal"].to_numpy(), dtype=torch.float32)
+
+slope = torch.tensor(0.0, requires_grad=True)
+intercept = torch.tensor(0.0, requires_grad=True)
+
+predicted = slope * incomes + intercept  # Forward pass.
+loss = ((predicted - values) ** 2).mean()  # The MSE: square the errors, then take the mean.
+loss.backward()  # Backward pass.
+
+print("loss:", loss.item())
+print("slope gradient:", slope.grad.item(), "| intercept gradient:", intercept.grad.item())
+```
+
+</details>
+
+Both gradients are negative. Will gradient descent make `slope` and `intercept` bigger or smaller? Why?
+
+<details>
+<summary>Answer</summary>
+
+Bigger. Each step subtracts the learning rate × the gradient, and subtracting a negative number adds. A negative gradient means the loss falls as the parameter grows: predicting 0 for every house is far too low.
+
+</details>
+
+### 2. The training loop (8 minutes)
+
+PyTorch has ready-made pieces for the rest of the loop. `nn.Linear(1, 1)` is Workshop 1's straight line: one input and one output. PyTorch calls its slope the **weight** and its intercept the **bias**, and starts them at random values. An **optimiser** does the gradient descent step for every parameter. `SGD` is plain gradient descent.
+
+| Code | What it does |
+|---|---|
+| `housing[["MedInc"]]` | A one-column table. Models take their inputs as a table, as in Workshop 1 |
+| `nn.Linear(1, 1)` | A straight line with one input and one output |
+| `nn.MSELoss()` | The MSE loss function |
+| `torch.optim.SGD(model.parameters(), lr=0.01)` | Gradient descent on every parameter of `model`, with a learning rate of 0.01 |
+| `optimizer.zero_grad()` | Clears the gradients from the last step |
+| `optimizer.step()` | Moves every parameter one step downhill |
+
+Fill in the four steps from the recap table. Expect a slope of about **0.42**, an intercept of about **0.45** and a loss of about **0.70**: the same line as `LinearRegression` found in Workshop 1.
+
+```python
+inputs = torch.tensor(housing[["MedInc"]].to_numpy(), dtype=torch.float32)
+targets = torch.tensor(housing[["MedHouseVal"]].to_numpy(), dtype=torch.float32)
+
+torch.manual_seed(0)  # Start from the same random line every time.
+model = nn.Linear(1, 1)
+loss_fn = nn.MSELoss()
+optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
+
+for step in range(1000):
+    optimizer.zero_grad()  # Clear the old gradients.
+    predicted = ...  # Forward pass.
+    loss = ...  # Loss.
+    ...  # Backward pass.
+    ...  # Step downhill.
+
+print("slope:", model.weight.item(), "| intercept:", model.bias.item(), "| loss:", loss.item())
+```
+
+<details>
+<summary>Answer</summary>
+
+```python
+inputs = torch.tensor(housing[["MedInc"]].to_numpy(), dtype=torch.float32)
+targets = torch.tensor(housing[["MedHouseVal"]].to_numpy(), dtype=torch.float32)
+
+torch.manual_seed(0)  # Start from the same random line every time.
+model = nn.Linear(1, 1)
+loss_fn = nn.MSELoss()
+optimizer = torch.optim.SGD(model.parameters(), lr=0.01)
+
+for step in range(1000):
+    optimizer.zero_grad()  # Clear the old gradients.
+    predicted = model(inputs)  # Forward pass.
+    loss = loss_fn(predicted, targets)  # Loss.
+    loss.backward()  # Backward pass.
+    optimizer.step()  # Step downhill.
+
+print("slope:", model.weight.item(), "| intercept:", model.bias.item(), "| loss:", loss.item())
+```
+
+</details>
+
+These five lines train every neural network. For a bigger model, only the `model = ...` line changes.
+
+Delete the `optimizer.zero_grad()` line and run the cell again. What happens to the slope and the loss? Why? Put the line back afterwards.
+
+<details>
+<summary>Answer</summary>
+
+The slope ends at about **0.13** and the loss at about **0.80**, worse than before. PyTorch adds each new gradient to the old ones, so without `zero_grad` every step uses the sum of all the gradients so far. The steps grow too big and overshoot, and the loss jumps up and down instead of settling.
+
+</details>
+
+### 3. From a line to a network (10 minutes)
+
+House values go up and down with latitude, from San Diego in the south (33°) to the Oregon border (42°). A straight line cannot follow that. A network with a hidden layer of ReLU neurons can, because each neuron adds a bend, as in Part 1.
+
+The cell below rescales latitude with `StandardScaler`, as in Workshop 2, which helps training. It also defines `draw`, which plots a network's predictions over the houses.
+
+```python
+latitude_scaler = StandardScaler()
+latitudes = torch.tensor(latitude_scaler.fit_transform(housing[["Latitude"]].to_numpy()), dtype=torch.float32)
+sample = housing.sample(2000, random_state=0)  # Plot 2,000 houses so the graph draws quickly.
+
+
+def draw(network):
+    grid = np.linspace(32.5, 42, 400).reshape(-1, 1)  # 400 latitudes from south to north.
+    with torch.no_grad():  # Only predicting, so PyTorch does not need to record anything.
+        curve = network(torch.tensor(latitude_scaler.transform(grid), dtype=torch.float32))
+    plt.scatter(sample["Latitude"], sample["MedHouseVal"], s=3, alpha=0.3)
+    plt.plot(grid, curve, color="black")
+    plt.xlabel("Latitude (degrees north)")
+    plt.ylabel("Median house value ($100,000s)")
+    plt.show()
+```
+
+Write a `fit` function that trains any network, like scikit-learn's `fit`. Its loop is the five lines from section 2.
+
+It uses `torch.optim.Adam` in place of `SGD`. **Adam** is gradient descent that adapts the step size for each parameter. It trains most neural networks.
+
+```python
+def fit(network, inputs, targets, steps=2000):
+    loss_fn = nn.MSELoss()
+    optimizer = torch.optim.Adam(network.parameters(), lr=0.01)
+    for step in range(steps):
+        ...  # The five lines from section 2.
+    return loss.item()  # The final training loss.
+```
+
+<details>
+<summary>Answer</summary>
+
+```python
+def fit(network, inputs, targets, steps=2000):
+    loss_fn = nn.MSELoss()
+    optimizer = torch.optim.Adam(network.parameters(), lr=0.01)
+    for step in range(steps):
+        optimizer.zero_grad()
+        predicted = network(inputs)
+        loss = loss_fn(predicted, targets)
+        loss.backward()
+        optimizer.step()
+    return loss.item()  # The final training loss.
+```
+
+</details>
+
+`nn.Sequential` runs layers in order. Complete the network: 50 neurons, ReLU, then add them up into one prediction. Expect a loss of about **1.10**. A straight line gets about **1.30**.
+
+```python
+neurons = 50
+
+torch.manual_seed(0)
+network = nn.Sequential(
+    nn.Linear(1, neurons),  # Each neuron: weight × latitude + bias.
+    ...,  # Bend every neuron.
+    nn.Linear(neurons, 1),  # Add up the neurons into one prediction.
+)
+print("loss:", fit(network, latitudes, targets))
+draw(network)
+```
+
+<details>
+<summary>Answer</summary>
+
+```python
+neurons = 50
+
+torch.manual_seed(0)
+network = nn.Sequential(
+    nn.Linear(1, neurons),  # Each neuron: weight × latitude + bias.
+    nn.ReLU(),  # Bend every neuron.
+    nn.Linear(neurons, 1),  # Add up the neurons into one prediction.
+)
+print("loss:", fit(network, latitudes, targets))
+draw(network)
+```
+
+</details>
+
+Los Angeles is at about 34° and San Francisco at about 37.8°. What has the network found?
+
+<details>
+<summary>Answer</summary>
+
+Two peaks: Los Angeles and the San Francisco Bay Area. Between them is a dip for the cheaper Central Valley, and values fall again further north. Nobody told the network where the cities are: it found them from the data.
+
+</details>
+
+1. Change `neurons` to 5 and run the cell again. Why is the fit worse?
+2. Set `neurons` back to 50, then delete the `nn.ReLU()` line. What shape do you get? Why?
+
+<details>
+<summary>Answer</summary>
+
+1. The loss is about 1.29, barely better than a straight line. 5 neurons give at most 5 bends, so the curve cannot follow both peaks. Some neurons also get stuck. If a neuron's bend moves outside the data, it outputs 0 for every house, so its gradient is 0 and it never learns again. With 50 neurons, enough of them keep learning.
+2. A straight line, with a loss of about 1.30. Without ReLU, every neuron is a straight line, and adding up straight lines gives a straight line, as in Part 1.
+
+</details>
+
+### 4. All 8 inputs (10 minutes)
+
+Now the task from Workshop 1: predict house values from all 8 inputs. We use the same training and validation sets as Workshop 1's take-home, so we can compare scores. The test set stays aside for one final check.
+
+```python
+train, rest = train_test_split(housing, test_size=0.3, random_state=0)
+val, test = train_test_split(rest, test_size=0.5, random_state=0)
+input_columns = housing.columns.drop("MedHouseVal")  # The names of the 8 input columns.
+
+scaler = StandardScaler()  # Learns each column's average and spread from the training set only.
+X_train = torch.tensor(scaler.fit_transform(train[input_columns]), dtype=torch.float32)
+X_val = torch.tensor(scaler.transform(val[input_columns]), dtype=torch.float32)
+y_train = torch.tensor(train[["MedHouseVal"]].to_numpy(), dtype=torch.float32)
+y_val = torch.tensor(val[["MedHouseVal"]].to_numpy(), dtype=torch.float32)
+print(X_train.shape, X_val.shape)  # (rows, inputs)
+```
+
+`fit_and_validate` is `fit` with two additions: after every step it also records the loss on the validation set, and at the end it plots both losses. Complete the line that records the validation loss, then run the cell.
+
+```python
+def fit_and_validate(network, steps=1000, weight_decay=0):  # Extension B uses weight_decay.
+    loss_fn = nn.MSELoss()
+    optimizer = torch.optim.Adam(network.parameters(), lr=0.003, weight_decay=weight_decay)  # A smaller learning rate gives smoother curves.
+    train_losses = []
+    val_losses = []
+    for step in range(steps):
+        optimizer.zero_grad()
+        loss = loss_fn(network(X_train), y_train)
+        loss.backward()
+        optimizer.step()
+        train_losses.append(loss.item())
+        with torch.no_grad():  # Only measuring, not training.
+            val_losses.append(...)  # The loss on the validation set.
+
+    best_step = np.argmin(val_losses)
+    print("final training MSE:", round(train_losses[-1], 3), "| final validation MSE:", round(val_losses[-1], 3))
+    print("lowest validation MSE:", round(val_losses[best_step], 3), "at step", best_step)
+    plt.plot(train_losses, label="Training")
+    plt.plot(val_losses, label="Validation")
+    plt.ylim(0, 1.5)
+    plt.xlabel("Step")
+    plt.ylabel("MSE")
+    plt.legend()
+    plt.show()
+```
+
+<details>
+<summary>Answer</summary>
+
+```python
+def fit_and_validate(network, steps=1000, weight_decay=0):  # Extension B uses weight_decay.
+    loss_fn = nn.MSELoss()
+    optimizer = torch.optim.Adam(network.parameters(), lr=0.003, weight_decay=weight_decay)  # A smaller learning rate gives smoother curves.
+    train_losses = []
+    val_losses = []
+    for step in range(steps):
+        optimizer.zero_grad()
+        loss = loss_fn(network(X_train), y_train)
+        loss.backward()
+        optimizer.step()
+        train_losses.append(loss.item())
+        with torch.no_grad():  # Only measuring, not training.
+            val_losses.append(loss_fn(network(X_val), y_val).item())  # The loss on the validation set.
+
+    best_step = np.argmin(val_losses)
+    print("final training MSE:", round(train_losses[-1], 3), "| final validation MSE:", round(val_losses[-1], 3))
+    print("lowest validation MSE:", round(val_losses[best_step], 3), "at step", best_step)
+    plt.plot(train_losses, label="Training")
+    plt.plot(val_losses, label="Validation")
+    plt.ylim(0, 1.5)
+    plt.xlabel("Step")
+    plt.ylabel("MSE")
+    plt.legend()
+    plt.show()
+```
+
+</details>
+
+This network has two hidden layers of 64 neurons. How many inputs does its first layer take? Expect a training MSE of about **0.23** and a validation MSE of about **0.29**.
+
+```python
+torch.manual_seed(0)
+network = nn.Sequential(
+    nn.Linear(..., 64),  # How many inputs does each house have?
+    nn.ReLU(),
+    nn.Linear(64, 64),
+    nn.ReLU(),
+    nn.Linear(64, 1),
+)
+fit_and_validate(network)
+```
+
+<details>
+<summary>Answer</summary>
+
+```python
+torch.manual_seed(0)
+network = nn.Sequential(
+    nn.Linear(8, 64),  # How many inputs does each house have?
+    nn.ReLU(),
+    nn.Linear(64, 64),
+    nn.ReLU(),
+    nn.Linear(64, 1),
+)
+fit_and_validate(network)
+```
+
+</details>
+
+Compare your network with the models from Workshop 1, all scored on the same validation set. (Workshop 1's 0.52 for linear regression was scored on the data it trained on.)
+
+| Model | Validation MSE |
+|---|---|
+| Always predict the average | 1.33 |
+| Linear regression, 8 inputs | 0.54 |
+| Decision tree, depth 9 | 0.43 |
+| Random forest | 0.28 |
+| Your network | |
+
+How does it do? Is it overfitting yet?
+
+<details>
+<summary>Answer</summary>
+
+About **0.29**: far better than linear regression and the best decision tree, and close to the random forest. The training MSE (0.23) is a little lower than the validation MSE, but the validation loss is still falling at the end, so it is not overfitting yet.
+
+</details>
+
+### Lab check (1 minute)
+
+Explain in one sentence each:
+
+- What `loss.backward()` does.
+- Why a neural network needs ReLU between its layers.
+
+<details>
+<summary>Answer</summary>
+
+- `loss.backward()` works backwards through every calculation that made the loss, and stores the gradient of the loss for every parameter in its `.grad`.
+- Without ReLU, every layer is a straight line, and lines added up are still a line, so extra layers add nothing. ReLU adds the bends.
+
+</details>
+
+### Extension A: Make it bigger
+
+Give the network three hidden layers of 256 neurons each: 134,145 parameters. It takes about half a minute to train.
+
+```python
+torch.manual_seed(0)
+big_network = nn.Sequential(
+    nn.Linear(8, 256),
+    nn.ReLU(),
+    ...,  # Two more hidden layers of 256 neurons, each followed by ReLU.
+    nn.Linear(256, 1),
+)
+fit_and_validate(big_network)
+```
+
+<details>
+<summary>Answer</summary>
+
+```python
+torch.manual_seed(0)
+big_network = nn.Sequential(
+    nn.Linear(8, 256),
+    nn.ReLU(),
+    nn.Linear(256, 256),
+    nn.ReLU(),
+    nn.Linear(256, 256),
+    nn.ReLU(),
+    nn.Linear(256, 1),
+)
+fit_and_validate(big_network)
+```
+
+</details>
+
+What happens to the two losses? When would you stop training?
+
+<details>
+<summary>Answer</summary>
+
+The training MSE keeps falling, to about **0.15**. The validation MSE reaches its lowest, about **0.29**, about 370 steps in, then rises to about **0.34**. The big network is overfitting: it is learning the training houses instead of the pattern. Stopping at the lowest validation loss is called **early stopping**.
+
+</details>
+
+### Extension B: Weight decay is Ridge
+
+Workshop 2's Ridge added a penalty for big weights to the loss. In PyTorch, `weight_decay` on the optimiser adds the same penalty. Run the cell to train the big network again with `weight_decay=1e-3`.
+
+```python
+torch.manual_seed(0)
+big_network = nn.Sequential(
+    nn.Linear(8, 256),
+    nn.ReLU(),
+    nn.Linear(256, 256),
+    nn.ReLU(),
+    nn.Linear(256, 256),
+    nn.ReLU(),
+    nn.Linear(256, 1),
+)
+fit_and_validate(big_network, weight_decay=1e-3)
+```
+
+What changes compared with Extension A?
+
+<details>
+<summary>Answer</summary>
+
+The validation MSE keeps falling instead of rising, and ends at about **0.29** instead of 0.34. The training MSE stays higher, about 0.20 instead of 0.15, so the gap between them is smaller. The penalty keeps the weights small, so the network overfits less, just as Ridge did.
+
+</details>
