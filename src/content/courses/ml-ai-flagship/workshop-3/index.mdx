@@ -28,13 +28,16 @@ The first cell loads the libraries:
 It then loads the California house prices from Workshop 1 into a table called `housing`.
 
 ```python
-import matplotlib.pyplot as plt  # Draws graphs.
-import numpy as np  # Does maths on many numbers at once.
+# Libraries from Workshops 1 and 2.
 import pandas as pd  # Stores data in tables.
+import numpy as np  # Does maths on many numbers at once.
+import matplotlib.pyplot as plt  # Draws graphs.
+from sklearn.datasets import fetch_california_housing  # The house prices from Workshop 1.
+from sklearn.model_selection import train_test_split  # Splits the data, as in Workshop 1.
+from sklearn.preprocessing import StandardScaler  # Rescales inputs, as in Workshop 2.
+
+# New this week: PyTorch.
 import torch  # Tensors and automatic gradients.
-from sklearn.datasets import fetch_california_housing
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
 from torch import nn  # Building blocks for neural networks.
 
 housing = fetch_california_housing(as_frame=True).frame  # Download the data as a table.
