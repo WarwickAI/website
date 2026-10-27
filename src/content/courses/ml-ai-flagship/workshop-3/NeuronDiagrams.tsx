@@ -8,6 +8,8 @@ const relu = (z: number) => Math.max(z, 0)
 
 const formatNumber = (value: number, digits = 0) => `${value < 0 ? '−' : ''}${Math.abs(value).toFixed(digits)}`
 
+const decimals = (step: number) => (step >= 1 ? 0 : Math.ceil(-Math.log10(step) - 1e-9))
+
 function scale(value: number, [d0, d1]: [number, number], [r0, r1]: [number, number]) {
   return r0 + ((value - d0) / (d1 - d0)) * (r1 - r0)
 }
@@ -35,7 +37,7 @@ function Slider({ label, value, min, max, step, colour, onChange }: SliderProps)
     <label className="flex flex-col gap-1 text-sm">
       <span className="flex justify-between">
         <span>{label}</span>
-        <span className="font-mono">{formatNumber(value, step < 1 ? 1 : 0)}</span>
+        <span className="font-mono">{formatNumber(value, decimals(step))}</span>
       </span>
       <input
         type="range"
@@ -55,19 +57,21 @@ type Scale = (value: number) => number
 interface PlotProps {
   x: [number, number]
   y: [number, number]
+  xStep?: number
+  yStep?: number
   xLabel: string
   title?: string
   children: (sx: Scale, sy: Scale) => ReactNode
 }
 
-function Plot({ x, y, xLabel, title, children }: PlotProps) {
+function Plot({ x, y, xStep = 2, yStep = 2, xLabel, title, children }: PlotProps) {
   const clipId = useSvgId()
   const [width, height, left, right, top, bottom] = [320, 220, 28, 8, 22, 30]
   const sx: Scale = (value) => scale(value, x, [left, width - right])
   const sy: Scale = (value) => scale(value, y, [height - bottom, top])
-  const ticks = (domain: [number, number]) => {
+  const ticks = (domain: [number, number], step: number) => {
     const values = []
-    for (let tick = Math.ceil(domain[0] / 2) * 2; tick <= domain[1]; tick += 2) values.push(tick)
+    for (let i = Math.ceil(domain[0] / step - 1e-9); i * step <= domain[1] + 1e-9; i++) values.push(Number((i * step).toFixed(6)))
     return values
   }
 
@@ -89,14 +93,14 @@ function Plot({ x, y, xLabel, title, children }: PlotProps) {
         className="fill-none stroke-current opacity-30"
       />
       <line x1={left} x2={width - right} y1={sy(0)} y2={sy(0)} className="stroke-current opacity-30" />
-      {ticks(x).map((tick) => (
+      {ticks(x, xStep).map((tick) => (
         <text key={tick} x={sx(tick)} y={height - bottom + 12} textAnchor="middle" className="fill-current text-[9px] opacity-70">
-          {tick}
+          {formatNumber(tick, decimals(xStep))}
         </text>
       ))}
-      {ticks(y).map((tick) => (
+      {ticks(y, yStep).map((tick) => (
         <text key={tick} x={left - 4} y={sy(tick) + 3} textAnchor="end" className="fill-current text-[9px] opacity-70">
-          {tick}
+          {formatNumber(tick, decimals(yStep))}
         </text>
       ))}
       <text x={(left + width - right) / 2} y={height - 4} textAnchor="middle" className="fill-current text-[10px]">
@@ -120,10 +124,10 @@ function Arrow({ x1, x2, y, markerId }: { x1: number; x2: number; y: number; mar
   return <line x1={x1} x2={x2} y1={y} y2={y} strokeWidth={2} markerEnd={`url(#${markerId})`} className="stroke-current" />
 }
 
-function ArrowMarker({ id }: { id: string }) {
+function ArrowMarker({ id, colour }: { id: string; colour?: string }) {
   return (
     <marker id={id} viewBox="0 0 10 10" refX={9} refY={5} markerWidth={7} markerHeight={7} orient="auto">
-      <path d="M 0 0 L 10 5 L 0 10 z" className="fill-current" />
+      <path d="M 0 0 L 10 5 L 0 10 z" fill={colour} className={colour ? undefined : 'fill-current'} />
     </marker>
   )
 }
@@ -332,6 +336,70 @@ export function LayersAndParameters() {
         <Slider label="inputs" value={inputs} min={1} max={8} step={1} onChange={setInputs} />
         <Slider label="neurons per hidden layer" value={neurons} min={1} max={10} step={1} colour={NEURON_COLOURS[0]} onChange={setNeurons} />
         <Slider label="hidden layers" value={hiddenLayers} min={1} max={3} step={1} onChange={setHiddenLayers} />
+      </div>
+    </Figure>
+  )
+}
+
+const BOWL = { a: 18.59, b: -15.54, c: 3.95 }
+const BOWL_X: [number, number] = [-0.6, 1.4]
+const BOWL_Y: [number, number] = [0, 20]
+const bowlLoss = (slope: number) => BOWL.a * slope ** 2 + BOWL.b * slope + BOWL.c
+const bowlGradient = (slope: number) => 2 * BOWL.a * slope + BOWL.b
+
+export function LossBowl() {
+  const [path, setPath] = useState([0])
+  const [rate, setRate] = useState(0.01)
+  const markerId = useSvgId()
+
+  const slope = path[path.length - 1]
+  const next = slope - rate * bowlGradient(slope)
+  const onChart = slope >= BOWL_X[0] && slope <= BOWL_X[1]
+  const status = onChart
+    ? `Step ${path.length - 1}: slope ${formatNumber(slope, 2)}, loss ${formatNumber(bowlLoss(slope), 2)}, gradient ${formatNumber(bowlGradient(slope), 1)}`
+    : 'The dot has left the bowl: each step overshoots by more than the last.'
+  const buttonClass = 'rounded-md border px-3 py-1 text-sm hover:bg-muted'
+
+  return (
+    <Figure>
+      <div className="mx-auto max-w-md">
+        <Plot x={BOWL_X} y={BOWL_Y} xStep={0.2} yStep={5} xLabel="slope (intercept fixed at 0.45)" title="Loss for each slope">
+          {(sx, sy) => (
+            <>
+              <defs>
+                <ArrowMarker id={markerId} colour={NEURON_COLOURS[1]} />
+              </defs>
+              <polyline points={curve(bowlLoss, BOWL_X, sx, sy)} strokeWidth={2} className="fill-none stroke-current opacity-50" />
+              {path.slice(0, -1).map((previous, i) => (
+                <circle key={i} cx={sx(previous)} cy={sy(bowlLoss(previous))} r={3} fill={NEURON_COLOURS[0]} opacity={0.35} />
+              ))}
+              {onChart && Math.abs(next - slope) > 0.005 && (
+                <line
+                  x1={sx(slope)}
+                  y1={sy(bowlLoss(slope))}
+                  x2={sx(next)}
+                  y2={sy(bowlLoss(next))}
+                  stroke={NEURON_COLOURS[1]}
+                  strokeWidth={2}
+                  markerEnd={`url(#${markerId})`}
+                />
+              )}
+              {onChart && <circle cx={sx(slope)} cy={sy(bowlLoss(slope))} r={6} fill={NEURON_COLOURS[0]} className="stroke-current" />}
+            </>
+          )}
+        </Plot>
+      </div>
+      <p className="mt-2 text-center text-sm">{status}</p>
+      <div className="mt-4 flex flex-wrap items-end gap-4">
+        <button type="button" className={buttonClass} onClick={() => setPath([...path, next])} disabled={!onChart}>
+          Step
+        </button>
+        <button type="button" className={buttonClass} onClick={() => setPath([0])}>
+          Reset
+        </button>
+        <div className="min-w-48 flex-1">
+          <Slider label="learning rate" value={rate} min={0.005} max={0.06} step={0.005} colour={NEURON_COLOURS[1]} onChange={setRate} />
+        </div>
       </div>
     </Figure>
   )

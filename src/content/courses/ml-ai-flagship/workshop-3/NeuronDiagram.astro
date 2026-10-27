@@ -1,8 +1,8 @@
 ---
-import { LayersAndParameters, NeuronsAddUp, OneNeuron } from './NeuronDiagrams'
+import { LayersAndParameters, LossBowl, NeuronsAddUp, OneNeuron } from './NeuronDiagrams'
 
 interface Props {
-  diagram: 'one-neuron' | 'neurons-add-up' | 'layers-and-parameters'
+  diagram: 'one-neuron' | 'neurons-add-up' | 'layers-and-parameters' | 'loss-bowl'
 }
 
 const { diagram } = Astro.props
@@ -11,3 +11,4 @@ const { diagram } = Astro.props
 {diagram === 'one-neuron' && <OneNeuron client:visible />}
 {diagram === 'neurons-add-up' && <NeuronsAddUp client:visible />}
 {diagram === 'layers-and-parameters' && <LayersAndParameters client:visible />}
+{diagram === 'loss-bowl' && <LossBowl client:visible />}

@@ -44,74 +44,200 @@ housing = fetch_california_housing(as_frame=True).frame  # Download the data as 
 housing.head()  # Show the first five rows.
 ```
 
-## Part 1: What is a neural network? (10 minutes)
+## Part 3: What is a neural network? (15 minutes)
 
-Drag the sliders in each diagram. The Colab notebook has the same diagrams.
+Use the controls in each diagram. The Colab notebook has the same diagrams.
 
-### Recap: how a model learns (1 minute)
+### One neuron
 
-In [Workshop 1](/education/courses/ml-ai-flagship/workshop-1), a model learnt by repeating four steps. Today PyTorch does each step in one line:
+A **neuron** starts like Workshop 1's line. It multiplies its input $x$ by a **weight**, which plays the part of the slope, and adds a **bias**, which plays the part of the intercept.
 
-| Step | What it does | In PyTorch |
-|---|---|---|
-| Forward pass | The model makes its predictions | `predicted = model(inputs)` |
-| Loss | One number for how wrong the predictions are | `loss = loss_fn(predicted, targets)` |
-| Backward pass | Backpropagation finds the gradient of the loss for every parameter | `loss.backward()` |
-| Step | Gradient descent moves every parameter a little way downhill | `optimizer.step()` |
-
-Today's models are bigger than a straight line, but the loop is the same.
-
-### One neuron (3 minutes)
-
-A **neuron** is Workshop 1's straight line with one change. It multiplies its input $x$ by a **weight** and adds a **bias**. Then it applies **ReLU**: negative values become 0, and positive values pass through unchanged. The result is a **hinge**: flat, then a straight line.
+It then passes the result through an **activation function**. We use **ReLU**, the most common one: it turns negative values into 0 and leaves positive values alone. So the output is flat on one side of the point where the line crosses 0, and a straight line on the other, like a hinge.
 
 $$
 \text{output} = \text{ReLU}(\text{weight} \times x + \text{bias}), \qquad \text{ReLU}(z) = \max(0, z)
 $$
 
-Drag the sliders:
-
-- The **weight** sets how steep the line is, and which way it faces.
-- The **bias** moves the bend left and right.
+Drag the sliders. The weight sets how steep the line is and which way it faces, and the bias moves the bend left and right.
 
 <NeuronDiagram diagram="one-neuron" />
 
-### Neurons add up (4 minutes)
+PyTorch's ReLU is `torch.relu`. Write a neuron with a weight of 2 and a bias of −4 in one line. Expect `tensor([0., 0., 4., 8., 12., 16.])`.
 
-One hinge cannot follow much. A **neural network** puts several neurons side by side in a **hidden layer**. Each neuron has its own weight and bias, so it bends in its own place. The output multiplies each neuron by an **output weight**, adds them all up, then adds its own bias.
-
-The three neurons below are already set to fit the dots. Add them one at a time and watch the line. Each coloured dot marks the bend made by the neuron of the same colour.
-
-<NeuronDiagram diagram="neurons-add-up" />
-
-1. What does each neuron add to the line?
-2. Untick **ReLU** and add the neurons again. What happens?
+```python
+x = torch.tensor([0.0, 2.0, 4.0, 6.0, 8.0, 10.0])
+...  # One neuron: weight 2, bias -4.
+```
 
 <details>
 <summary>Answer</summary>
 
-1. Each neuron adds one bend, where its $\text{weight} \times x + \text{bias}$ crosses 0: at $x = 2$, $5$ and $8$. Its output weight sets how much the slope changes there: $+1$ starts the climb, $-2$ turns it into a fall, and $+1$ flattens it out. With all three, the line goes through every dot. Training finds weights and biases like these for you, by gradient descent, for every neuron at once.
-2. Without ReLU, each neuron is a straight line, so adding one only tilts the output: it never bends. Here the three even cancel out, back to a flat line. However many neurons you add, straight lines add up to a straight line.
+```python
+x = torch.tensor([0.0, 2.0, 4.0, 6.0, 8.0, 10.0])
+torch.relu(2 * x - 4)  # One neuron: weight 2, bias -4.
+```
 
 </details>
 
-### Layers and parameters (2 minutes)
+Where does this neuron bend?
 
-Networks can stack several hidden layers. Each neuron takes every output of the layer before it. Every line in the diagram is a weight, and every neuron has a bias. Together they are the network's **parameters**, which training adjusts.
+<details>
+<summary>Answer</summary>
 
-Drag the sliders and watch the count grow. The last network in the lab has 8 inputs and two hidden layers of 64 neurons: 4,801 parameters. GPT-3 has 175 billion. Both are trained with the same loop.
+At $x = 2$, where $2x - 4 = 0$. Below 2 the neuron outputs 0. Above 2 its output grows by 2 for every 1 that $x$ grows, because its weight is 2.
+
+</details>
+
+### Neurons add up
+
+One neuron on its own cannot fit much. A **neural network** puts several neurons side by side in a **hidden layer**. Each neuron has its own weight and bias, so each one bends in a different place. The output then multiplies each neuron by its own **output weight**, adds them together, and adds a bias of its own.
+
+The three neurons below are already set to fit the dots. Add them one at a time and watch the line change. Each coloured dot on the line marks the bend made by the neuron of the same colour.
+
+<NeuronDiagram diagram="neurons-add-up" />
+
+1. What does each neuron add to the line?
+2. Untick **ReLU** and add the neurons again. What happens? Where did you see this in Part 2?
+
+<details>
+<summary>Answer</summary>
+
+1. Each neuron adds one bend, at the point where its $\text{weight} \times x + \text{bias}$ is 0: at $x = 2$, $5$ and $8$. Its output weight decides how much the line's slope changes there: $+1$ starts the climb, $-2$ turns it into a fall, and $+1$ levels it off. With all three, the line goes through every dot. Training finds weights and biases like these for you.
+2. Without ReLU, each neuron is just a straight line, so adding one only tilts the output and never bends it. Straight lines always add up to a straight line, however many you use. That is why the two `nn.Linear` layers in Part 2 stayed straight until you put `nn.ReLU()` between them.
+
+</details>
+
+This is why a network needs an activation function. Without one, a network is a single straight line however many neurons and layers it has, so making it bigger changes nothing. The activation function gives each neuron its bend, and the bends are what let a network follow curves.
+
+The whole network in the diagram fits in one line of code: the output's bias, plus each neuron times its output weight. Write it and check that you get the dots: `tensor([1., 1., 1., 2., 3., 4., 3., 2., 1., 1., 1.])`.
+
+```python
+x = torch.arange(0.0, 11.0)  # 0, 1, 2, ..., 10
+...  # The output's bias, plus each neuron times its output weight.
+```
+
+<details>
+<summary>Answer</summary>
+
+```python
+x = torch.arange(0.0, 11.0)  # 0, 1, 2, ..., 10
+1 + torch.relu(x - 2) - 2 * torch.relu(x - 5) + torch.relu(x - 8)  # The output's bias, plus each neuron times its output weight.
+```
+
+</details>
+
+### Layers and parameters
+
+A network can have more than one hidden layer. Each neuron in a layer takes every output of the layer before it. Every line in the diagram below is a weight, and every neuron has a bias. Together, the weights and biases are the network's **parameters**: the numbers that training adjusts.
+
+Drag the sliders and watch the count grow. GPT-3 has 175 billion parameters, and it was trained with the same kind of loop as yours.
 
 <NeuronDiagram diagram="layers-and-parameters" />
 
-### Why PyTorch? (1 minute)
+PyTorch can count them for you. `example_network.parameters()` gives every weight and bias, and `p.numel()` counts the numbers in each one. Count the parameters of a network with 8 inputs and two hidden layers of 64 neurons. Expect **4801**.
 
-scikit-learn's models are ready-made: you choose one and call `fit`. A neural network you design yourself, layer by layer, so you need building blocks instead. PyTorch gives you:
+```python
+example_network = nn.Sequential(nn.Linear(8, 64), nn.ReLU(), nn.Linear(64, 64), nn.ReLU(), nn.Linear(64, 1))
+...  # Add up p.numel() for every p in example_network.parameters().
+```
 
-- **Tensors**: like NumPy arrays, but they can also run on a graphics card (GPU), which is much faster for big networks.
-- **Autograd**: PyTorch records every calculation, then works backwards to find the gradient for every parameter. This is the backward pass, done for you.
-- **`nn` and `optim`**: ready-made layers, loss functions and optimisers.
+<details>
+<summary>Answer</summary>
 
-Most AI research is written in PyTorch, and so are many large models, such as Meta's Llama.
+```python
+example_network = nn.Sequential(nn.Linear(8, 64), nn.ReLU(), nn.Linear(64, 64), nn.ReLU(), nn.Linear(64, 1))
+sum(p.numel() for p in example_network.parameters())  # Add up p.numel() for every p in example_network.parameters().
+```
+
+</details>
+
+In Workshops 1 and 2 you made lines bend by adding powers such as $x^2$ and $x^3$. You chose the powers, and the powers decided the shape. A network learns its shape instead: training moves every weight and bias until the bends fit the data.
+
+## Part 4: How a network learns (5 minutes)
+
+A network starts with random weights and biases. The loss tells you how wrong they are, but not which way to change each one.
+
+To see how training decides, take a single parameter: the slope of Workshop 1's income line, with the intercept fixed at 0.45. Each slope gives a different loss, and plotted together they make a **bowl**. The best slope, 0.42, sits at the bottom.
+
+Click **Step** to take one step downhill, and keep clicking. Then click **Reset**, set the learning rate to 0.05 and try again: the dot overshoots the bottom and zigzags before it settles. At 0.06 it overshoots further every time.
+
+<NeuronDiagram diagram="loss-bowl" />
+
+Each step changes the slope by the learning rate times the gradient:
+
+$$
+\text{slope} \leftarrow \text{slope} - \text{learning rate} \times \text{gradient}
+$$
+
+- The **gradient** says how steep the bowl is under the dot, and which way is uphill. The step goes the other way, which is why the formula subtracts it. The orange arrow shows the step.
+- `loss.backward()` works out the gradient for every parameter at once, however many there are.
+- The **optimiser** turns each gradient into a step. `SGD` multiplies it by the learning rate. **Adam** also adapts the size of each parameter's steps as it goes.
+
+Training a network, as `fit` does, is this picture repeated thousands of times, for every weight and bias at once.
+
+Now find a gradient yourself. The cell below makes a line with a random slope and intercept, and measures its loss on the house prices. Add the backward pass. Expect a slope gradient of about **−15.2**.
+
+```python
+incomes = torch.tensor(housing[["MedInc"]].to_numpy(), dtype=torch.float32)
+values = torch.tensor(housing[["MedHouseVal"]].to_numpy(), dtype=torch.float32)
+
+torch.manual_seed(0)
+line = nn.Linear(1, 1)  # A straight line with a random slope and intercept.
+loss = nn.MSELoss()(line(incomes), values)  # How wrong it is.
+...  # Find the gradient for every parameter.
+print("slope:", line.weight.item(), "| slope gradient:", line.weight.grad.item())
+```
+
+<details>
+<summary>Answer</summary>
+
+```python
+incomes = torch.tensor(housing[["MedInc"]].to_numpy(), dtype=torch.float32)
+values = torch.tensor(housing[["MedHouseVal"]].to_numpy(), dtype=torch.float32)
+
+torch.manual_seed(0)
+line = nn.Linear(1, 1)  # A straight line with a random slope and intercept.
+loss = nn.MSELoss()(line(incomes), values)  # How wrong it is.
+loss.backward()  # Find the gradient for every parameter.
+print("slope:", line.weight.item(), "| slope gradient:", line.weight.grad.item())
+```
+
+</details>
+
+The gradient is negative. Will the next step make the slope bigger or smaller?
+
+<details>
+<summary>Answer</summary>
+
+Bigger. The step subtracts the learning rate times the gradient, and subtracting a negative number adds. It is the same as the first arrow in the bowl, which points right.
+
+</details>
+
+The cell below is the loop inside `fit`, using plain gradient descent (`SGD`) so that the learning rate is the only setting. Run it, then change `learning_rate` to 0.1 and run it again.
+
+```python
+learning_rate = 0.01  # Then try 0.1.
+
+torch.manual_seed(0)
+line = nn.Linear(1, 1)
+optimizer = torch.optim.SGD(line.parameters(), lr=learning_rate)
+for step in range(101):
+    optimizer.zero_grad()
+    loss = nn.MSELoss()(line(incomes), values)
+    loss.backward()
+    optimizer.step()
+    if step % 20 == 0:
+        print("step", step, "| loss", loss.item())
+```
+
+What happens to the loss with a learning rate of 0.1? Why?
+
+<details>
+<summary>Answer</summary>
+
+At 0.01 the loss falls to about 0.70. At 0.1 it grows with every step, reaching about $7 \times 10^{18}$ by step 20, then `inf` and finally `nan` (not a number). Each step overshoots the bottom of the bowl by more than the last, like 0.06 in the diagram.
+
+</details>
 
 ## Part 2: Build a neural network in PyTorch (35 minutes)
 
