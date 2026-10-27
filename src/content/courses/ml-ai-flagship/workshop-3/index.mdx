@@ -71,21 +71,20 @@ Drag the sliders:
 
 ### Neurons add up (4 minutes)
 
-One hinge cannot follow much. A **neural network** puts several neurons side by side in a **hidden layer**, then adds up their outputs. Each neuron adds one bend, so together they can make any shape built from straight pieces.
+One hinge cannot follow much. A **neural network** puts several neurons side by side in a **hidden layer**. Each neuron has its own weight and bias, so it bends in its own place. The output multiplies each neuron by an **output weight**, adds them all up, then adds its own bias.
 
-Each neuron below has two sliders. `bend` sets where it bends. `slope` is the weight on its output: how much it changes the slope after the bend. `start` is the output's bias.
+The three neurons below are already set to fit the dots. Add them one at a time and watch the line. Each coloured dot marks the bend made by the neuron of the same colour.
 
 <NeuronDiagram diagram="neurons-add-up" />
 
-1. Move the sliders until the thick line goes through every dot. Can you get the MSE to 0?
-2. Untick **ReLU**. What happens to the thick line, whatever you do with the sliders?
+1. What does each neuron add to the line?
+2. Untick **ReLU** and add the neurons again. What happens?
 
 <details>
 <summary>Answer</summary>
 
-Bends at **2**, **5** and **8**, slopes **1**, **−2** and **1**, and a start of **1** give an MSE of 0. The first neuron starts the climb, the second turns it into a fall, and the third flattens it out. Training finds numbers like these for you, by gradient descent, for every neuron at once.
-
-Without ReLU, every neuron is a straight line, and straight lines add up to a straight line. However many neurons there are, the output can never bend.
+1. Each neuron adds one bend, where its weight × x + bias crosses 0: at 2, 5 and 8. Its output weight sets how much the slope changes there: **+1** starts the climb, **−2** turns it into a fall, and **+1** flattens it out. With all three, the line goes through every dot. Training finds weights and biases like these for you, by gradient descent, for every neuron at once.
+2. Without ReLU, each neuron is a straight line, so adding one only tilts the output: it never bends. Here the three even cancel out, back to a flat line. However many neurons you add, straight lines add up to a straight line.
 
 </details>
 
