@@ -6,6 +6,8 @@ const NEURON_COLOURS = ['#3b82f6', '#f97316', '#22c55e']
 
 const relu = (z: number) => Math.max(z, 0)
 
+const formatNumber = (value: number, digits = 0) => `${value < 0 ? '−' : ''}${Math.abs(value).toFixed(digits)}`
+
 function scale(value: number, [d0, d1]: [number, number], [r0, r1]: [number, number]) {
   return r0 + ((value - d0) / (d1 - d0)) * (r1 - r0)
 }
@@ -33,7 +35,7 @@ function Slider({ label, value, min, max, step, colour, onChange }: SliderProps)
     <label className="flex flex-col gap-1 text-sm">
       <span className="flex justify-between">
         <span>{label}</span>
-        <span className="font-mono">{value}</span>
+        <span className="font-mono">{formatNumber(value, step < 1 ? 1 : 0)}</span>
       </span>
       <input
         type="range"
@@ -148,11 +150,11 @@ export function OneNeuron() {
           </text>
           <Arrow x1={58} x2={128} y={80} markerId={markerId} />
           <text x={93} y={70} textAnchor="middle" className="fill-current text-[12px]">
-            × {weight.toFixed(1)}
+            × {formatNumber(weight, 1)}
           </text>
           <circle cx={170} cy={80} r={38} fill={NEURON_COLOURS[0]} className="stroke-current" />
           <text x={170} y={76} textAnchor="middle" className="fill-white text-[12px]">
-            + {bias.toFixed(1)}
+            {bias < 0 ? '−' : '+'} {Math.abs(bias).toFixed(1)}
           </text>
           <text x={170} y={92} textAnchor="middle" className="fill-white text-[12px]">
             ReLU
@@ -213,8 +215,8 @@ export function NeuronsAddUp() {
   const caption = !newest
     ? `No neurons yet: only the output's bias, a flat line at ${OUTPUT_BIAS}.`
     : useRelu
-      ? `Neuron ${added} adds ${newest.outputWeight} × ReLU(${newest.weight} × x − ${-newest.bias}): the line ${newest.change} at x = ${-newest.bias}.`
-      : `Neuron ${added} adds ${newest.outputWeight} × (${newest.weight} × x − ${-newest.bias}): a straight line, so the output stays straight.`
+      ? `Neuron ${added} adds ${formatNumber(newest.outputWeight)} × ReLU(${newest.weight} × x − ${-newest.bias}): the line ${newest.change} at x = ${-newest.bias}.`
+      : `Neuron ${added} adds ${formatNumber(newest.outputWeight)} × (${newest.weight} × x − ${-newest.bias}): a straight line, so the output stays straight.`
 
   return (
     <Figure>
@@ -234,7 +236,7 @@ export function NeuronsAddUp() {
                   {useRelu ? `ReLU(${weight} × x − ${-bias})` : `${weight} × x − ${-bias}`}
                 </text>
                 <text x={244} y={(y + 105) / 2 - 6} textAnchor="middle" className="fill-current text-[11px]">
-                  × {outputWeight}
+                  × {formatNumber(outputWeight)}
                 </text>
               </g>
             )

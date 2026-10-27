@@ -4,12 +4,12 @@ course: 'ML/AI Course'
 description: 'Neural networks in PyTorch: see how neurons bend a line, then train a network that rivals a random forest.'
 date: 2026-10-29
 order: 3
-authors: ['sam-turner', 'finlay-sanders', 'jan-lindroos']
+authors: ['sam-turner', 'finlay-sanders', 'jan-lindroos', 'shaana-amarawickrama', 'tanvi-patnayukuni']
 ---
 
 import NeuronDiagram from './NeuronDiagram.astro'
 
-There are no slides this week: the notebook has everything. We talk through Part 1 together, then write the code in Part 2 together.
+There are no slides this week: the notebook has everything.
 
 ## Getting started (2 minutes)
 
@@ -63,7 +63,11 @@ Today's models are bigger than a straight line, but the loop is the same.
 
 ### One neuron (3 minutes)
 
-A **neuron** is Workshop 1's straight line with one change. It multiplies its input by a **weight** and adds a **bias**. Then it applies **ReLU**: negative values become 0, and positive values pass through unchanged. The result is a **hinge**: flat, then a straight line.
+A **neuron** is Workshop 1's straight line with one change. It multiplies its input $x$ by a **weight** and adds a **bias**. Then it applies **ReLU**: negative values become 0, and positive values pass through unchanged. The result is a **hinge**: flat, then a straight line.
+
+$$
+\text{output} = \text{ReLU}(\text{weight} \times x + \text{bias}), \qquad \text{ReLU}(z) = \max(0, z)
+$$
 
 Drag the sliders:
 
@@ -86,7 +90,7 @@ The three neurons below are already set to fit the dots. Add them one at a time 
 <details>
 <summary>Answer</summary>
 
-1. Each neuron adds one bend, where its weight × x + bias crosses 0: at 2, 5 and 8. Its output weight sets how much the slope changes there: **+1** starts the climb, **−2** turns it into a fall, and **+1** flattens it out. With all three, the line goes through every dot. Training finds weights and biases like these for you, by gradient descent, for every neuron at once.
+1. Each neuron adds one bend, where its $\text{weight} \times x + \text{bias}$ crosses 0: at $x = 2$, $5$ and $8$. Its output weight sets how much the slope changes there: $+1$ starts the climb, $-2$ turns it into a fall, and $+1$ flattens it out. With all three, the line goes through every dot. Training finds weights and biases like these for you, by gradient descent, for every neuron at once.
 2. Without ReLU, each neuron is a straight line, so adding one only tilts the output: it never bends. Here the three even cancel out, back to a flat line. However many neurons you add, straight lines add up to a straight line.
 
 </details>
@@ -115,7 +119,11 @@ Most AI research is written in PyTorch, and so are many large models, such as Me
 
 PyTorch stores numbers in **tensors**. A tensor works like a NumPy array: maths happens on every number at once. The difference is that PyTorch can record every calculation on a tensor, then work backwards through them to find gradients.
 
-We start with Workshop 1's model, value = slope × income + intercept, with both parameters at 0.
+We start with Workshop 1's model, with both parameters at 0:
+
+$$
+\text{value} = \text{slope} \times \text{income} + \text{intercept}
+$$
 
 | Code | What it does |
 |---|---|
@@ -168,13 +176,13 @@ Both gradients are negative. Will gradient descent make `slope` and `intercept` 
 <details>
 <summary>Answer</summary>
 
-Bigger. Each step subtracts the learning rate × the gradient, and subtracting a negative number adds. A negative gradient means the loss falls as the parameter grows: predicting 0 for every house is far too low.
+Bigger. Each step does $\text{parameter} \leftarrow \text{parameter} - \text{learning rate} \times \text{gradient}$, and subtracting a negative number adds. A negative gradient means the loss falls as the parameter grows: predicting 0 for every house is far too low.
 
 </details>
 
 ### 2. The training loop (8 minutes)
 
-PyTorch has ready-made pieces for the rest of the loop. `nn.Linear(1, 1)` is Workshop 1's straight line: one input and one output. PyTorch calls its slope the **weight** and its intercept the **bias**, and starts them at random values. An **optimiser** does the gradient descent step for every parameter. `SGD` is plain gradient descent.
+PyTorch has ready-made pieces for the rest of the loop. `nn.Linear(1, 1)` is Workshop 1's straight line: one input and one output. PyTorch calls its slope the **weight** (`model.weight`) and its intercept the **bias** (`model.bias`), and starts them at random values. An **optimiser** does the gradient descent step for every parameter. `SGD` is plain gradient descent.
 
 | Code | What it does |
 |---|---|
