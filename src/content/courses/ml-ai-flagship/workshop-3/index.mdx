@@ -82,7 +82,6 @@ We can build the same model in PyTorch, because linear regression is the simples
 incomes = torch.tensor(housing[["MedInc"]].to_numpy(), dtype=torch.float32)
 values = torch.tensor(housing[["MedHouseVal"]].to_numpy(), dtype=torch.float32)
 
-torch.manual_seed(0)
 line = nn.Linear(1, 1)
 print("before | slope:", line.weight.item(), "| intercept:", line.bias.item())
 fit(line, incomes, values)
@@ -406,30 +405,60 @@ In Workshops 1 and 2 you made lines bend by adding powers such as $x^2$ and $x^3
 
 ## Part 3: How a network learns (5 minutes)
 
-A network starts with random weights and biases. The loss tells you how wrong they are, but not which way to change each one.
+Part 2 explains how to build a network but not how to train it. Training uses the `fit` function from Part 1, which we will now go through line by line. The cell builds a small network and trains it on income, so there is a model to talk about. Expect a loss of about **0.70**.
 
-To see how training decides, take a single parameter: the slope of the income line from Part 1, with the intercept fixed at 0.45. Each slope gives a different loss, and plotted together they make a **bowl**. The best slope, 0.42, sits at the bottom.
+```python
+def fit(model, inputs, targets):
+    # Setup.
+    loss_fn = nn.MSELoss()  # The loss from Workshop 1.
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.01)  # Makes the improvements.
 
-Click **Step** to take one step downhill, and keep clicking. Then click **Reset**, set the learning rate to 0.05 and try again: the dot overshoots the bottom and zigzags before it settles. At 0.06 it overshoots further every time.
+    # Loop.
+    for step in range(1000):
+        optimizer.zero_grad()  # Forget the last step.
+        predicted = model(inputs)  # Predict a value for every house.
+        loss = loss_fn(predicted, targets)  # Measure how wrong the predictions are.
+        loss.backward()  # Work out which way to nudge every parameter.
+        optimizer.step()  # Nudge them.
+    return loss.item()
+
+
+model = nn.Sequential(nn.Linear(1, 10), nn.ReLU(), nn.Linear(10, 1))  # A small network.
+print("loss:", fit(model, incomes, values))
+```
+
+**Setup** creates two things needed for training. `loss_fn` is the mean squared error from Workshop 1, which scores a set of predictions against the true values. `optimizer` is handed every weight and bias in the model, through `model.parameters()`, along with a learning rate, and updates them.
+
+**The loop** then repeats the same steps a thousand times. Each pass uses the model's current parameters. The first line, `optimizer.zero_grad()`, makes most sense last, so it comes last here.
+
+- **`predicted = model(inputs)`** runs the network on every house at once and gives a predicted value for each one. On the first pass the parameters are random, so the predictions are nonsense.
+
+- **`loss = loss_fn(predicted, targets)`** compares those predictions with the true values and gives one number, the loss. A big loss means bad parameters. It says how bad they are, but not which way to change each one.
+
+- **`loss.backward()`** works out, for every parameter, which way to nudge it to make the loss smaller, and how much that would help. That is the parameter's **gradient**.
+
+- **`optimizer.step()`** turns each gradient into an update. Every parameter moves a little, the other way from its gradient, so that the loss goes down.
+
+  $$
+  \text{slope} \leftarrow \text{slope} - \text{learning rate} \times \text{gradient}
+  $$
+
+  How big the update is depends on the optimiser. `SGD` just multiplies the gradient by the learning rate, as in the formula. `Adam`, which `fit` uses, also adapts the size of each parameter's steps as it goes.
+
+- **`optimizer.zero_grad()`** clears the gradients before the next step. PyTorch adds new gradients onto old ones unless you tell it not to, so without this line every step would be pushed by all the steps before it.
+
+**Picturing the whole loop.** Think of the loss as a landscape and the current parameters as a dot on it. With one parameter the landscape is a curve, with two it is a surface, and with thousands it is something you cannot draw, but the picture is the same. It is a **bowl**, with the best parameters at the bottom. The gradient is how steep the bowl is under the dot and which way is uphill, and each step moves the dot the other way. For a straight line it is exactly a bowl. For a network it is a bumpier bowl, but the idea holds.
+
+The diagram shows one parameter, the slope of the income line from Part 1, with the intercept fixed at 0.45. The best slope, 0.42, sits at the bottom, and the orange arrow is one step. Click **Step** to take it, and keep clicking. Then click **Reset**, set the learning rate to 0.05 and try again. The dot overshoots the bottom and zigzags before it settles. At 0.06 it overshoots further every time.
 
 <NeuronDiagram diagram="loss-bowl" />
 
-Each step changes the slope by the learning rate times the gradient:
+That is the whole of `fit`. Predict, measure, find the gradients, step, a thousand times over, for every weight and bias at once. Now try the pieces yourself.
 
-$$
-\text{slope} \leftarrow \text{slope} - \text{learning rate} \times \text{gradient}
-$$
-
-- The **gradient** says how steep the bowl is under the dot, and which way is uphill. The step goes the other way, which is why the formula subtracts it. The orange arrow shows the step.
-- `loss.backward()` works out the gradient for every parameter at once, however many there are.
-- The **optimiser** turns each gradient into a step. `SGD` multiplies it by the learning rate. **Adam** also adapts the size of each parameter's steps as it goes.
-
-Training a network, as `fit` does, is this picture repeated thousands of times, for every weight and bias at once.
-
-Now find a gradient yourself. The cell below makes a line with a random slope and intercept, and measures its loss on the house prices. Add the backward pass. Expect a slope gradient of about **−15.2**.
+Try finding a gradient by adding the backward pass. The cell below makes a line with a random slope and intercept, and measures its loss on the house prices. Expect a slope gradient of about **−15.2**.
 
 ```python
-torch.manual_seed(0)
+torch.manual_seed(0)  # Start from the same random line every run.
 line = nn.Linear(1, 1)  # A straight line with a random slope and intercept.
 loss = nn.MSELoss()(line(incomes), values)  # How wrong it is.
 ...  # Find the gradient for every parameter.
@@ -440,7 +469,7 @@ print("slope:", line.weight.item(), "| slope gradient:", line.weight.grad.item()
 <summary>Answer</summary>
 
 ```python
-torch.manual_seed(0)
+torch.manual_seed(0)  # Start from the same random line every run.
 line = nn.Linear(1, 1)  # A straight line with a random slope and intercept.
 loss = nn.MSELoss()(line(incomes), values)  # How wrong it is.
 loss.backward()  # Find the gradient for every parameter.
@@ -449,21 +478,39 @@ print("slope:", line.weight.item(), "| slope gradient:", line.weight.grad.item()
 
 </details>
 
-The gradient is negative. Will the next step make the slope bigger or smaller?
+Gradients add up. The cell below runs the backward pass twice on the same line, with nothing cleared in between. Predict what it prints, then run it. Then add one line at the top of the loop to fix it.
+
+```python
+torch.manual_seed(0)  # The same random line as above.
+line = nn.Linear(1, 1)
+for _ in range(2):  # Two backward passes.
+    loss = nn.MSELoss()(line(incomes), values)
+    loss.backward()
+print("slope gradient:", line.weight.grad.item())
+```
 
 <details>
 <summary>Answer</summary>
 
-Bigger. The step subtracts the learning rate times the gradient, and subtracting a negative number adds. It is the same as the first arrow in the bowl, which points right.
+About **−30.3**, double the gradient from before, because the second backward pass added its gradient onto the first. `line.zero_grad()` at the top of the loop clears it, and the cell prints −15.2 again. That is what `optimizer.zero_grad()` does in `fit`, for every parameter the optimiser holds.
+
+```python
+torch.manual_seed(0)  # The same random line as above.
+line = nn.Linear(1, 1)
+for _ in range(2):  # Two backward passes.
+    line.zero_grad()  # Clear the last gradient first.
+    loss = nn.MSELoss()(line(incomes), values)
+    loss.backward()
+print("slope gradient:", line.weight.grad.item())
+```
 
 </details>
 
-The cell below is the loop inside `fit`, using plain gradient descent (`SGD`) so that the learning rate is the only setting. Run it, then change `learning_rate` to 0.1 and run it again.
+The cell below is `fit` with `SGD` in place of `Adam`, so the learning rate is the only setting. Run it, then change `learning_rate` to 0.1 and run it again.
 
 ```python
 learning_rate = 0.01  # Then try 0.1.
 
-torch.manual_seed(0)
 line = nn.Linear(1, 1)
 optimizer = torch.optim.SGD(line.parameters(), lr=learning_rate)
 for step in range(101):
@@ -480,7 +527,7 @@ What happens to the loss with a learning rate of 0.1? Why?
 <details>
 <summary>Answer</summary>
 
-At 0.01 the loss falls to about 0.70. At 0.1 it grows with every step, reaching about $7 \times 10^{18}$ by step 20, then `inf` and finally `nan` (not a number). Each step overshoots the bottom of the bowl by more than the last, like 0.06 in the diagram.
+At 0.01 the loss falls every step, heading for the 0.70 that Part 1 reached. At 0.1 it blows up, growing every step until it prints `inf` and then `nan`. The steps are too big, so each one overshoots the bottom of the bowl by more than the last, like 0.06 in the diagram.
 
 </details>
 
