@@ -8,6 +8,8 @@ authors: ['sam-turner', 'finlay-sanders', 'jan-lindroos', 'shaana-amarawickrama'
 ---
 
 import NeuronDiagram from './NeuronDiagram.astro'
+import NetworkDiagram from './NetworkDiagram.astro'
+import ColourBox from './ColourBox.astro'
 
 There are no slides this week. Work through the notebook as we talk, then we build a network live at the end.
 
@@ -103,19 +105,73 @@ So far the only thing we have trained is a straight line. This part turns it int
 
 {/* notebook: Run each diagram cell and use its controls. The code that draws each diagram is hidden: click **Show code** to see it. */}
 
-### 1. A neuron is the line plus ReLU
+### 1. Neurons
 
-Part 1's model was `nn.Linear(1, 1)`, which is $\text{weight} \times x + \text{bias}$. Pass the result through an **activation function** and you have a **neuron**. There are several to choose from. We use **ReLU**, the most common one. It turns every negative value into 0 and leaves positive values alone, so the output is flat on one side of the point where the line crosses 0, and a straight line on the other, like a hinge.
+#### Theory
 
+A **neuron** takes some inputs. It multiplies each one by its own **weight**, adds them up, adds a **bias**, then passes the result through an **activation function**. The weights and bias are the neuron's parameters.
+
+<NetworkDiagram diagram="neuron">
 $$
-\text{output} = \text{ReLU}(\text{weight} \times x + \text{bias}), \qquad \text{ReLU}(z) = \max(0, z)
+\text{output} = \text{activation}(w_1 \times \text{input}_1 + w_2 \times \text{input}_2 + w_3 \times \text{input}_3 + b)
 $$
+</NetworkDiagram>
 
-Drag the sliders. The weight sets how steep the line is and which way it faces, and the bias moves the bend left and right.
+Reading left to right, each input is multiplied by its weight on the way in, the bias joins from above, everything is added up, and the activation function decides what comes out.
 
-<NeuronDiagram diagram="one-neuron" />
+Let's think about what the blue part is doing intuitively. Each input is some feature we are trying to reason about, like a house's income or latitude. Each weight says how much that feature matters to this neuron, and which way. Adding the weighted features to the bias gives us the blue part's output, which we'll call $z$.
 
-In PyTorch this is `nn.Sequential(nn.Linear(1, 1), nn.ReLU())`: `nn.Sequential` runs its pieces in order, so the line's output goes into `nn.ReLU()`. Write the same neuron by hand using `torch.relu`, with a weight of 2 and a bias of −4, in one line. Expect `tensor([0., 0., 4., 8., 12., 16.])`.
+<ColourBox colour="blue">
+$$
+z = w_1 \times \text{input}_1 + w_2 \times \text{input}_2 + w_3 \times \text{input}_3 + b
+$$
+</ColourBox>
+
+Notice that $z$ is linear in its features. If we built a network out of neurons with just the blue part, the whole thing would be linear too, however many neurons we used. That's what the green part is for. The activation function makes each neuron non-linear, so a network of them can follow curves. There are several to choose from. We use **ReLU**, the most common one. It turns every negative value into 0 and leaves positive values alone, like a hinge.
+
+<ColourBox colour="green">
+$$
+\text{output} = \text{ReLU}(z) = \max(0, z)
+$$
+</ColourBox>
+
+With one input, the blue part is $w \times \text{input} + b$, which is Part 1's straight line, so a neuron is that line with ReLU on the end. Drag the sliders. The weight sets how steep the line is and which way it faces, and the bias moves the bend left and right.
+
+<NetworkDiagram diagram="one-input-neuron">
+$$
+\text{output} = \text{ReLU}(w \times \text{input} + b)
+$$
+</NetworkDiagram>
+
+#### In PyTorch
+
+PyTorch has a building block for each coloured part of the diagram. The blue part is `nn.Linear`. `nn.Linear(a, b)` takes $a$ numbers in and gives $b$ numbers out, so one neuron with three inputs needs 3 in and 1 out.
+
+<ColourBox colour="blue">
+
+```python
+nn.Linear(3, 1)  # 3 numbers in, 1 number out.
+```
+
+</ColourBox>
+
+With one input it is `nn.Linear(1, 1)`, the model from Part 1. The green part is the activation.
+
+<ColourBox colour="green">
+
+```python
+nn.ReLU()  # Turns negative values into 0.
+```
+
+</ColourBox>
+
+`nn.Sequential` runs its pieces in order, so the output of the blue part goes into the green part.
+
+```python
+neuron = nn.Sequential(nn.Linear(3, 1), nn.ReLU())
+```
+
+Write the one-input neuron by hand using `torch.relu`, with a weight of 2 and a bias of −4, in one line. Expect `tensor([0., 0., 4., 8., 12., 16.])`.
 
 ```python
 x = torch.tensor([0.0, 2.0, 4.0, 6.0, 8.0, 10.0])
@@ -141,19 +197,51 @@ At $x = 2$, where $2x - 4 = 0$. Below 2 the neuron outputs 0. Above 2 its output
 
 </details>
 
-### 2. Several neurons from the same input
+Neurons are the building blocks of neural networks. Now we just need to combine them!
 
-One neuron gives one bend. `nn.Linear(1, 3)` makes three lines from the same $x$, each with its own weight and bias, and `nn.ReLU()` bends each of them. That is three neurons side by side, a **hidden layer**, and three outputs with nowhere to go yet.
+### 2. Layers
 
-In PyTorch, `nn.Sequential(nn.Linear(1, 3), nn.ReLU())`.
+#### Theory
 
-### 3. Combine them with another linear layer
+A **layer** is several neurons that all read the same inputs and give different outputs. Start with one neuron with three inputs. Put a second neuron beside it, reading the same three inputs with its own weights and bias, and you have two outputs. Keep going and you have a layer. Each neuron has its own weights and bias, so each one picks out something different from the same features.
 
-`nn.Linear(3, 1)` takes the three outputs and makes one number from them. It multiplies each by its own **output weight**, adds them together, and adds a bias. That is the same kind of layer as Part 1's line, with three inputs instead of one.
+<NetworkDiagram diagram="layer" />
 
-The three neurons below are already set to fit the dots. Add them one at a time and watch the line change. Each coloured dot on the line marks the bend made by the neuron of the same colour.
+#### In PyTorch
 
-<NeuronDiagram diagram="neurons-add-up" />
+A layer is one `nn.Linear` with more outputs. PyTorch doesn't write two neurons as two separate `nn.Linear(3, 1)`s. It writes the whole layer as one piece, with one output per neuron.
+
+<ColourBox colour="blue">
+
+```python
+nn.Linear(3, 1)  # One neuron. 3 numbers in, 1 out.
+nn.Linear(3, 2)  # Two neurons side by side. 3 in, 2 out.
+nn.Linear(3, 3)  # Three neurons. 3 in, 3 out.
+```
+
+</ColourBox>
+
+One `nn.ReLU()` bends every output at once, so a layer of three neurons is two pieces, the same as a single neuron.
+
+```python
+layer = nn.Sequential(nn.Linear(3, 3), nn.ReLU())
+```
+
+Press the buttons above to add neurons and watch the code change.
+
+### 3. Neural networks
+
+#### Theory
+
+A **neural network** is layers chained together, so that each layer's outputs are the next layer's inputs. The layers in the middle are **hidden layers**. The last layer is a single neuron with no activation, and its output is the prediction. There is no ReLU on the end because a prediction can be any number, negative ones included.
+
+Here is a network with one input, two hidden layers of three neurons each, and one output. Each circle is a neuron, blue add up then green ReLU. The output neuron is all blue because it has no activation.
+
+<NetworkDiagram diagram="network" />
+
+What does a network compute? To see, take one hidden layer. The three hidden neurons below are already set to fit the dots. Add them one at a time and watch the line change. Each numbered dot on the line marks the bend made by the neuron with that number.
+
+<NetworkDiagram diagram="network-computes" />
 
 1. What does each neuron add to the line?
 2. Untick **ReLU** and add the neurons again. What happens?
@@ -166,9 +254,21 @@ The three neurons below are already set to fit the dots. Add them one at a time 
 
 </details>
 
-This is why a network needs an activation function. Without one, a network is a single straight line however many neurons and layers it has, so making it bigger changes nothing. The activation function gives each neuron its bend, and the bends are what let a network follow curves.
+That is the claim from section 1 made real. Without the green part, a network of any size is one straight line. The bends are what let it follow curves.
 
-The whole diagram fits in one line of code: the output's bias, plus each neuron times its output weight. Write it and check that you get the dots: `tensor([1., 1., 1., 2., 3., 4., 3., 2., 1., 1., 1.])`.
+#### In PyTorch
+
+There is nothing new to learn here. A network is layers from section 2 chained with `nn.Sequential`, each one's output feeding the next, and one last `nn.Linear` with no `nn.ReLU()` after it for the output.
+
+```python
+network = nn.Sequential(
+    nn.Linear(1, 3), nn.ReLU(),  # First hidden layer.
+    nn.Linear(3, 3), nn.ReLU(),  # Second hidden layer. Reads the first's 3 outputs.
+    nn.Linear(3, 1),  # Output layer. No ReLU, so the prediction can be any number.
+)
+```
+
+The one-hidden-layer network from the graph above fits in one line of code: the output's bias, plus each hidden neuron times its output weight. Write it and check that you get the dots: `tensor([1., 1., 1., 2., 3., 4., 3., 2., 1., 1., 1.])`.
 
 ```python
 x = torch.arange(0.0, 11.0)  # 0, 1, 2, ..., 10
@@ -185,17 +285,15 @@ x = torch.arange(0.0, 11.0)  # 0, 1, 2, ..., 10
 
 </details>
 
-In PyTorch, the whole diagram is `nn.Sequential(nn.Linear(1, 3), nn.ReLU(), nn.Linear(3, 1))`, and its sliders are that model's 10 parameters: 3 weights and 3 biases in the first layer, 3 weights and 1 bias in the second.
+### 4. Zooming out
 
-So `nn.Linear(a, b)` takes $a$ numbers in and gives $b$ numbers out. Each output is its own weighted sum of the inputs, plus its own bias. That is $a \times b$ weights and $b$ biases.
+If the pictures got confusing, here is the good news. In PyTorch you never draw neurons. You choose a shape, how many inputs, how many hidden layers, how many neurons in each and how many outputs, and `nn.Sequential` does the rest. We predict one number, the house value, so our networks have one output, but a network can predict several things at once.
 
-### 4. Any shape
+Drag the sliders and watch the code and the parameter count change. Every arrow is a weight and every neuron has a bias, and together they are the network's **parameters**, the numbers that training adjusts.
 
-Now the numbers can be anything. A layer can have as many neurons as you like, and a network can have more than one hidden layer. Each neuron in a layer takes every output of the layer before it. Every line in the diagram below is a weight, and every neuron has a bias. Together, the weights and biases are the network's **parameters**, the numbers that training adjusts.
+<NetworkDiagram diagram="any-shape" />
 
-Drag the sliders and watch the count grow. GPT-3 has 175 billion parameters, and it was trained with the same kind of loop as `fit`.
-
-<NeuronDiagram diagram="layers-and-parameters" />
+GPT-3 has 175 billion parameters, today's largest models have trillions, and all of them were trained with the same kind of loop as `fit`. It goes the other way too. A few thousand parameters are enough to fly a drone, and a few million to walk a humanoid robot.
 
 PyTorch can count them for you. `example_network.parameters()` gives every weight and bias, and `p.numel()` counts the numbers in each one. Count the parameters of a network with 8 inputs and two hidden layers of 64 neurons. Expect **4801**.
 
@@ -214,7 +312,46 @@ sum(p.numel() for p in example_network.parameters())  # Add up p.numel() for eve
 
 </details>
 
-### 5. Build one for real
+### 5. Another way to see it
+
+Here is a second way to think about a network that only uses the building blocks of PyTorch.
+
+`nn.Linear(a, b)` is a box that turns $a$ numbers into $b$ numbers. That's all.
+
+A network is boxes in a row, and the only rule is that the counts have to match up. Whatever comes out of one box goes into the next, so the second number of one `nn.Linear` must equal the first number of the next.
+
+```python
+nn.Sequential(
+    nn.Linear(8, 64),  # 8 numbers in, 64 out.
+    nn.ReLU(),
+    nn.Linear(64, 64),  # 64 in, 64 out. Starts with 64 because 64 just came out.
+    nn.ReLU(),
+    nn.Linear(64, 1),  # 64 in, 1 out. Ends with 1 because we predict one number.
+)
+```
+
+Between the boxes is an activation, which bends the numbers on their way through. `nn.ReLU()` is the usual choice. Two others you will see are `nn.Sigmoid()`, which squashes every number into the range 0 to 1, and `nn.Tanh()`, which squashes into −1 to 1. They each have their uses. What matters is that there is one between each pair of boxes and none after the last.
+
+<NetworkDiagram diagram="activations" />
+
+So to build a network, write down the counts, chain the boxes, put a bend between each pair.
+
+What goes wrong if the counts don't match, say `nn.Linear(8, 64)` followed by `nn.Linear(32, 1)`?
+
+<details>
+<summary>Answer</summary>
+
+PyTorch refuses to run it. The first box hands over 64 numbers and the second expects 32, so you get
+
+```
+RuntimeError: mat1 and mat2 shapes cannot be multiplied (5x64 and 32x1)
+```
+
+where 5 is how many houses you passed in. If you see this error in the demo, a count is wrong somewhere.
+
+</details>
+
+### 6. Build one for real
 
 House values go up and down with latitude, from San Diego in the south (33°) to the Oregon border (42°), so a straight line cannot follow them. The cell below rescales latitude, as in [Workshop 2](/education/courses/ml-ai-flagship/workshop-2#2-see-overfitting), and defines `draw`, which plots a model's predictions over the houses. Run it.
 
@@ -347,22 +484,6 @@ At 0.01 the loss falls to about 0.70. At 0.1 it grows with every step, reaching 
 
 </details>
 
-## Part 4: Reading a network (3 minutes)
-
-Here is the network we build in the demo: `example_network` from step 4 of Part 2, with 8 inputs and two hidden layers of 64 neurons. Run the cell. PyTorch lists the layers in the order they run, each one's output feeding the next.
-
-```python
-nn.Sequential(
-    nn.Linear(8, 64),  # 64 neurons, each with 8 weights, one per input, and a bias.
-    nn.ReLU(),  # Bend every one of them.
-    nn.Linear(64, 64),  # A second hidden layer. Each neuron takes all 64 outputs of the first.
-    nn.ReLU(),
-    nn.Linear(64, 1),  # One weighted sum of the last 64 neurons, plus a bias: the prediction.
-)
-```
-
-Every `nn.Linear(a, b)` is $b$ neurons with $a$ weights and a bias each, and every `nn.ReLU()` bends the neurons before it. There is no bend after the last layer, because its output is the prediction itself. Altogether that is the 4801 parameters you counted in step 4, and `fit` moves every one of them with the step from Part 3, a thousand times over.
-
 ## Lab check (1 minute)
 
 Explain in one sentence each:
@@ -394,7 +515,7 @@ y_train = torch.tensor(train[["MedHouseVal"]].to_numpy(), dtype=torch.float32)
 y_val = torch.tensor(val[["MedHouseVal"]].to_numpy(), dtype=torch.float32)
 ```
 
-Then the network from Part 4, trained with `fit` and scored on the validation set. We build it live: fill in the five layers. Expect a validation MSE of about **0.29**.
+Then the 8-64-64-1 network whose parameters you counted in Part 2, trained with `fit` and scored on the validation set. We build it live: fill in the five layers. Expect a validation MSE of about **0.29**.
 
 ```python
 torch.manual_seed(0)

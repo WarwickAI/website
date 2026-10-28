@@ -1,0 +1,35 @@
+---
+import {
+  Activations,
+  AnyShape,
+  Layer,
+  Network,
+  NetworkComputes,
+  Neuron,
+  OneInputNeuron,
+} from './NetworkDiagrams'
+
+interface Props {
+  diagram:
+    | 'neuron'
+    | 'one-input-neuron'
+    | 'layer'
+    | 'network'
+    | 'network-computes'
+    | 'any-shape'
+    | 'activations'
+}
+
+const { diagram } = Astro.props
+---
+
+<figure class="text-foreground my-6 rounded-xl border p-4">
+  <slot />
+  {diagram === 'neuron' && <Neuron client:visible />}
+  {diagram === 'one-input-neuron' && <OneInputNeuron client:visible />}
+  {diagram === 'layer' && <Layer client:visible />}
+  {diagram === 'network' && <Network client:visible />}
+  {diagram === 'network-computes' && <NetworkComputes client:visible />}
+  {diagram === 'any-shape' && <AnyShape client:visible />}
+  {diagram === 'activations' && <Activations client:visible />}
+</figure>

@@ -1,0 +1,16 @@
+---
+// A bordered box in one of the neuron diagram's colours, for equations that match a part of the drawing.
+interface Props {
+  colour: 'blue' | 'green'
+}
+
+const colours = { blue: '#3b82f6', green: '#22c55e' }
+const { colour } = Astro.props
+---
+
+<div
+  class="my-6 rounded-xl border-2 px-4"
+  style={`border-color: ${colours[colour]}`}
+>
+  <slot />
+</div>
