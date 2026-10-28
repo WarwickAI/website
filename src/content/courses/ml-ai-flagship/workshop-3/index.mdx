@@ -80,6 +80,7 @@ We can build the same model in PyTorch, because linear regression is the simples
 incomes = torch.tensor(housing[["MedInc"]].to_numpy(), dtype=torch.float32)
 values = torch.tensor(housing[["MedHouseVal"]].to_numpy(), dtype=torch.float32)
 
+torch.manual_seed(0)
 line = nn.Linear(1, 1)
 print("before | slope:", line.weight.item(), "| intercept:", line.bias.item())
 fit(line, incomes, values)
@@ -114,7 +115,7 @@ Drag the sliders. The weight sets how steep the line is and which way it faces, 
 
 <NeuronDiagram diagram="one-neuron" />
 
-In PyTorch this is `nn.Sequential(nn.Linear(1, 1), nn.ReLU())`. By hand, ReLU is `torch.relu`. Write a neuron with a weight of 2 and a bias of −4 in one line. Expect `tensor([0., 0., 4., 8., 12., 16.])`.
+In PyTorch this is `nn.Sequential(nn.Linear(1, 1), nn.ReLU())`: `nn.Sequential` runs its pieces in order, so the line's output goes into `nn.ReLU()`. Write the same neuron by hand using `torch.relu`, with a weight of 2 and a bias of −4, in one line. Expect `tensor([0., 0., 4., 8., 12., 16.])`.
 
 ```python
 x = torch.tensor([0.0, 2.0, 4.0, 6.0, 8.0, 10.0])
@@ -345,3 +346,97 @@ What happens to the loss with a learning rate of 0.1? Why?
 At 0.01 the loss falls to about 0.70. At 0.1 it grows with every step, reaching about $7 \times 10^{18}$ by step 20, then `inf` and finally `nan` (not a number). Each step overshoots the bottom of the bowl by more than the last, like 0.06 in the diagram.
 
 </details>
+
+## Part 4: Reading a network (3 minutes)
+
+Here is the network we build in the demo: `example_network` from step 4 of Part 2, with 8 inputs and two hidden layers of 64 neurons. Run the cell. PyTorch lists the layers in the order they run, each one's output feeding the next.
+
+```python
+nn.Sequential(
+    nn.Linear(8, 64),  # 64 neurons, each with 8 weights, one per input, and a bias.
+    nn.ReLU(),  # Bend every one of them.
+    nn.Linear(64, 64),  # A second hidden layer. Each neuron takes all 64 outputs of the first.
+    nn.ReLU(),
+    nn.Linear(64, 1),  # One weighted sum of the last 64 neurons, plus a bias: the prediction.
+)
+```
+
+Every `nn.Linear(a, b)` is $b$ neurons with $a$ weights and a bias each, and every `nn.ReLU()` bends the neurons before it. There is no bend after the last layer, because its output is the prediction itself. Altogether that is the 4801 parameters you counted in step 4, and `fit` moves every one of them with the step from Part 3, a thousand times over.
+
+## Lab check (1 minute)
+
+Explain in one sentence each:
+
+- Why a network needs ReLU between its layers.
+- What one step of `fit` does.
+
+<details>
+<summary>Answer</summary>
+
+- Without ReLU, every layer is a straight line, and lines added up are still a line, so extra layers add nothing. ReLU adds the bends.
+- It predicts a value for every house, measures the loss, works out the gradient for every parameter with `loss.backward()`, and moves each parameter a small step downhill.
+
+</details>
+
+## Demo: all 8 inputs (5 minutes)
+
+Now the task from Workshop 1: predict house values from all 8 inputs. The cell below makes [Workshop 1's split](/education/courses/ml-ai-flagship/workshop-1#t1-split-the-data-three-ways-3-minutes), so the scores compare, and rescales the inputs as in Workshop 2. Run it.
+
+```python
+train, rest = train_test_split(housing, test_size=0.3, random_state=0)  # The split from Workshop 1.
+val, test = train_test_split(rest, test_size=0.5, random_state=0)  # The test set stays aside.
+input_columns = housing.columns.drop("MedHouseVal")  # The 8 input columns.
+
+scaler = StandardScaler()  # Learns each column's average and spread from the training set only.
+X_train = torch.tensor(scaler.fit_transform(train[input_columns]), dtype=torch.float32)
+X_val = torch.tensor(scaler.transform(val[input_columns]), dtype=torch.float32)
+y_train = torch.tensor(train[["MedHouseVal"]].to_numpy(), dtype=torch.float32)
+y_val = torch.tensor(val[["MedHouseVal"]].to_numpy(), dtype=torch.float32)
+```
+
+Then the network from Part 4, trained with `fit` and scored on the validation set. We build it live: fill in the five layers. Expect a validation MSE of about **0.29**.
+
+```python
+torch.manual_seed(0)
+model = nn.Sequential(
+    ...,  # 8 inputs into 64 neurons.
+    ...,  # Bend them.
+    ...,  # A second hidden layer of 64 neurons.
+    ...,  # Bend them.
+    ...,  # One prediction.
+)
+print("training MSE:", fit(model, X_train, y_train))
+with torch.no_grad():  # Only measuring, not training.
+    print("validation MSE:", nn.MSELoss()(model(X_val), y_val).item())
+```
+
+<details>
+<summary>Answer</summary>
+
+```python
+torch.manual_seed(0)
+model = nn.Sequential(
+    nn.Linear(8, 64),  # 8 inputs into 64 neurons.
+    nn.ReLU(),  # Bend them.
+    nn.Linear(64, 64),  # A second hidden layer of 64 neurons.
+    nn.ReLU(),  # Bend them.
+    nn.Linear(64, 1),  # One prediction.
+)
+print("training MSE:", fit(model, X_train, y_train))
+with torch.no_grad():  # Only measuring, not training.
+    print("validation MSE:", nn.MSELoss()(model(X_val), y_val).item())
+```
+
+</details>
+
+Compare it with [Workshop 1's models](/education/courses/ml-ai-flagship/workshop-1#take-home-find-the-sweet-spot-about-15-minutes), all scored on the same validation set. (Workshop 1's 0.52 for linear regression was scored on the data it trained on.)
+
+| Model | Validation MSE |
+|---|---|
+| Always predict the average | 1.33 |
+| Linear regression, 8 inputs | 0.54 |
+| Decision tree, depth 9 | 0.43 |
+| Random forest | 0.28 |
+| This network | 0.29 |
+
+Five lines of PyTorch, trained with the same `fit` as the straight line in Part 1, come within 0.01 of the random forest. Other random starts land anywhere between about 0.28 and 0.34, which is why the cell sets a seed.
