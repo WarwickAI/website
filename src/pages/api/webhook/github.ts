@@ -22,7 +22,7 @@ export const prerender = false;
 
 const gh = new App({
   appId: import.meta.env.GITHUB_APP_ID,
-  privateKey: import.meta.env.GITHUB_APP_PRIVATE_KEY,
+  privateKey: import.meta.env.GITHUB_APP_PRIVATE_KEY?.replace(/\\n/g, "\n"),
   webhooks: {
     secret: import.meta.env.GITHUB_WEBHOOK_SECRET,
   },
