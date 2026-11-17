@@ -13,6 +13,13 @@ export function formatDate(date: Date) {
   }).format(date)
 }
 
+export function formatNumber(value: number, decimals: number) {
+  return value.toLocaleString('en-GB', {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  })
+}
+
 export function calculateWordCountFromHtml(
   html: string | null | undefined,
 ): number {

@@ -4,7 +4,7 @@ import AvatarComponent from '@/components/ui/avatar'
 import UserRank from '@/components/UserRank'
 import ScrollingNames from '@/components/ScrollingNames'
 import { buttonVariants } from '@/components/ui/button'
-import { formatDate, cn } from '@/lib/utils'
+import { formatDate, formatNumber, cn } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
 import { buildLeaderboard } from '@/lib/leaderboard'
 import { addTournamentPoints, totalPointsByRepo } from '@/lib/tournaments'
@@ -171,7 +171,7 @@ const scoreDecimals = scoredSubmissions.every((s) => Number.isInteger(s.score)) 
 
 const formatScore = (score: number | null) => {
   if (score === null) return 'Pending'
-  return score.toFixed(scoreDecimals)
+  return formatNumber(score, scoreDecimals)
 }
 
 const timeAgo = (date: Date) => {
