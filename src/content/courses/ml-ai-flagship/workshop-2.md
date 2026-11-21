@@ -4,7 +4,7 @@ course: 'ML/AI Course'
 description: 'Regularisation and F1 scores: fight overfitting with Ridge and Lasso, then measure a classifier.'
 date: 2026-10-22
 order: 2
-authors: ['jan-lindroos', 'shaana-amarawickrama', 'tanvi-patnayukuni', 'sam-turner', 'finlay-sanders']
+authors: ['jan-lindroos', 'shaana-amarawickrama', 'tanvi-patnayukuni']
 ---
 
 Follow along with the [slides](https://drive.google.com/file/d/16GLaZnLhpTrwss1xFVsyGdD2uSWnPzwM/view), then work through the lab below.

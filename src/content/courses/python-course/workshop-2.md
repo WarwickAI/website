@@ -4,7 +4,7 @@ course: 'Python Course'
 description: 'Lists, loops and functions.'
 date: 2026-10-22
 order: 2
-authors: ['jan-lindroos', 'max-ambaum', 'sam-turner', 'shaana-amarawickrama', 'tanvi-patnayukuni']
+authors: ['max-ambaum']
 ---
 
 Follow along with the [notes](https://colab.research.google.com/drive/1JIrMytFGmJMdmrGIFZbxCLxTLjY_H7aO), then work through the lab below.
