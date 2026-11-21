@@ -91,7 +91,7 @@ export async function getAllEntries(
   const entries = await getCollection(config.name as any)
   return (entries as ContentEntry[])
     .filter((entry) => !entry.data.draft && !isSubpost(entry.id))
-    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+    .sort((a, b) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0))
 }
 
 export async function getAllEntriesAndSubentries(
@@ -100,7 +100,7 @@ export async function getAllEntriesAndSubentries(
   const entries = await getCollection(config.name as any)
   return (entries as ContentEntry[])
     .filter((entry) => !entry.data.draft)
-    .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf())
+    .sort((a, b) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0))
 }
 
 export async function getEntryById(
@@ -124,8 +124,11 @@ export async function getSubentriesForParent(
         getParentId(entry.id) === parentId,
     )
     .sort((a, b) => {
-      const dateDiff = a.data.date.valueOf() - b.data.date.valueOf()
-      if (dateDiff !== 0) return dateDiff
+      // Undated workshops fall back to order.
+      if (a.data.date && b.data.date) {
+        const dateDiff = a.data.date.valueOf() - b.data.date.valueOf()
+        if (dateDiff !== 0) return dateDiff
+      }
 
       const orderA = a.data.order ?? 0
       const orderB = b.data.order ?? 0
