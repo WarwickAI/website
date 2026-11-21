@@ -6,8 +6,6 @@ order: 4
 authors: ['shaana-amarawickrama', 'tanvi-patnayukuni', 'sameer-gupta']
 ---
 
-Follow along with the slides, then work through the lab below.
-
 ## Getting started (2 minutes)
 
 - Open [Google Colab](https://colab.research.google.com/) and choose **File > New notebook in Drive**.
