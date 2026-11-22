@@ -3,7 +3,6 @@ title: 'Workshop 2'
 course: 'Python Course'
 description: 'Lists, loops and functions.'
 date: 2026-10-22
-order: 2
 authors: ['max-ambaum']
 ---
 

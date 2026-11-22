@@ -3,7 +3,6 @@ title: 'Workshop 2'
 course: 'ML/AI Course'
 description: 'Regularisation and F1 scores: fight overfitting with Ridge and Lasso, then measure a classifier.'
 date: 2026-10-22
-order: 2
 authors: ['jan-lindroos', 'shaana-amarawickrama', 'tanvi-patnayukuni']
 ---
 

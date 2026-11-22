@@ -2,7 +2,7 @@
 title: 'Workshop 3'
 course: 'Python Course'
 description: 'Project ideas that use values, decisions, lists, loops and functions.'
-order: 3
+date: 2026-10-29
 ---
 
 This week you build something of your own. Pick one idea below, or bring your own. Start small, get it working, then add to it. Write your code in a new notebook in [Google Colab](https://colab.research.google.com/).

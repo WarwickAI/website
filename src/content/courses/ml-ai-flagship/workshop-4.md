@@ -2,7 +2,7 @@
 title: 'Workshop 4'
 course: 'ML/AI Course'
 description: 'Hugging Face and transfer learning: build a chatbot, fine-tune a fruit classifier, then detect angry messages.'
-order: 4
+date: 2026-11-18
 authors: ['shaana-amarawickrama', 'tanvi-patnayukuni', 'sameer-gupta']
 ---
 

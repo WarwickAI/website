@@ -24,7 +24,7 @@ interface Props {
 }
 
 const { entry, config, masonryCard } = Astro.props
-const formattedDate = entry.data.date && formatDate(entry.data.date)
+const formattedDate = formatDate(entry.data.date)
 const readTime = await getCombinedReadingTime(config, entry.id)
 const authors = await parseAuthors(await getEntryAuthorIds(config, entry.id))
 const tags = await getEntryTags(config, entry.id)
@@ -96,14 +96,10 @@ const subpostCount = !isSubpost(entry.id) ? await getSubentryCount(config, entry
               </div>
             )
           }
-          {
-            formattedDate && (
-              <div class="flex items-center gap-x-2">
-                <Separator orientation="vertical" className="h-4!" />
-                <span>{formattedDate}</span>
-              </div>
-            )
-          }
+          <div class="flex items-center gap-x-2">
+            <Separator orientation="vertical" className="h-4!" />
+            <span>{formattedDate}</span>
+          </div>
           <div class="flex items-center gap-x-2">
             <Separator orientation="vertical" className="h-4!" />
             <span>{readTime}</span>

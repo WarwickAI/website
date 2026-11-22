@@ -19,7 +19,7 @@ export interface ContentCollectionConfig {
 function groupByYear(entries: ContentEntry[]): Record<string, ContentEntry[]> {
   return entries.reduce(
     (acc: Record<string, ContentEntry[]>, entry) => {
-      const year = entry.data.date?.getFullYear().toString() ?? 'Undated'
+      const year = entry.data.date.getFullYear().toString()
       ;(acc[year] ??= []).push(entry)
       return acc
     },

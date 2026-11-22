@@ -3,7 +3,6 @@ title: 'Workshop 1'
 course: 'Python Course'
 description: 'Values, conversion, decisions and debugging, using event bookings as the example.'
 date: 2026-10-15
-order: 1
 authors: ['jan-lindroos']
 ---
 
