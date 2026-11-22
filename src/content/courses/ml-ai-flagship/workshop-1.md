@@ -3,7 +3,6 @@ title: 'Workshop 1'
 course: 'ML/AI Course'
 description: 'Models, loss and learning: predict house prices, then choose how flexible a model should be.'
 date: 2026-10-15
-order: 1
 authors: ['jan-lindroos']
 ---
 

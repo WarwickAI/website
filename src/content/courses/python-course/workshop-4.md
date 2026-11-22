@@ -2,7 +2,8 @@
 title: 'Workshop 4'
 course: 'Python Course'
 description: 'Dictionaries, classes and objects, using weather forecasts as the example.'
-order: 4
+date: 2026-11-11
+authors: ['ian-gitau']
 ---
 
 We code three short examples together, and after each part you try a lab on weather forecasts. Next week you reuse the `DayForecast` class you build here in a terminal weather app. Extensions are optional.

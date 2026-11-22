@@ -69,7 +69,7 @@ const courses = defineCollection({
       title: z.string(),
       course: z.string(),
       description: z.string(),
-      date: z.coerce.date().optional(),
+      date: z.coerce.date(),
       order: z.number().optional(),
       image: image().optional(),
       tags: z.array(z.string()).optional(),

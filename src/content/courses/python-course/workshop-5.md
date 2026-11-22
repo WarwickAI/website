@@ -2,8 +2,8 @@
 title: 'Workshop 5'
 course: 'Python Course'
 description: 'APIs and requests: build a menu app that gets the real 5-day weather forecast for campus.'
-order: 5
-authors: ['ian']
+date: 2026-11-18
+authors: ['ian-gitau']
 ---
 
 Today you build a menu app that gets the real 5-day forecast for campus. We make our first API call together, then you write the app one function at a time, reusing the `DayForecast` class from last week. Stretch tasks are optional.
