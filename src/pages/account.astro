@@ -1,80 +1,26 @@
 ---
-import AccountPanel, { type AccountTeam } from '@/components/AccountPanel'
+import AccountPanel from '@/components/AccountPanel'
+import AccountTeams from '@/components/AccountTeams.astro'
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
-import Link from '@/components/Link.astro'
+import GithubLogin from '@/components/GithubLogin.astro'
 import LogOutButton from '@/components/LogOutButton'
 import PageHead from '@/components/PageHead.astro'
 import AvatarComponent from '@/components/ui/avatar'
 import Layout from '@/layouts/Layout.astro'
 import { auth } from '@/lib/auth'
-import {
-  githubLogin,
-  githubLogins,
-  joinFromInstallation,
-  myTeams,
-  refreshMyRepos,
-  suggestedTeammates,
-} from '@/lib/competition/account'
-import { syncUser } from '@/lib/competition/membership-store'
-import { Icon } from 'astro-icon/components'
 
 // GitHub's install redirect and teammates' links land here. Signing in is entering
 export const prerender = false
 
 Astro.response.headers.set('Cache-Control', 'private, no-store')
 
-const headers = Astro.request.headers
-const session = await auth.api.getSession({ headers })
+const session = await auth.api.getSession({ headers: Astro.request.headers })
 const installationId =
   Number(Astro.url.searchParams.get('installation_id')) || null
 // Keeps only installation_id, as better-auth refuses some characters
 const returnTo = installationId
   ? `/account?installation_id=${installationId}`
   : '/account'
-
-let problem: string | null = null
-// null if they couldn't be loaded
-let teams: AccountTeam[] | null = []
-let login: string | null = null
-if (session) {
-  const userId = session.user.id
-  try {
-    if (installationId) {
-      const result = await joinFromInstallation(userId, installationId, headers)
-      if (!result.ok) problem = result.reason
-    }
-    // Who can push may have changed since the last push
-    await refreshMyRepos(userId, headers)
-    await syncUser(userId)
-  } catch (error) {
-    console.error('Error joining from GitHub:', error)
-    problem ??=
-      'Something went wrong talking to GitHub. Refresh the page to try again.'
-  }
-
-  try {
-    const mine = await myTeams(userId)
-    const [logins, suggestions, own] = await Promise.all([
-      githubLogins(userId, headers, [
-        ...new Set(mine.flatMap((t) => t.unclaimedGithubUserIds)),
-      ]),
-      suggestedTeammates(mine),
-      githubLogin(userId, headers),
-    ])
-    login = own
-    teams = mine.map((team) => ({
-      ...team,
-      unclaimedLogins: team.unclaimedGithubUserIds
-        .map((id) => logins.get(id))
-        .filter((login): login is string => !!login),
-      suggestedLogins: suggestions.get(team.projectId) ?? [],
-    }))
-  } catch (error) {
-    console.error('Error loading teams:', error)
-    teams = null
-    problem ??= "We couldn't load your teams. Refresh the page to try again."
-  }
-}
 ---
 
 <Layout class="max-w-3xl" particles>
@@ -89,50 +35,59 @@ if (session) {
   <section class="mt-6 flex flex-col gap-4">
     <h1 class="text-3xl font-medium">Your account</h1>
     {
-      session && (
-        <div class="bg-background/75 flex items-center gap-4 rounded-xl border p-4">
-          <AvatarComponent
-            client:load
-            src={session.user.image || undefined}
-            alt={session.user.name || 'User'}
-            fallback={session.user.name?.[0] || 'U'}
-            className="size-12 shrink-0 rounded-full"
-          />
-          <div class="min-w-0 grow">
-            <p class="truncate text-lg font-medium">{session.user.name}</p>
-            {session.user.email && (
-              <p class="text-muted-foreground truncate text-sm">
-                {session.user.email}
-              </p>
-            )}
-            {login && (
-              <p class="text-muted-foreground/70 mt-1 flex items-center gap-x-1.5 text-xs">
-                <Icon
-                  name="lucide:github"
-                  class="size-3 shrink-0"
-                  aria-label="GitHub"
+      session ? (
+        <>
+          <div class="bg-background/75 flex items-center gap-4 rounded-xl border p-4">
+            <AvatarComponent
+              client:load
+              src={session.user.image || undefined}
+              alt={session.user.name || 'User'}
+              fallback={session.user.name?.[0] || 'U'}
+              className="size-12 shrink-0 rounded-full"
+            />
+            <div class="min-w-0 grow">
+              <p class="truncate text-lg font-medium">{session.user.name}</p>
+              {session.user.email && (
+                <p class="text-muted-foreground truncate text-sm">
+                  {session.user.email}
+                </p>
+              )}
+              <GithubLogin server:defer>
+                <div
+                  slot="fallback"
+                  class="bg-foreground/10 mt-1.5 h-3 w-20 animate-pulse rounded"
                 />
-                <Link href={`https://github.com/${login}`} external underline>
-                  {login}
-                </Link>
-              </p>
-            )}
+              </GithubLogin>
+            </div>
+            <LogOutButton
+              client:load
+              redirectTo={returnTo}
+              className="shrink-0"
+            />
           </div>
-          <LogOutButton
-            client:load
-            redirectTo={returnTo}
-            className="shrink-0"
-          />
-        </div>
+          <h2 class="mt-2 text-2xl font-medium">Your teams</h2>
+          <AccountTeams server:defer installationId={installationId}>
+            <div
+              slot="fallback"
+              role="status"
+              class="bg-background/75 flex flex-col gap-3 rounded-xl border p-4"
+            >
+              <span class="sr-only">Loading your teams</span>
+              <div class="bg-foreground/10 h-5 w-40 animate-pulse rounded" />
+              <div class="bg-foreground/10 h-4 w-20 animate-pulse rounded" />
+              <div class="bg-foreground/10 h-4 w-56 animate-pulse rounded" />
+            </div>
+          </AccountTeams>
+        </>
+      ) : (
+        <AccountPanel
+          client:load
+          signedIn={false}
+          teams={[]}
+          problem={null}
+          returnTo={returnTo}
+        />
       )
     }
-    {session && <h2 class="mt-2 text-2xl font-medium">Your teams</h2>}
-    <AccountPanel
-      client:load
-      signedIn={!!session}
-      teams={teams}
-      problem={problem}
-      returnTo={returnTo}
-    />
   </section>
 </Layout>

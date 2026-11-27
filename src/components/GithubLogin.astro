@@ -1,0 +1,24 @@
+---
+import Link from '@/components/Link.astro'
+import { auth } from '@/lib/auth'
+import { githubLogin } from '@/lib/competition/account'
+import { Icon } from 'astro-icon/components'
+
+// Deferred from /account's profile card, as it asks GitHub
+Astro.response.headers.set('Cache-Control', 'private, no-store')
+
+const headers = Astro.request.headers
+const session = await auth.api.getSession({ headers })
+const login = session ? await githubLogin(session.user.id, headers) : null
+---
+
+{
+  login && (
+    <p class="text-muted-foreground/70 mt-1 flex items-center gap-x-1.5 text-xs">
+      <Icon name="lucide:github" class="size-3 shrink-0" aria-label="GitHub" />
+      <Link href={`https://github.com/${login}`} external underline>
+        {login}
+      </Link>
+    </p>
+  )
+}

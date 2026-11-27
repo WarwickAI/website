@@ -246,6 +246,8 @@ export async function suggestedTeammates(
             suggested.map((s) => s.login),
           )
       } catch (error) {
+        // 404: the app has been removed from the repo
+        if ((error as { status?: number }).status === 404) return
         console.error(
           `Error suggesting teammates for ${team.repoFullName}:`,
           error,
