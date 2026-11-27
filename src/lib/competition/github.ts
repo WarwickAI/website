@@ -60,14 +60,18 @@ export async function forEachInstalledRepo(
   const failures: { what: string; error: unknown }[] = []
   const work: (() => Promise<void>)[] = []
 
-  for (const installationId of installationIds) {
-    let repos: InstalledRepo[]
-    try {
-      repos = await reposOf(installationId)
-    } catch (error) {
-      failures.push({ what: `installation ${installationId}`, error })
-      continue
-    }
+  const listed = await Promise.all(
+    installationIds.map((installationId) =>
+      reposOf(installationId).then(
+        (repos) => ({ installationId, repos }),
+        (error: unknown) => {
+          failures.push({ what: `installation ${installationId}`, error })
+          return { installationId, repos: [] }
+        },
+      ),
+    ),
+  )
+  for (const { installationId, repos } of listed) {
     for (const repo of repos) {
       if (repo.fork || repo.is_template) continue
       work.push(() =>

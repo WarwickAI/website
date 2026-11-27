@@ -58,4 +58,24 @@ describe('forEachInstalledRepo', () => {
     expect(seen).toEqual([3])
     expect(failures.map((f) => f.what)).toEqual(['installation 10'])
   })
+
+  it('lists the installations at the same time', async () => {
+    let askedForTheSecond!: () => void
+    const secondAsked = new Promise<void>(
+      (resolve) => (askedForTheSecond = resolve),
+    )
+    const handled: string[] = []
+    await forEachInstalledRepo(
+      [1, 2],
+      async (installationId) => {
+        if (installationId === 1) await secondAsked
+        else askedForTheSecond()
+        return [repo(installationId)]
+      },
+      async (_, r) => {
+        handled.push(r.full_name)
+      },
+    )
+    expect(handled.sort()).toEqual(['owner/repo1', 'owner/repo2'])
+  }, 1000)
 })
