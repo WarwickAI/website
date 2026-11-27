@@ -1,4 +1,4 @@
-import { db, eq, isNull, Submission } from 'astro:db'
+import { db, eq, isNull, Repository, Submission, Team } from 'astro:db'
 import { existsSync } from 'node:fs'
 import { App, Octokit } from 'octokit'
 import { snapshotSubmission } from '../src/lib/snapshots'
@@ -31,8 +31,15 @@ export default async function backfillSnapshots() {
   })
 
   const pending = await db
-    .select()
+    .select({
+      id: Submission.id,
+      commitHash: Submission.commitHash,
+      submissionRepo: Repository.fullName,
+      projectId: Team.projectId,
+    })
     .from(Submission)
+    .innerJoin(Repository, eq(Submission.repositoryId, Repository.id))
+    .innerJoin(Team, eq(Repository.teamId, Team.id))
     .where(isNull(Submission.snapshotUrl))
 
   const byRepo = new Map<string, typeof pending>()

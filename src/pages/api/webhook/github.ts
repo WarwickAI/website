@@ -5,28 +5,15 @@ import type {
   InstallationDeletedEvent,
   WorkflowRunCompletedEvent,
 } from "@octokit/webhooks-types";
-import {
-  db,
-  eq,
-  and,
-  Account,
-  Project,
-  Submission,
-  Contribution,
-} from "astro:db";
-import { App } from "octokit";
-import { randomUUID } from "crypto";
+import { db, eq, and, Repository, Submission } from "astro:db";
 import { snapshotSubmission } from "@/lib/snapshots";
+import { findProject } from "@/lib/competition/data";
+import { githubApp, listCollaborators } from "@/lib/competition/github";
+import { recordRepository, recordSubmission } from "@/lib/competition/membership-store";
 
 export const prerender = false;
 
-const gh = new App({
-  appId: import.meta.env.GITHUB_APP_ID,
-  privateKey: import.meta.env.GITHUB_APP_PRIVATE_KEY?.replace(/\\n/g, "\n"),
-  webhooks: {
-    secret: import.meta.env.GITHUB_WEBHOOK_SECRET,
-  },
-});
+const gh = githubApp();
 
 gh.webhooks.on("installation.created", async ({ payload }) => {
   const installPayload = payload as InstallationCreatedEvent;
@@ -59,23 +46,22 @@ gh.webhooks.on("workflow_run.completed", async ({ payload }) => {
 
     const octokit = await gh.getInstallationOctokit(installationId);
 
-    const templateRepo = (await octokit.rest.repos.get({
-      owner: repository.owner.login,
-      repo: repository.name
-    })).data.template_repository;
-    if (!templateRepo) return;
-
-    const project = await db.select()
-      .from(Project)
-      .where(eq(Project.templateRepo, templateRepo.full_name))
-      .get();
+    const project = await findProject(octokit, repository.owner.login, repository.name);
     if (!project) return;
 
-    const existing = await db.select()
+    // Skip redeliveries and re-runs before downloading anything
+    const recorded = await db
+      .select({ id: Submission.id })
       .from(Submission)
-      .where(eq(Submission.commitHash, workflow.head_sha))
+      .innerJoin(Repository, eq(Submission.repositoryId, Repository.id))
+      .where(
+        and(
+          eq(Repository.githubRepoId, repository.id),
+          eq(Submission.commitHash, workflow.head_sha),
+        ),
+      )
       .get();
-    if (existing) return;
+    if (recorded) return;
 
     // Late submissions are still recorded, the leaderboard marks them as late
     if (new Date(workflow.created_at) < project.startDate) {
@@ -97,7 +83,6 @@ gh.webhooks.on("workflow_run.completed", async ({ payload }) => {
 
     const match = logs.match(/\*\*Score:\*\*\s*(\d+(?:\.\d+)?)/);
     const score = match ? parseFloat(match[1]) : 0.0;
-    const submissionId = randomUUID();
 
     // Keep a copy of the repo at the scored commit, so the exact code (and any
     // trained model) behind a score survives later pushes or the repo being deleted
@@ -113,58 +98,34 @@ gh.webhooks.on("workflow_run.completed", async ({ payload }) => {
       console.error("Error snapshotting submission:", error);
     }
 
-    await db.insert(Submission).values({
-      id: submissionId,
+    // The collaborators are the team; null keeps its members if GitHub can't say
+    let collaborators: string[] | null = null;
+    try {
+      collaborators = await listCollaborators(octokit, {
+        owner: repository.owner.login,
+        name: repository.name,
+        ownerType: repository.owner.type,
+        ownerId: repository.owner.id,
+      });
+    } catch (error) {
+      console.error("Error fetching collaborators:", error);
+    }
+
+    const { repositoryId } = await recordRepository({
       projectId: project.id,
-      score: score,
-      submissionRepo: repository.full_name,
-      commitHash: workflow.head_sha,
-      snapshotUrl: snapshotUrl,
-      submittedAt: new Date(workflow.created_at),
+      githubRepoId: repository.id,
+      fullName: repository.full_name,
+      ownerGithubUserId: String(repository.owner.id),
+      collaborators,
     });
 
-    try {
-      const contributors = await octokit.rest.repos.listContributors({
-        owner: repository.owner.login,
-        repo: repository.name
-      });
-
-      for (const contributor of contributors.data) {
-        if (!contributor.id || contributor.type === "Bot") continue;
-
-        // Check if user is authed on WAI site with GitHub
-        const account = await db.select()
-          .from(Account)
-          .where(and(
-            eq(Account.providerId, "github"),
-            eq(Account.accountId, contributor.id.toString())
-          ))
-          .get();
-
-        await db.insert(Contribution).values({
-          id: randomUUID(),
-          submissionId: submissionId,
-          userId: account?.userId || null,
-          githubUserId: contributor.id,
-          commitCount: contributor.contributions,
-          detectedAt: new Date(),
-          linkedAt: account ? new Date() : null,
-        });
-      }
-    } catch (error) {
-      console.error("Error fetching contributors:", error);
-
-      // Fallback: credit repo owner
-      await db.insert(Contribution).values({
-        id: randomUUID(),
-        submissionId: submissionId,
-        userId: null,
-        githubUserId: repository.owner.id,
-        commitCount: 1,
-        detectedAt: new Date(),
-        linkedAt: null,
-      });
-    }
+    await recordSubmission({
+      repositoryId,
+      commitHash: workflow.head_sha,
+      score,
+      snapshotUrl,
+      submittedAt: new Date(workflow.created_at),
+    });
   } catch (error) {
     console.error("Error processing submission:", error);
   }
@@ -202,4 +163,3 @@ export const POST: APIRoute = async ({ request }) => {
     );
   }
 };
-

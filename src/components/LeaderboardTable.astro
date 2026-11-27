@@ -6,9 +6,9 @@ import ScrollingNames from '@/components/ScrollingNames'
 import { buttonVariants } from '@/components/ui/button'
 import { formatDate, formatNumber, cn } from '@/lib/utils'
 import { Icon } from 'astro-icon/components'
-import { buildLeaderboard } from '@/lib/leaderboard'
-import { addTournamentPoints, totalPointsByRepo } from '@/lib/tournaments'
-import { db, eq, Project, Submission, Contribution, User, Tournament, TournamentResult } from 'astro:db'
+import { loadCompetition } from '@/lib/competition/data'
+import { buildLeaderboard, type Leaderboard, type LeaderboardRow } from '@/lib/competition/leaderboard'
+import { teamStatuses } from '@/lib/competition/team-status'
 
 export const prerender = false
 
@@ -30,124 +30,45 @@ Astro.response.headers.set(
   'public, s-maxage=60, stale-while-revalidate=300'
 )
 
-let project = null
-let submissionsWithContributions: any[] = []
-let tournamentResults: { submissionRepo: string; points: number }[] = []
+let project: { startDate: Date; endDate: Date | null } | null = null
+let board: Leaderboard = { ranked: [], late: [], cantRank: [], disqualified: [] }
 
 try {
-  const results = await Promise.all([
-    db
-      .select()
-      .from(Project)
-      .where(eq(Project.id, projectId))
-      .get(),
-    db
-      .select({
-        submissionId: Submission.id,
-        score: Submission.score,
-        submissionRepo: Submission.submissionRepo,
-        submittedAt: Submission.submittedAt,
-        githubUserId: Contribution.githubUserId,
-        userId: Contribution.userId,
-        userName: User.name,
-        userImage: User.image,
-      })
-      .from(Submission)
-      .leftJoin(Contribution, eq(Submission.id, Contribution.submissionId))
-      .leftJoin(User, eq(Contribution.userId, User.id))
-      .where(eq(Submission.projectId, projectId)),
-    // Points from live tournaments, which count for the team whose submission played.
-    // If these can't be read, the leaderboard still shows everyone's submission scores
-    db
-      .select({
-        submissionRepo: Submission.submissionRepo,
-        points: TournamentResult.points,
-      })
-      .from(TournamentResult)
-      .innerJoin(Tournament, eq(TournamentResult.tournamentId, Tournament.id))
-      .innerJoin(Submission, eq(TournamentResult.submissionId, Submission.id))
-      .where(eq(Tournament.projectId, projectId))
-      .catch((error) => {
-        console.error('Error fetching tournament results:', error)
-        return []
-      }),
-  ])
-
-  project = results[0]
-  submissionsWithContributions = results[1]
-  tournamentResults = results[2]
+  const data = await loadCompetition(projectId)
+  project = data.project
+  board = buildLeaderboard(data, teamStatuses(data, new Date()))
 } catch (error) {
   console.error('Error fetching leaderboard data:', error)
 }
 
-const submissionMap = new Map<string, {
-  id: string
-  score: number
-  submissionRepo: string
-  submittedAt: Date
-  githubUserIds: number[]
-  contributors: Array<{ userId: string | null; userName: string | null; userImage: string | null }>
-  unlinkedCount: number
-}>()
+// After the end, unclaimed teams can't be claimed
+const ended = !!project?.endDate && new Date() > project.endDate
 
-for (const row of submissionsWithContributions) {
-  if (!submissionMap.has(row.submissionId)) {
-    submissionMap.set(row.submissionId, {
-      id: row.submissionId,
-      score: row.score,
-      submissionRepo: row.submissionRepo,
-      submittedAt: row.submittedAt,
-      githubUserIds: [],
-      contributors: [],
-      unlinkedCount: 0,
-    })
-  }
-  const submission = submissionMap.get(row.submissionId)!
-  if (row.githubUserId === null) continue
-  submission.githubUserIds.push(row.githubUserId)
-  if (row.userId === null) {
-    submission.unlinkedCount++
-  } else {
-    submission.contributors.push({
-      userId: row.userId,
-      userName: row.userName,
-      userImage: row.userImage,
-    })
-  }
-}
+type Section = 'ranked' | 'late' | 'cantRank' | 'disqualified'
+type Entry = LeaderboardRow & { section: Section; reason?: 'unclaimed' | 'onHold' }
 
-// A team's score is their best submission's score, plus their points from every
-// round of a live tournament. Projects without tournaments add nothing
-const scoredSubmissions = addTournamentPoints(
-  Array.from(submissionMap.values()),
-  totalPointsByRepo(tournamentResults),
-)
-
-const { ranked, late } = buildLeaderboard(scoredSubmissions, {
-  startDate: project?.startDate ?? null,
-  endDate: project?.endDate ?? null,
-})
-
-// Late entries come after the rankings, without a rank of their own
-const entries = [
-  ...ranked.map((entry, index) => ({ ...entry, rank: index + 1 as number | null })),
-  ...late.map((submission) => ({ submission, lateBest: null, rank: null })),
+// Ranked, then late, then can't rank yet, then disqualified
+const entries: Entry[] = [
+  ...board.ranked.map((row) => ({ ...row, section: 'ranked' as const })),
+  ...board.late.map((row) => ({ ...row, section: 'late' as const })),
+  ...board.cantRank.map((row) => ({ ...row, section: 'cantRank' as const })),
+  ...board.disqualified.map((row) => ({ ...row, section: 'disqualified' as const })),
 ]
 const totalSubmissions = entries.length
 const shownEntries = limit ? entries.slice(0, limit) : entries
 const hasMore = limit ? totalSubmissions > limit : false
 
-const userRankData = ranked.map(({ submission }) => ({
-  userIds: submission.contributors.map((c) => c.userId),
-  score: submission.score,
+const userRankData = board.ranked.map((row) => ({
+  userIds: row.members.map((m) => m.userId),
+  score: row.score,
 }))
 
 const isPodium = (rank: number | null) => rank !== null && rank <= 3
 
 const getRankStyles = (rank: number | null) => {
-  if (rank === 1) return 'bg-gradient-to-r from-amber-500 to-yellow-500 text-white border-0 shadow-sm'
-  if (rank === 2) return 'bg-gradient-to-r from-slate-400 to-slate-500 text-white border-0 shadow-sm'
-  if (rank === 3) return 'bg-gradient-to-r from-amber-700 to-orange-800 text-white border-0 shadow-sm'
+  if (rank === 1) return 'bg-gradient-to-r from-amber-500 to-yellow-500 text-white border-transparent shadow-sm'
+  if (rank === 2) return 'bg-gradient-to-r from-slate-400 to-slate-500 text-white border-transparent shadow-sm'
+  if (rank === 3) return 'bg-gradient-to-r from-amber-700 to-orange-800 text-white border-transparent shadow-sm'
   return 'bg-muted/50 text-muted-foreground border-border'
 }
 
@@ -158,16 +79,40 @@ const getRankColor = (rank: number | null) => {
   return 'text-muted-foreground'
 }
 
-const getRankIcon = (rank: number | null) => {
-  if (rank === null) return 'lucide:clock-alert'
-  if (rank === 1) return 'lucide:trophy'
-  if (rank === 2) return 'lucide:medal'
-  if (rank === 3) return 'lucide:award'
-  return 'lucide:hash'
+// Below the podium, just the number
+const getRankIcon = (entry: Entry): string | null => {
+  if (entry.section === 'late') return 'lucide:clock-alert'
+  if (entry.section === 'disqualified') return 'lucide:ban'
+  if (entry.section === 'cantRank')
+    return entry.reason === 'onHold' ? 'lucide:circle-pause' : 'lucide:user-plus'
+  if (entry.rank === 1) return 'lucide:trophy'
+  if (entry.rank === 2) return 'lucide:medal'
+  if (entry.rank === 3) return 'lucide:award'
+  return null
+}
+
+const rankTitles: Record<string, string> = {
+  late: 'Submitted after the deadline',
+  unclaimed: "Unclaimed: nobody on this team has signed in yet",
+  onHold: "On hold: someone on another team can push to this team's repository",
+  disqualified: 'Disqualified',
+}
+const rankTitle = (entry: Entry) => rankTitles[entry.reason ?? entry.section]
+
+// Each section after the first starts with a divider
+const dividers: Record<Exclude<Section, 'ranked'>, { icon: string; label: string }> = {
+  late: { icon: 'lucide:clock-alert', label: 'Submitted after the deadline' },
+  cantRank: { icon: 'lucide:circle-pause', label: "Can't rank yet" },
+  disqualified: { icon: 'lucide:ban', label: 'Disqualified' },
+}
+const dividerAfter = (index: number) => {
+  const next = shownEntries[index + 1]
+  if (!next || next.section === shownEntries[index].section) return null
+  return dividers[next.section as Exclude<Section, 'ranked'>]
 }
 
 // Competitions scored in whole numbers, such as tournament points, don't need decimals
-const scoreDecimals = scoredSubmissions.every((s) => Number.isInteger(s.score)) ? 0 : 2
+const scoreDecimals = entries.every((e) => Number.isInteger(e.score)) ? 0 : 2
 
 const formatScore = (score: number | null) => {
   if (score === null) return 'Pending'
@@ -204,9 +149,15 @@ const timeAgo = (date: Date) => {
 
   {shownEntries.length > 0 ? (
     <div class="flex flex-col overflow-hidden">
-      {shownEntries.map(({ submission, lateBest, rank }, index) => {
+      {shownEntries.map((entry, index) => {
+        const { rank, lateBest, section } = entry
         const podium = isPodium(rank)
-        const nextIsFirstLate = rank !== null && shownEntries[index + 1]?.rank === null
+        const nextDivider = dividerAfter(index)
+        const disqualified = section === 'disqualified'
+        // Unclaimed teams have no names, so show the repo
+        const names = entry.members.length
+          ? entry.members.map((m) => m.name || 'Anonymous')
+          : [entry.repoFullName]
 
         const rowBackground =
           rank === 1
@@ -221,70 +172,109 @@ const timeAgo = (date: Date) => {
           <>
             <div class={cn(
               'group transition-colors duration-200 py-4 sm:py-5 px-2 sm:px-3 rounded-md overflow-hidden',
-              rowBackground
+              rowBackground,
+              disqualified && 'opacity-70'
             )}>
               <div class="flex items-start gap-3 min-w-0">
                 <div class="flex-shrink-0">
                   <div
                     class={cn(
-                      'flex items-center justify-center w-10 py-1 rounded-md border font-semibold text-base px-2 gap-1',
+                      'flex items-center justify-center w-12 h-8.5 rounded-md border font-semibold text-base px-2 gap-1',
                       getRankStyles(rank)
                     )}
-                    title={rank === null ? 'Submitted after the deadline' : undefined}
+                    title={rankTitle(entry)}
                   >
-                    <Icon
-                      name={getRankIcon(rank)}
-                      class={cn(
-                        'size-4',
-                        podium ? 'text-white' : 'text-muted-foreground'
-                      )}
-                    />
+                    {getRankIcon(entry) && (
+                      <Icon
+                        name={getRankIcon(entry)!}
+                        class={cn(
+                          'size-4 shrink-0',
+                          podium ? 'text-white' : 'text-muted-foreground'
+                        )}
+                      />
+                    )}
                     {rank !== null && <span>{rank}</span>}
                   </div>
                 </div>
 
                 <div class="flex-1 min-w-0 overflow-hidden flex flex-col gap-1">
                   <div class="flex -space-x-2">
-                    {submission.contributors.slice(0, 5).map((c) => (
+                    {entry.members.slice(0, 5).map((m) => (
                       <AvatarComponent
                         client:load
-                        src={c.userImage || undefined}
-                        alt={c.userName || 'User'}
-                        fallback={c.userName?.[0] || 'U'}
+                        src={m.image || undefined}
+                        alt={m.name || 'User'}
+                        fallback={m.name?.[0] || 'U'}
                         className="size-8 rounded-full border-2 border-background"
                       />
                     ))}
-                    {submission.contributors.length > 5 && (
+                    {entry.members.length > 5 && (
                       <div class="flex size-8 items-center justify-center rounded-full bg-muted border-2 border-background text-xs font-medium">
-                        +{submission.contributors.length - 5}
+                        +{entry.members.length - 5}
                       </div>
                     )}
-                    {submission.unlinkedCount > 0 && (
+                    {entry.unclaimedCount > 0 && (
                       <div class="flex size-8 items-center justify-center rounded-full bg-muted/50 border-2 border-background border-dashed text-xs text-muted-foreground">
-                        +{submission.unlinkedCount}
+                        +{entry.unclaimedCount}
                       </div>
                     )}
                   </div>
 
+                  {/* An unclaimed team's note says this already */}
                   <ScrollingNames
                     client:load
-                    names={submission.contributors.map((c) => c.userName || 'Anonymous')}
-                    unlinkedCount={submission.unlinkedCount}
+                    names={names}
+                    unlinkedCount={entry.reason === 'unclaimed' ? 0 : entry.unclaimedCount}
                   />
 
+                  {entry.reason === 'unclaimed' && (
+                    <p class="flex items-center gap-1 text-[11px] sm:text-xs text-muted-foreground">
+                      <Icon name="lucide:user-plus" class="size-3" />
+                      {ended ? (
+                        <span>Unclaimed: nobody on this team signed in</span>
+                      ) : (
+                        <span>Unclaimed: <Link href="/account" underline>sign in</Link> to enter</span>
+                      )}
+                    </p>
+                  )}
+                  {entry.reason === 'onHold' && (
+                    <p class="flex items-center gap-1 text-[11px] sm:text-xs text-muted-foreground">
+                      <Icon name="lucide:circle-pause" class="size-3" />
+                      On hold: shares a member with another team
+                    </p>
+                  )}
+
                   <p class="text-[11px] sm:text-xs text-muted-foreground">
-                    {timeAgo(new Date(submission.submittedAt))}
+                    {timeAgo(new Date(entry.submittedAt))}
                   </p>
                 </div>
 
                 <div class="text-right flex-shrink-0">
-                  <p class={cn(
-                    'font-bold text-lg sm:text-xl',
-                    podium ? getRankColor(rank) : 'text-foreground'
-                  )}>
-                    {formatScore(submission.score)}
-                  </p>
-                  <p class="text-[10px] sm:text-xs text-muted-foreground">pts</p>
+                  {disqualified ? (
+                    <p
+                      class="font-bold text-lg sm:text-xl text-muted-foreground"
+                      title={entry.publicNotes.join('; ') || 'Disqualified'}
+                    >
+                      DSQ
+                    </p>
+                  ) : (
+                    <>
+                      <p class={cn(
+                        'font-bold text-lg sm:text-xl',
+                        podium ? getRankColor(rank) : 'text-foreground'
+                      )}>
+                        {formatScore(entry.score)}
+                      </p>
+                      <p class="text-[10px] sm:text-xs text-muted-foreground">pts</p>
+                    </>
+                  )}
+                  {/* Penalties are private; only public notes show */}
+                  {!disqualified && entry.publicNotes.length > 0 && (
+                    <p class="mt-1 flex items-center justify-end gap-1 text-[10px] sm:text-xs text-muted-foreground">
+                      <Icon name="lucide:info" class="size-3" />
+                      {entry.publicNotes.join('; ')}
+                    </p>
+                  )}
                   {lateBest && (
                     <p
                       class="mt-1 flex items-center justify-end gap-1 text-[10px] sm:text-xs text-muted-foreground"
@@ -297,12 +287,12 @@ const timeAgo = (date: Date) => {
                 </div>
               </div>
             </div>
-            {nextIsFirstLate ? (
+            {nextDivider ? (
               <div class="flex items-center gap-3 py-2 text-[11px] sm:text-xs text-muted-foreground">
                 <div class="h-px flex-1 bg-gradient-to-r from-transparent to-border/50" />
                 <span class="flex items-center gap-1">
-                  <Icon name="lucide:clock-alert" class="size-3" />
-                  Submitted after the deadline
+                  <Icon name={nextDivider.icon} class="size-3" />
+                  {nextDivider.label}
                 </span>
                 <div class="h-px flex-1 bg-gradient-to-l from-transparent to-border/50" />
               </div>

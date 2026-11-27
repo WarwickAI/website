@@ -1,16 +1,8 @@
 import { betterAuth } from 'better-auth'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle'
-import {
-  db,
-  User,
-  Session,
-  Account,
-  Verification,
-  Contribution,
-  eq,
-  and,
-  isNull,
-} from 'astro:db'
+import { db, User, Session, Account, Verification } from 'astro:db'
+import { recordLogin } from '@/lib/competition/data'
+import { syncUser } from '@/lib/competition/membership-store'
 
 export const auth = betterAuth({
   database: drizzleAdapter(db, {
@@ -29,26 +21,20 @@ export const auth = betterAuth({
     },
   },
   databaseHooks: {
-    account: {
+    session: {
       create: {
-        after: async (account, _) => {
-          if (account.providerId !== 'github') return
+        // Every sign-in. Neither of these may stop someone signing in
+        after: async (session) => {
+          try {
+            await recordLogin(session)
+          } catch (error) {
+            console.error('Failed to record login:', error)
+          }
 
           try {
-            await db
-              .update(Contribution)
-              .set({
-                userId: account.userId,
-                linkedAt: new Date(),
-              })
-              .where(
-                and(
-                  eq(Contribution.githubUserId, parseInt(account.accountId)),
-                  isNull(Contribution.userId),
-                ),
-              )
+            await syncUser(session.userId)
           } catch (error) {
-            console.error(`Failed to link contributions:`, error)
+            console.error('Failed to update teams on sign-in:', error)
           }
         },
       },
