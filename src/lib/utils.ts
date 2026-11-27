@@ -42,3 +42,20 @@ export function getHeadingMargin(depth: number): string {
   }
   return margins[depth] || ''
 }
+
+// Runs a task, and again if it fails. Returns the error if both failed
+export async function tryTwice(
+  task: () => Promise<void>,
+): Promise<Error | null> {
+  try {
+    await task()
+    return null
+  } catch {
+    try {
+      await task()
+      return null
+    } catch (error) {
+      return error instanceof Error ? error : new Error(String(error))
+    }
+  }
+}
