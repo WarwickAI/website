@@ -20,6 +20,9 @@ export const auth = betterAuth({
       clientSecret: import.meta.env.GITHUB_CLIENT_SECRET as string,
     },
   },
+  // Sign-in is checked on every request, so it's kept in a signed cookie for
+  // 5 minutes rather than looked up in the database each time
+  session: { cookieCache: { enabled: true, maxAge: 5 * 60 } },
   databaseHooks: {
     session: {
       create: {
