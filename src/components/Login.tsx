@@ -35,11 +35,12 @@ const warwickCrest = (
   </svg>
 )
 
-// callbackURL and horizontal are for /account; the popover uses neither
+// callbackURL, horizontal and heading are for /account; the popover uses none
 export default function Login({
   callbackURL,
   horizontal = false,
-}: { callbackURL?: string; horizontal?: boolean } = {}) {
+  heading: Heading = 'h3',
+}: { callbackURL?: string; horizontal?: boolean; heading?: 'h2' | 'h3' } = {}) {
   const [loading, setLoading] = useState(false)
   const [comingSoon, setComingSoon] = useState(false)
   const comingSoonTimeout = useRef<ReturnType<typeof setTimeout>>(undefined)
@@ -47,7 +48,7 @@ export default function Login({
   return (
     <div className="grid gap-2">
       <div className="space-y-2">
-        <h3 className="leading-none font-medium">Sign in</h3>
+        <Heading className="leading-none font-medium">Sign in</Heading>
         <p className="text-muted-foreground text-sm">
           Choose how to log into your WAI account
         </p>

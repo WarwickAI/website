@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/tooltip'
 import type { AccountTeam } from '@/lib/competition/account'
 import type { MyTeam } from '@/lib/competition/membership'
-import { useMyTeams } from '@/lib/competition/use-my-teams'
+import { setMyTeams, useMyTeams } from '@/lib/competition/use-my-teams'
 import { cn } from '@/lib/utils'
 import {
   ArrowRightLeft,
@@ -57,7 +57,7 @@ export default function AccountPanel({
   const stored = useMyTeams(signedIn)
   const [synced, setSynced] = useState<AccountTeam[] | null>(null)
   const [problem, setProblem] = useState<string | null>(null)
-  const [syncing, setSyncing] = useState(false)
+  const [syncing, setSyncing] = useState(signedIn)
   const teams =
     synced ??
     stored?.map((team) => ({
@@ -67,8 +67,8 @@ export default function AccountPanel({
     })) ??
     null
 
-  const sync = async () => {
-    if (syncing) return
+  const sync = async (first = false) => {
+    if (syncing && !first) return
     setSyncing(true)
     const response = await fetch('/api/me/sync', {
       method: 'POST',
@@ -80,7 +80,10 @@ export default function AccountPanel({
       problem: string | null
     } | null
     if (response?.ok && body) {
-      if (body.teams) setSynced(body.teams)
+      if (body.teams) {
+        setSynced(body.teams)
+        setMyTeams(body.teams)
+      }
       setProblem(body.problem)
     } else {
       setProblem("Couldn't sync with GitHub. Try again.")
@@ -90,7 +93,7 @@ export default function AccountPanel({
 
   // Once on arrival, so changes on GitHub since the last push show
   useEffect(() => {
-    if (signedIn) void sync()
+    if (signedIn) void sync(true)
   }, [])
 
   if (!signedIn) return <SignIn returnTo={returnTo} />
@@ -107,7 +110,7 @@ export default function AccountPanel({
                 size="icon"
                 className="size-8"
                 aria-busy={syncing}
-                onClick={sync}
+                onClick={() => sync()}
               >
                 <RefreshCw
                   className={cn('size-4', syncing && 'animate-spin')}
@@ -128,12 +131,14 @@ export default function AccountPanel({
         </p>
       )}
       {!teams ? (
-        <div role="status" className={cn(card, 'flex flex-col gap-3')}>
-          <span className="sr-only">Loading your teams</span>
-          <div className="bg-foreground/10 h-5 w-40 animate-pulse rounded" />
-          <div className="bg-foreground/10 h-4 w-20 animate-pulse rounded" />
-          <div className="bg-foreground/10 h-4 w-56 animate-pulse rounded" />
-        </div>
+        !syncing ? null : (
+          <div role="status" className={cn(card, 'flex flex-col gap-3')}>
+            <span className="sr-only">Loading your teams</span>
+            <div className="bg-foreground/10 h-5 w-40 animate-pulse rounded" />
+            <div className="bg-foreground/10 h-4 w-20 animate-pulse rounded" />
+            <div className="bg-foreground/10 h-4 w-56 animate-pulse rounded" />
+          </div>
+        )
       ) : teams.length ? (
         teams.map((team) => <TeamCard key={team.projectId} team={team} />)
       ) : syncing ? (
@@ -166,7 +171,7 @@ export default function AccountPanel({
 function SignIn({ returnTo }: { returnTo: string }) {
   return (
     <div className={cn(card, 'text-sm')}>
-      <Login callbackURL={returnTo} horizontal />
+      <Login callbackURL={returnTo} horizontal heading="h2" />
     </div>
   )
 }
