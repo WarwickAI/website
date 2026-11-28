@@ -352,6 +352,78 @@ describe('summariseMyTeam', () => {
     expect(mine.members.map((m) => m.name)).toEqual(['alice', 'bob'])
   })
 
+  it('shows the commit a round plays: its latest from any repo', () => {
+    const data = competition()
+    const alice = user(data, 'alice')
+    team(data, 'A', {
+      members: [alice],
+      repos: [
+        { id: 'a', fullName: 'alice/bot', collaborators: ['gh-alice'] },
+        { id: 'a2', fullName: 'alice/bot-2', collaborators: ['gh-alice'] },
+      ],
+    })
+    team(data, 'B', {
+      members: [user(data, 'bob')],
+      repos: [{ id: 'b', fullName: 'bob/bot', collaborators: ['gh-bob'] }],
+    })
+    const at = (id: string, repositoryId: string, n: number) =>
+      submission(data, { id, repositoryId, score: 1, submittedAt: day(n) })
+    at('first', 'a2', 1)
+    at('newest', 'a2', 3)
+    at('older-repo', 'a', 2)
+    at('other-team', 'b', 4)
+
+    const mine = summariseMyTeam(data, teamStatuses(data, NOW), alice, NOW)
+    expect(mine.repoFullName).toBe('alice/bot-2')
+    expect(mine.playingCommit).toEqual({
+      sha: 'newest',
+      repoFullName: 'alice/bot-2',
+    })
+  })
+
+  it("doesn't show a commit pushed after the end, which never plays", () => {
+    const data = competition()
+    const alice = user(data, 'alice')
+    team(data, 'A', {
+      members: [alice],
+      repos: [
+        { id: 'a', fullName: 'alice/bot', collaborators: ['gh-alice'] },
+        { id: 'a2', fullName: 'alice/bot-2', collaborators: ['gh-alice'] },
+      ],
+    })
+    submission(data, {
+      id: 'on-time',
+      repositoryId: 'a',
+      score: 1,
+      submittedAt: day(5),
+    })
+    submission(data, {
+      id: 'late',
+      repositoryId: 'a2',
+      score: 1,
+      submittedAt: day(60),
+    })
+
+    const now = day(61)
+    const mine = summariseMyTeam(data, teamStatuses(data, now), alice, now)
+    expect(mine.playingCommit).toEqual({
+      sha: 'on-time',
+      repoFullName: 'alice/bot',
+    })
+  })
+
+  it('has no commit to play before a push passes', () => {
+    const data = competition()
+    const alice = user(data, 'alice')
+    team(data, 'A', {
+      members: [alice],
+      repos: [{ id: 'a', fullName: 'alice/bot', collaborators: ['gh-alice'] }],
+    })
+
+    const mine = summariseMyTeam(data, teamStatuses(data, NOW), alice, NOW)
+    expect(mine.playingCommit).toBeNull()
+  })
+
   it('explains a hold with who is on which other team', () => {
     const data = competition()
     const alice = user(data, 'alice')
@@ -441,6 +513,7 @@ describe('needsAttention', () => {
     locked: false,
     teamId: 'A',
     repoFullName: 'a/bot',
+    playingCommit: null,
     members: [],
     state: 'active' as const,
     holdReasons: [],
@@ -486,6 +559,7 @@ describe('attentionLine', () => {
     locked: false,
     teamId: 'A',
     repoFullName: 'a/bot',
+    playingCommit: null,
     members: [],
     state: 'active' as const,
     holdReasons: [],

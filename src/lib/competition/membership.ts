@@ -1,4 +1,5 @@
 import { lockTime, type CompetitionData } from './model'
+import { onTime } from './rounds'
 import { collaboratorsAt, type TeamState, type TeamStatus } from './team-status'
 
 // One repo and the people around it, as membership-store.ts reads them
@@ -175,6 +176,9 @@ export interface MyTeam {
   teamId: string | null
   // The repo that plays
   repoFullName: string | null
+  // The commit a round plays: its latest that passed, on time. Its repo is
+  // repoFullName, unless the team pushed to another one after the end
+  playingCommit: { sha: string; repoFullName: string } | null
   members: { name: string; image: string | null }[]
   state: TeamState | null
   // People on other teams who can push to its repo
@@ -204,6 +208,15 @@ export function summariseMyTeam(
   const newestRepoOf = (team: string) =>
     statuses.get(team)?.newestRepositoryId ??
     data.repositories.find((r) => r.teamId === team)?.id
+  // As pickBots chooses it, from any of the team's repos
+  const teamRepos = new Map(
+    data.repositories
+      .filter((r) => r.teamId === teamId)
+      .map((r) => [r.id, r.fullName]),
+  )
+  const playing = data.submissions
+    .filter((s) => teamRepos.has(s.repositoryId) && onTime(data.project, s))
+    .sort((a, b) => b.submittedAt.getTime() - a.submittedAt.getTime())[0]
 
   return {
     projectId: data.project.id,
@@ -212,6 +225,12 @@ export function summariseMyTeam(
     locked: !!lockAt && now >= lockAt,
     teamId,
     repoFullName: teamId ? repoName(newestRepoOf(teamId)) : null,
+    playingCommit: playing
+      ? {
+          sha: playing.commitHash,
+          repoFullName: teamRepos.get(playing.repositoryId)!,
+        }
+      : null,
     members: (status?.memberUserIds ?? []).map((id) => ({
       name: users.get(id)?.name ?? 'Anonymous',
       image: users.get(id)?.image ?? null,

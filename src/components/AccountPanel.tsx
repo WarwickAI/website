@@ -16,6 +16,7 @@ import {
   ArrowRightLeft,
   CircleAlert,
   CirclePause,
+  GitCommitHorizontal,
   GitPullRequest,
   RefreshCw,
   Trophy,
@@ -244,12 +245,36 @@ function TeamCard({ team }: { team: AccountTeam }) {
               {team.members.map((m) => m.name).join(', ')}
             </p>
             {team.repoFullName && (
-              <a
-                href={`https://github.com/${team.repoFullName}`}
-                className={cn('text-muted-foreground text-xs', link)}
-              >
-                {team.repoFullName}
-              </a>
+              <p className="text-muted-foreground flex min-w-0 items-center gap-2 text-xs">
+                <a
+                  href={`https://github.com/${team.repoFullName}`}
+                  className={cn('truncate', link)}
+                >
+                  {team.repoFullName}
+                </a>
+                {team.playingCommit && (
+                  <TooltipProvider delayDuration={200}>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <a
+                          href={`https://github.com/${team.playingCommit.repoFullName}/commit/${team.playingCommit.sha}`}
+                          className={cn(
+                            'flex shrink-0 items-center gap-1 font-mono',
+                            link,
+                          )}
+                        >
+                          <GitCommitHorizontal className="size-3.5" />
+                          {team.playingCommit.sha.slice(0, 7)}
+                        </a>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        Your latest commit that passed, which is the one that
+                        plays
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                )}
+              </p>
             )}
           </div>
         </div>

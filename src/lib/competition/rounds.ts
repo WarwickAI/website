@@ -141,18 +141,25 @@ export interface PickedBot {
   submission: CompetitionData['submissions'][number]
 }
 
+// Whether a submission can play: one after the end is late
+export function onTime(
+  project: CompetitionData['project'],
+  submission: { submittedAt: Date },
+): boolean {
+  return !project.endDate || submission.submittedAt <= project.endDate
+}
+
 // One on-time submission per active team, best score first
 export function pickBots(
   data: CompetitionData,
   statuses: Map<string, TeamStatus>,
   mode: PickMode,
 ): PickedBot[] {
-  const { endDate } = data.project
   const repos = new Map(data.repositories.map((r) => [r.id, r]))
 
   const picked = new Map<string, PickedBot>()
   for (const submission of data.submissions) {
-    if (endDate && submission.submittedAt > endDate) continue
+    if (!onTime(data.project, submission)) continue
     const repo = repos.get(submission.repositoryId)
     if (!repo || statuses.get(repo.teamId)?.state !== 'active') continue
 
@@ -184,7 +191,6 @@ export function leftOutBots(
   data: CompetitionData,
   statuses: Map<string, TeamStatus>,
 ): LeftOutBot[] {
-  const { endDate } = data.project
   const repos = new Map(data.repositories.map((r) => [r.id, r]))
   const users = new Map(data.users.map((u) => [u.id, u.name]))
   const repoOf = (teamId: string) =>
@@ -194,7 +200,7 @@ export function leftOutBots(
 
   const left = new Map<string, LeftOutBot>()
   for (const submission of data.submissions) {
-    if (endDate && submission.submittedAt > endDate) continue
+    if (!onTime(data.project, submission)) continue
     const repo = repos.get(submission.repositoryId)
     const status = repo && statuses.get(repo.teamId)
     if (!status || status.state === 'active' || left.has(status.teamId))
