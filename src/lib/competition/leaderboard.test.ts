@@ -246,4 +246,41 @@ describe('buildLeaderboard', () => {
     expect(row.members).toEqual([{ userId: 'user-A', name: 'A', image: null }])
     expect(row.repoFullName).toBe('A/bot')
   })
+
+  it('shows public notes on ineligible and void penalties', () => {
+    const data = competition()
+    team(data, 'a', {
+      members: [user(data, 'Ann', 'gh-a')],
+      repos: [{ id: 'a', collaborators: ['gh-a'] }],
+    })
+    team(data, 'b', {
+      members: [user(data, 'Bob', 'gh-b')],
+      repos: [{ id: 'b', collaborators: ['gh-b'] }],
+    })
+    for (const repositoryId of ['a', 'b']) {
+      submission(data, {
+        id: `s-${repositoryId}`,
+        repositoryId,
+        score: 1,
+        submittedAt: day(1),
+      })
+    }
+    penalty(data, {
+      kind: 'ineligible',
+      teamId: 'a',
+      publicNote: 'Not eligible for prizes',
+    })
+    penalty(data, {
+      kind: 'void',
+      teamId: 'b',
+      beforeRound: 3,
+      publicNote: "Rounds 1 and 2 don't count",
+    })
+
+    const board = buildLeaderboard(data, teamStatuses(data, day(30)))
+    expect(board.ranked.map((r) => r.publicNotes).sort()).toEqual([
+      ['Not eligible for prizes'],
+      ["Rounds 1 and 2 don't count"],
+    ])
+  })
 })
