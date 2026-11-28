@@ -37,100 +37,113 @@ const toPenalty = (p: typeof Penalty.$inferSelect): PenaltyRow => ({
   kind: p.kind as PenaltyKind,
 })
 
-// `inArray` with nothing to match would be invalid SQL
-const among = <T>(column: Parameters<typeof inArray>[0], values: T[]) =>
-  values.length ? inArray(column, values) : undefined
-
 export async function loadCompetition(
   projectId: string,
 ): Promise<CompetitionData> {
-  const project = await db
-    .select()
-    .from(Project)
-    .where(eq(Project.id, projectId))
-    .get()
-  if (!project) throw new Error(`There's no project ${projectId}`)
+  // One round trip: everything else is found through these
+  const teamIds = db
+    .select({ id: Team.id })
+    .from(Team)
+    .where(eq(Team.projectId, projectId))
+  const participantIds = db
+    .select({ id: Participant.id })
+    .from(Participant)
+    .where(eq(Participant.projectId, projectId))
+  const participantUserIds = db
+    .select({ id: Participant.userId })
+    .from(Participant)
+    .where(eq(Participant.projectId, projectId))
+  const repoIds = db
+    .select({ id: Repository.id })
+    .from(Repository)
+    .where(inArray(Repository.teamId, teamIds))
+  const collaboratorIds = db
+    .select({ id: Collaborator.githubUserId })
+    .from(Collaborator)
+    .where(inArray(Collaborator.repositoryId, repoIds))
+  const collaboratorUserIds = db
+    .select({ id: Account.userId })
+    .from(Account)
+    .where(
+      and(
+        eq(Account.providerId, 'github'),
+        inArray(Account.accountId, collaboratorIds),
+      ),
+    )
 
-  const [teams, participants, rounds] = await Promise.all([
+  const [
+    [project],
+    teams,
+    participants,
+    rounds,
+    teamMembers,
+    repositories,
+    roundResults,
+    penalties,
+    collaborators,
+    submissions,
+    accounts,
+    users,
+  ] = await db.batch([
+    db.select().from(Project).where(eq(Project.id, projectId)),
     db.select().from(Team).where(eq(Team.projectId, projectId)),
     db.select().from(Participant).where(eq(Participant.projectId, projectId)),
     db.select().from(Round).where(eq(Round.projectId, projectId)),
+    db.select().from(TeamMember).where(inArray(TeamMember.teamId, teamIds)),
+    db.select().from(Repository).where(inArray(Repository.teamId, teamIds)),
+    db
+      .select()
+      .from(RoundResult)
+      .where(
+        inArray(
+          RoundResult.roundId,
+          db
+            .select({ id: Round.id })
+            .from(Round)
+            .where(eq(Round.projectId, projectId)),
+        ),
+      ),
+    db
+      .select()
+      .from(Penalty)
+      .where(
+        or(
+          inArray(Penalty.teamId, teamIds),
+          inArray(Penalty.participantId, participantIds),
+        ),
+      ),
+    db
+      .select()
+      .from(Collaborator)
+      .where(inArray(Collaborator.repositoryId, repoIds)),
+    db
+      .select()
+      .from(Submission)
+      .where(inArray(Submission.repositoryId, repoIds)),
+    db
+      .select({ userId: Account.userId, accountId: Account.accountId })
+      .from(Account)
+      .where(
+        and(
+          eq(Account.providerId, 'github'),
+          or(
+            inArray(Account.userId, participantUserIds),
+            inArray(Account.accountId, collaboratorIds),
+          ),
+        ),
+      ),
+    // Participants, and collaborators who have signed in
+    db
+      .select({ id: User.id, name: User.name, image: User.image })
+      .from(User)
+      .where(
+        or(
+          inArray(User.id, participantUserIds),
+          inArray(User.id, collaboratorUserIds),
+        ),
+      ),
   ])
-  const teamIds = teams.map((t) => t.id)
-  const participantIds = participants.map((p) => p.id)
-
-  const [teamMembers, repositories, roundResults, penalties] =
-    await Promise.all([
-      teamIds.length
-        ? db.select().from(TeamMember).where(among(TeamMember.teamId, teamIds))
-        : [],
-      teamIds.length
-        ? db.select().from(Repository).where(among(Repository.teamId, teamIds))
-        : [],
-      rounds.length
-        ? db
-            .select()
-            .from(RoundResult)
-            .where(
-              among(
-                RoundResult.roundId,
-                rounds.map((r) => r.id),
-              ),
-            )
-        : [],
-      teamIds.length || participantIds.length
-        ? db
-            .select()
-            .from(Penalty)
-            .where(
-              or(
-                among(Penalty.teamId, teamIds),
-                among(Penalty.participantId, participantIds),
-              ),
-            )
-        : [],
-    ])
-  const repoIds = repositories.map((r) => r.id)
-  const [collaborators, submissions] = repoIds.length
-    ? await Promise.all([
-        db
-          .select()
-          .from(Collaborator)
-          .where(among(Collaborator.repositoryId, repoIds)),
-        db
-          .select()
-          .from(Submission)
-          .where(among(Submission.repositoryId, repoIds)),
-      ])
-    : [[], []]
-
-  // Participants, and collaborators who have signed in
-  const participantUserIds = participants.map((p) => p.userId)
-  const collaboratorIds = [...new Set(collaborators.map((c) => c.githubUserId))]
-  const accounts =
-    participantUserIds.length || collaboratorIds.length
-      ? await db
-          .select({ userId: Account.userId, accountId: Account.accountId })
-          .from(Account)
-          .where(
-            and(
-              eq(Account.providerId, 'github'),
-              or(
-                among(Account.userId, participantUserIds),
-                among(Account.accountId, collaboratorIds),
-              ),
-            ),
-          )
-      : []
-  const userIds = [
-    ...new Set([...participantUserIds, ...accounts.map((a) => a.userId)]),
-  ]
-  const users = userIds.length
-    ? await db
-        .select({ id: User.id, name: User.name, image: User.image })
-        .from(User)
-        .where(among(User.id, userIds))
-    : []
+  if (!project) throw new Error(`There's no project ${projectId}`)
 
   return {
     project: {
