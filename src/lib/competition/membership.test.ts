@@ -389,11 +389,33 @@ describe('summariseMyTeam', () => {
 
     expect(
       summariseMyTeam(data, teamStatuses(data, NOW), alice, NOW).switchOffers,
-    ).toEqual([{ teamId: 'B', repoFullName: 'bob/bot' }])
+    ).toEqual([{ teamId: 'B', repoFullName: 'bob/bot', hasMembers: true }])
     const late = day(50)
     const after = summariseMyTeam(data, teamStatuses(data, late), alice, late)
     expect(after.switchOffers).toEqual([])
     expect(after.locked).toBe(true)
+  })
+
+  it('marks an offer back to a team they left as having no members', () => {
+    const data = competition({ teamsLockAt: LOCK })
+    const alice = user(data, 'alice')
+    // Alice switched from her own repo to Bob's, and can still push to hers
+    team(data, 'A', {
+      repos: [{ id: 'a', fullName: 'alice/bot', collaborators: ['gh-alice'] }],
+    })
+    team(data, 'B', {
+      members: [alice, user(data, 'bob')],
+      repos: [
+        { id: 'b', fullName: 'bob/bot', collaborators: ['gh-bob', 'gh-alice'] },
+      ],
+    })
+
+    const mine = summariseMyTeam(data, teamStatuses(data, NOW), alice, NOW)
+    expect(mine.switchOffers).toEqual([
+      { teamId: 'A', repoFullName: 'alice/bot', hasMembers: false },
+    ])
+    expect(needsAttention(mine)).toBe(false)
+    expect(attentionLine(mine)).toBeNull()
   })
 
   it('a participant with no team gets teamId null', () => {
@@ -435,7 +457,9 @@ describe('needsAttention', () => {
     expect(
       needsAttention({
         ...base,
-        switchOffers: [{ teamId: 'B', repoFullName: 'b/bot' }],
+        switchOffers: [
+          { teamId: 'B', repoFullName: 'b/bot', hasMembers: true },
+        ],
       }),
     ).toBe(true)
   })
@@ -446,7 +470,9 @@ describe('needsAttention', () => {
     expect(
       stopsPlay({
         ...base,
-        switchOffers: [{ teamId: 'B', repoFullName: 'b/bot' }],
+        switchOffers: [
+          { teamId: 'B', repoFullName: 'b/bot', hasMembers: true },
+        ],
       }),
     ).toBe(false)
   })
@@ -483,7 +509,9 @@ describe('attentionLine', () => {
     expect(
       attentionLine({
         ...base,
-        switchOffers: [{ teamId: 'B', repoFullName: 'bob/bot' }],
+        switchOffers: [
+          { teamId: 'B', repoFullName: 'bob/bot', hasMembers: true },
+        ],
       }),
     ).toBe('You can switch to bob/bot'))
 

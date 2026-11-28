@@ -180,7 +180,8 @@ export interface MyTeam {
   // People on other teams who can push to its repo
   holdReasons: { name: string; otherRepoFullName: string }[]
   unclaimedGithubUserIds: string[]
-  switchOffers: { teamId: string; repoFullName: string }[]
+  // hasMembers is false for a team they left, which needs no attention
+  switchOffers: { teamId: string; repoFullName: string; hasMembers: boolean }[]
 }
 
 export function summariseMyTeam(
@@ -233,14 +234,17 @@ export function summariseMyTeam(
           .map((c) => c.githubUserId)
           .filter((id) => !data.userIdOfGithub.has(id))
       : [],
-    switchOffers: switchOffers(data, userId, now),
+    switchOffers: switchOffers(data, userId, now).map((offer) => ({
+      ...offer,
+      hasMembers: !!statuses.get(offer.teamId)?.memberUserIds.length,
+    })),
   }
 }
 
 // A switch to answer, a hold to sort out, or teammates to sign in
 export function needsAttention(team: MyTeam): boolean {
   return (
-    team.switchOffers.length > 0 ||
+    team.switchOffers.some((offer) => offer.hasMembers) ||
     team.state === 'onHold' ||
     team.unclaimedGithubUserIds.length > 0
   )
@@ -255,8 +259,8 @@ export function stopsPlay(team: MyTeam): boolean {
 export function attentionLine(team: MyTeam): string | null {
   if (team.state === 'onHold')
     return 'On hold: someone on another team can push to your repository'
-  if (team.switchOffers.length)
-    return `You can switch to ${team.switchOffers[0].repoFullName}`
+  const offer = team.switchOffers.find((o) => o.hasMembers)
+  if (offer) return `You can switch to ${offer.repoFullName}`
   const unclaimed = team.unclaimedGithubUserIds.length
   if (unclaimed)
     return `${unclaimed} teammate${unclaimed === 1 ? " hasn't" : "s haven't"} signed in`
