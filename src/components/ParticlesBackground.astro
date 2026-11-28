@@ -72,16 +72,29 @@ const options: ISourceOptions = {
 }
 ---
 
-<div id="tsparticles" data-options={JSON.stringify(options)}></div>
+<div id="tsparticles" data-options={JSON.stringify(options)} transition:persist>
+</div>
 
 <script>
   import { tsParticles, type ISourceOptions } from '@tsparticles/engine'
   import { loadSlim } from '@tsparticles/slim'
 
-  const el = document.getElementById('tsparticles')
-  if (el) {
-    const options = JSON.parse(el.dataset.options!) as ISourceOptions
-    await loadSlim(tsParticles)
-    await tsParticles.load({ id: 'tsparticles', options })
-  }
+  const ready = loadSlim(tsParticles)
+
+  // The router only runs this script on the first page with particles, so
+  // they're started on every page it changes to. Between two pages with
+  // particles the div is kept, canvas and all, so they carry on as they were.
+  document.addEventListener('astro:page-load', async () => {
+    const el = document.getElementById('tsparticles')
+    if (el?.querySelector('canvas')) return
+
+    // The last page's particles, still drawing on a canvas that's gone
+    for (const container of [...tsParticles.items]) container.destroy()
+
+    if (el) {
+      const options = JSON.parse(el.dataset.options!) as ISourceOptions
+      await ready
+      await tsParticles.load({ id: 'tsparticles', options })
+    }
+  })
 </script>
