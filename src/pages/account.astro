@@ -7,7 +7,6 @@ import PageHead from '@/components/PageHead.astro'
 import AvatarComponent from '@/components/ui/avatar'
 import Layout from '@/layouts/Layout.astro'
 import { auth } from '@/lib/auth'
-import { storedTeams, type AccountTeam } from '@/lib/competition/account'
 
 // GitHub's install redirect and teammates' links land here. Signing in is entering
 export const prerender = false
@@ -21,19 +20,6 @@ const installationId =
 const returnTo = installationId
   ? `/account?installation_id=${installationId}`
   : '/account'
-
-// As stored, which is quick; the panel then syncs with GitHub
-let teams: AccountTeam[] | null = []
-let problem: string | null = null
-if (session) {
-  try {
-    teams = await storedTeams(session.user.id)
-  } catch (error) {
-    console.error('Error loading teams:', error)
-    teams = null
-    problem = "We couldn't load your teams. Refresh the page to try again."
-  }
-}
 ---
 
 <Layout class="max-w-3xl" particles>
@@ -81,20 +67,12 @@ if (session) {
           <AccountPanel
             client:load
             signedIn
-            teams={teams}
-            problem={problem}
             returnTo={returnTo}
             installationId={installationId}
           />
         </>
       ) : (
-        <AccountPanel
-          client:load
-          signedIn={false}
-          teams={[]}
-          problem={null}
-          returnTo={returnTo}
-        />
+        <AccountPanel client:load signedIn={false} returnTo={returnTo} />
       )
     }
   </section>

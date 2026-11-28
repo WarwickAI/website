@@ -27,15 +27,6 @@ export type AccountTeam = MyTeam & {
   suggestedLogins: string[]
 }
 
-// As stored, for showing straight away
-export async function storedTeams(userId: string): Promise<AccountTeam[]> {
-  return (await myTeams(userId)).map((team) => ({
-    ...team,
-    unclaimedLogins: [],
-    suggestedLogins: [],
-  }))
-}
-
 // Brings someone's teams up to date with GitHub: an installation they just
 // made, who can push now, and the usernames and suggestions. teams is null if
 // they couldn't be loaded
@@ -87,15 +78,14 @@ export async function myTeams(
   userId: string,
   now = new Date(),
 ): Promise<MyTeam[]> {
-  const teams: (MyTeam & { running: boolean; startDate: number })[] = []
-  for (const projectId of await projectsOfUser(userId)) {
-    const data = await loadCompetition(projectId)
-    teams.push({
-      ...summariseMyTeam(data, teamStatuses(data, now), userId, now),
-      running: !data.project.endDate || now <= data.project.endDate,
-      startDate: data.project.startDate.getTime(),
-    })
-  }
+  const competitions = await Promise.all(
+    (await projectsOfUser(userId)).map(loadCompetition),
+  )
+  const teams = competitions.map((data) => ({
+    ...summariseMyTeam(data, teamStatuses(data, now), userId, now),
+    running: !data.project.endDate || now <= data.project.endDate,
+    startDate: data.project.startDate.getTime(),
+  }))
   return teams
     .sort(
       (a, b) =>

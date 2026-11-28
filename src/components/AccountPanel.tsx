@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/tooltip'
 import type { AccountTeam } from '@/lib/competition/account'
 import type { MyTeam } from '@/lib/competition/membership'
+import { useMyTeams } from '@/lib/competition/use-my-teams'
 import { cn } from '@/lib/utils'
 import {
   ArrowRightLeft,
@@ -24,9 +25,6 @@ import { useEffect, useState } from 'react'
 
 interface Props {
   signedIn: boolean
-  // As stored; null if they couldn't be loaded
-  teams: AccountTeam[] | null
-  problem: string | null
   returnTo: string
   installationId?: number | null
 }
@@ -52,14 +50,22 @@ const card = 'bg-background/75 rounded-xl border p-4'
 
 export default function AccountPanel({
   signedIn,
-  teams: storedTeams,
-  problem: storedProblem,
   returnTo,
   installationId = null,
 }: Props) {
-  const [teams, setTeams] = useState(storedTeams)
-  const [problem, setProblem] = useState(storedProblem)
+  // The popover's copy shows straight away, until GitHub has been asked
+  const stored = useMyTeams(signedIn)
+  const [synced, setSynced] = useState<AccountTeam[] | null>(null)
+  const [problem, setProblem] = useState<string | null>(null)
   const [syncing, setSyncing] = useState(false)
+  const teams =
+    synced ??
+    stored?.map((team) => ({
+      ...team,
+      unclaimedLogins: [],
+      suggestedLogins: [],
+    })) ??
+    null
 
   const sync = async () => {
     if (syncing) return
@@ -74,7 +80,7 @@ export default function AccountPanel({
       problem: string | null
     } | null
     if (response?.ok && body) {
-      if (body.teams) setTeams(body.teams)
+      if (body.teams) setSynced(body.teams)
       setProblem(body.problem)
     } else {
       setProblem("Couldn't sync with GitHub. Try again.")
@@ -121,7 +127,14 @@ export default function AccountPanel({
           {problem}
         </p>
       )}
-      {!teams ? null : teams.length ? (
+      {!teams ? (
+        <div role="status" className={cn(card, 'flex flex-col gap-3')}>
+          <span className="sr-only">Loading your teams</span>
+          <div className="bg-foreground/10 h-5 w-40 animate-pulse rounded" />
+          <div className="bg-foreground/10 h-4 w-20 animate-pulse rounded" />
+          <div className="bg-foreground/10 h-4 w-56 animate-pulse rounded" />
+        </div>
+      ) : teams.length ? (
         teams.map((team) => <TeamCard key={team.projectId} team={team} />)
       ) : syncing ? (
         <p className={cn(card, 'text-muted-foreground text-sm')}>
