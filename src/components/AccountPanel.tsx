@@ -2,6 +2,13 @@ import Login from '@/components/Login'
 import AvatarComponent from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Button, buttonVariants } from '@/components/ui/button'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip'
+import type { AccountTeam } from '@/lib/competition/account'
 import type { MyTeam } from '@/lib/competition/membership'
 import { cn } from '@/lib/utils'
 import {
@@ -9,22 +16,19 @@ import {
   CircleAlert,
   CirclePause,
   GitPullRequest,
+  RefreshCw,
   Trophy,
   UserPlus,
 } from 'lucide-react'
-import { useState } from 'react'
-
-export type AccountTeam = MyTeam & {
-  unclaimedLogins: string[]
-  suggestedLogins: string[]
-}
+import { useEffect, useState } from 'react'
 
 interface Props {
   signedIn: boolean
-  // null if they couldn't be loaded
+  // As stored; null if they couldn't be loaded
   teams: AccountTeam[] | null
   problem: string | null
   returnTo: string
+  installationId?: number | null
 }
 
 const APP_LINK = 'https://github.com/apps/warwickai'
@@ -48,14 +52,69 @@ const card = 'bg-background/75 rounded-xl border p-4'
 
 export default function AccountPanel({
   signedIn,
-  teams,
-  problem,
+  teams: storedTeams,
+  problem: storedProblem,
   returnTo,
+  installationId = null,
 }: Props) {
+  const [teams, setTeams] = useState(storedTeams)
+  const [problem, setProblem] = useState(storedProblem)
+  const [syncing, setSyncing] = useState(false)
+
+  const sync = async () => {
+    if (syncing) return
+    setSyncing(true)
+    const response = await fetch('/api/me/sync', {
+      method: 'POST',
+      headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ installationId }),
+    }).catch(() => null)
+    const body = (await response?.json().catch(() => null)) as {
+      teams: AccountTeam[] | null
+      problem: string | null
+    } | null
+    if (response?.ok && body) {
+      if (body.teams) setTeams(body.teams)
+      setProblem(body.problem)
+    } else {
+      setProblem("Couldn't sync with GitHub. Try again.")
+    }
+    setSyncing(false)
+  }
+
+  // Once on arrival, so changes on GitHub since the last push show
+  useEffect(() => {
+    if (signedIn) void sync()
+  }, [])
+
   if (!signedIn) return <SignIn returnTo={returnTo} />
 
   return (
     <div className="flex flex-col gap-4">
+      <div className="mt-2 flex items-center justify-between gap-2">
+        <h2 className="text-2xl font-medium">Your teams</h2>
+        <TooltipProvider delayDuration={200}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="size-8"
+                aria-busy={syncing}
+                onClick={sync}
+              >
+                <RefreshCw
+                  className={cn('size-4', syncing && 'animate-spin')}
+                />
+                <span className="sr-only">Sync with GitHub</span>
+              </Button>
+            </TooltipTrigger>
+            <TooltipContent>
+              {syncing ? 'Syncing with GitHub…' : 'Sync with GitHub'}
+            </TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      </div>
       {problem && (
         <p className="flex items-start gap-2 rounded-md border border-amber-500/40 bg-amber-500/10 p-3 text-sm">
           <CircleAlert className="mt-0.5 size-4 shrink-0 text-amber-600 dark:text-amber-400" />
@@ -64,6 +123,10 @@ export default function AccountPanel({
       )}
       {!teams ? null : teams.length ? (
         teams.map((team) => <TeamCard key={team.projectId} team={team} />)
+      ) : syncing ? (
+        <p className={cn(card, 'text-muted-foreground text-sm')}>
+          Checking GitHub for your teams…
+        </p>
       ) : (
         <div className={cn(card, 'flex flex-col gap-2 text-sm')}>
           <p className="text-foreground font-medium">

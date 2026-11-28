@@ -1,6 +1,5 @@
 ---
 import AccountPanel from '@/components/AccountPanel'
-import AccountTeams from '@/components/AccountTeams.astro'
 import Breadcrumbs from '@/components/Breadcrumbs.astro'
 import GithubLogin from '@/components/GithubLogin.astro'
 import LogOutButton from '@/components/LogOutButton'
@@ -8,6 +7,7 @@ import PageHead from '@/components/PageHead.astro'
 import AvatarComponent from '@/components/ui/avatar'
 import Layout from '@/layouts/Layout.astro'
 import { auth } from '@/lib/auth'
+import { storedTeams, type AccountTeam } from '@/lib/competition/account'
 
 // GitHub's install redirect and teammates' links land here. Signing in is entering
 export const prerender = false
@@ -21,6 +21,19 @@ const installationId =
 const returnTo = installationId
   ? `/account?installation_id=${installationId}`
   : '/account'
+
+// As stored, which is quick; the panel then syncs with GitHub
+let teams: AccountTeam[] | null = []
+let problem: string | null = null
+if (session) {
+  try {
+    teams = await storedTeams(session.user.id)
+  } catch (error) {
+    console.error('Error loading teams:', error)
+    teams = null
+    problem = "We couldn't load your teams. Refresh the page to try again."
+  }
+}
 ---
 
 <Layout class="max-w-3xl" particles>
@@ -65,19 +78,14 @@ const returnTo = installationId
               className="shrink-0"
             />
           </div>
-          <h2 class="mt-2 text-2xl font-medium">Your teams</h2>
-          <AccountTeams server:defer installationId={installationId}>
-            <div
-              slot="fallback"
-              role="status"
-              class="bg-background/75 flex flex-col gap-3 rounded-xl border p-4"
-            >
-              <span class="sr-only">Loading your teams</span>
-              <div class="bg-foreground/10 h-5 w-40 animate-pulse rounded" />
-              <div class="bg-foreground/10 h-4 w-20 animate-pulse rounded" />
-              <div class="bg-foreground/10 h-4 w-56 animate-pulse rounded" />
-            </div>
-          </AccountTeams>
+          <AccountPanel
+            client:load
+            signedIn
+            teams={teams}
+            problem={problem}
+            returnTo={returnTo}
+            installationId={installationId}
+          />
         </>
       ) : (
         <AccountPanel

@@ -21,6 +21,67 @@ import { teamStatuses } from './team-status'
 
 // Server side of /account and the popover's "Your teams"
 
+// With what only GitHub knows: teammates' usernames and people to suggest
+export type AccountTeam = MyTeam & {
+  unclaimedLogins: string[]
+  suggestedLogins: string[]
+}
+
+// As stored, for showing straight away
+export async function storedTeams(userId: string): Promise<AccountTeam[]> {
+  return (await myTeams(userId)).map((team) => ({
+    ...team,
+    unclaimedLogins: [],
+    suggestedLogins: [],
+  }))
+}
+
+// Brings someone's teams up to date with GitHub: an installation they just
+// made, who can push now, and the usernames and suggestions. teams is null if
+// they couldn't be loaded
+export async function syncWithGithub(
+  userId: string,
+  headers: Headers,
+  installationId: number | null,
+): Promise<{ teams: AccountTeam[] | null; problem: string | null }> {
+  let problem: string | null = null
+  try {
+    if (installationId) {
+      const result = await joinFromInstallation(userId, installationId, headers)
+      if (!result.ok) problem = result.reason
+    }
+    await refreshMyRepos(userId, headers)
+    await syncUser(userId)
+  } catch (error) {
+    console.error('Error syncing with GitHub:', error)
+    problem ??= 'Something went wrong talking to GitHub. Try again.'
+  }
+
+  try {
+    const mine = await myTeams(userId)
+    const [logins, suggestions] = await Promise.all([
+      githubLogins(userId, headers, [
+        ...new Set(mine.flatMap((t) => t.unclaimedGithubUserIds)),
+      ]),
+      suggestedTeammates(mine),
+    ])
+    const teams = mine.map((team) => ({
+      ...team,
+      unclaimedLogins: team.unclaimedGithubUserIds
+        .map((id) => logins.get(id))
+        .filter((login): login is string => !!login),
+      suggestedLogins: suggestions.get(team.projectId) ?? [],
+    }))
+    return { teams, problem }
+  } catch (error) {
+    console.error('Error loading teams:', error)
+    return {
+      teams: null,
+      problem: problem ?? "We couldn't load your teams. Try again.",
+    }
+  }
+}
+
 // Running competitions first
 export async function myTeams(
   userId: string,
